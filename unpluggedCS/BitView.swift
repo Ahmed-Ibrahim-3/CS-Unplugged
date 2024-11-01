@@ -9,6 +9,12 @@ import SwiftUI
 struct BitView : View {
     var body : some View{
         Text("Bit Manipulation")
+        //Image(filePath)
     }
 }
+
+#Preview {
+    BitView()
+}
+
 
