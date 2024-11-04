@@ -25,7 +25,7 @@ struct StartView: View {
                                 .font(.title)
                                 .padding(50)
                                 .navigationTitle("CS-Unplugged-Replugged-Start")
-                        HStack {
+                            
                             TextField("Enter name", text: $name)
                                 .textFieldStyle(.plain)
                                 NavigationLink("Go!") {
@@ -37,7 +37,6 @@ struct StartView: View {
                 }
             }
         }
-    }
 
 struct ViewItem {
     let name: String
