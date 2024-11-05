@@ -53,7 +53,3 @@ struct StateView : View {
     }
 }
 
-#Preview{
-    StateView()
-}
-

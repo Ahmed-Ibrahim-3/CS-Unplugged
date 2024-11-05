@@ -423,6 +423,3 @@ struct merge : View {
     }
 }
 
-#Preview {
-    bubble()
-}

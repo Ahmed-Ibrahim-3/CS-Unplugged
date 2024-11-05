@@ -124,8 +124,6 @@ struct BitView2 : View{
     }
 }
 
-#Preview {
-    BitView2()
-}
+
 
 

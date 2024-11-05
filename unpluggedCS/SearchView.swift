@@ -287,8 +287,3 @@ struct Hashing: View {
         }
     }
 }
-
-#Preview {
-    @StateObject var qrCodeViewModel = QRCodeViewModel()
-    Hashing(qrCodeViewModel: qrCodeViewModel) //(name:"test")
-}
