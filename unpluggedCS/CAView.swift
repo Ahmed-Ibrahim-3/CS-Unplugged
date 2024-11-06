@@ -38,7 +38,7 @@ struct CAView : View {
             """)
     }
 }
-
-#Preview{
-    CAView()
-}
+//
+//#Preview{
+//    CAView()
+//}

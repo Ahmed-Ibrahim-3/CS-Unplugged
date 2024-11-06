@@ -101,6 +101,6 @@ struct GridView: View {
         .background(Color.gray.opacity(0.1))
     }
 }
-//#Preview {
-//    HomeView(name:"test")
-//}
+#Preview {
+    HomeView(name:"test")
+}
