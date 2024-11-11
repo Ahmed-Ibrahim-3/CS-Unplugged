@@ -1,24 +1,6 @@
 {
-  "originHash" : "71f5e0797c86bde4265d200eac551c7cba9af8ba338e2dd1d04ddcb763ed7e6c",
+  "originHash" : "3f7bccddd9f7a6da7c38f78f12dc05fb594b560bb42e698a68570a70f4650e54",
   "pins" : [
-    {
-      "identity" : "flanimatedimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Flipboard/FLAnimatedImage.git",
-      "state" : {
-        "revision" : "d4f07b6f164d53c1212c3e54d6460738b1981e9f",
-        "version" : "1.0.17"
-      }
-    },
-    {
-      "identity" : "kingfisher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onevcat/Kingfisher.git",
-      "state" : {
-        "revision" : "c0940e241945e6378c01fbd45fd3815579d47ef5",
-        "version" : "8.1.0"
-      }
-    },
     {
       "identity" : "sdwebimage",
       "kind" : "remoteSourceControl",

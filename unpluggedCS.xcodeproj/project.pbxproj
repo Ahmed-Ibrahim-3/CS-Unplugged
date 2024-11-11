@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B9D2842E2CD8E6180060E3A0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B9D2842D2CD8E6180060E3A0 /* SDWebImageSwiftUI */; };
-		B9D284312CD8EB3C0060E3A0 /* FLAnimatedImage in Frameworks */ = {isa = PBXBuildFile; productRef = B9D284302CD8EB3C0060E3A0 /* FLAnimatedImage */; };
-		B9D2843A2CD8F0DA0060E3A0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B9D284392CD8F0DA0060E3A0 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,9 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9D2843A2CD8F0DA0060E3A0 /* Kingfisher in Frameworks */,
 				B9D2842E2CD8E6180060E3A0 /* SDWebImageSwiftUI in Frameworks */,
-				B9D284312CD8EB3C0060E3A0 /* FLAnimatedImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,8 +118,6 @@
 			name = unpluggedCS;
 			packageProductDependencies = (
 				B9D2842D2CD8E6180060E3A0 /* SDWebImageSwiftUI */,
-				B9D284302CD8EB3C0060E3A0 /* FLAnimatedImage */,
-				B9D284392CD8F0DA0060E3A0 /* Kingfisher */,
 			);
 			productName = unpluggedCS;
 			productReference = B9C1CE362CBEDC86006BCEC2 /* unpluggedCS.app */;
@@ -209,9 +203,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B9D2842C2CD8E50B0060E3A0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
-				B9D2842F2CD8EB3C0060E3A0 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
-				B9D284382CD8F0DA0060E3A0 /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				B9D2843B2CD8F4C00060E3A0 /* XCRemoteSwiftPackageReference "SwiftGif" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9C1CE372CBEDC86006BCEC2 /* Products */;
@@ -574,30 +565,6 @@
 				minimumVersion = 3.1.2;
 			};
 		};
-		B9D2842F2CD8EB3C0060E3A0 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Flipboard/FLAnimatedImage.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.17;
-			};
-		};
-		B9D284382CD8F0DA0060E3A0 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.1.0;
-			};
-		};
-		B9D2843B2CD8F4C00060E3A0 /* XCRemoteSwiftPackageReference "SwiftGif" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/swiftgif/SwiftGif.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -605,16 +572,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B9D2842C2CD8E50B0060E3A0 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
-		};
-		B9D284302CD8EB3C0060E3A0 /* FLAnimatedImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B9D2842F2CD8EB3C0060E3A0 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */;
-			productName = FLAnimatedImage;
-		};
-		B9D284392CD8F0DA0060E3A0 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B9D284382CD8F0DA0060E3A0 /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

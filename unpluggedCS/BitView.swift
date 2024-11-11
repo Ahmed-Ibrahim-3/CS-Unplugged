@@ -115,6 +115,6 @@ struct BitView : View {
         }
     }
 }
-#Preview{
-    BitView()
-}
+//#Preview{
+//    BitView()
+//}
