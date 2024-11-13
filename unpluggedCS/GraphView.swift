@@ -62,6 +62,6 @@ struct GraphView : View {
     }
 }
 
-#Preview {
-    GraphView()
-}
+//#Preview {
+//    GraphView()
+//}

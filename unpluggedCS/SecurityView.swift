@@ -9,6 +9,12 @@ import SwiftUI
 struct SecurityView : View {
     var body : some View{
         Text("Cyber Security")
+            .font(.system(.title))
+            .multilineTextAlignment(.center)
+            .padding()
     }
 }
 
+#Preview {
+    SecurityView()
+}
