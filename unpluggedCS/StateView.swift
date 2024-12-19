@@ -29,7 +29,7 @@ struct StateView : View {
                 
                 Image("FSA")
                     .resizable()
-                    .frame(width: 700,height: 150)
+                    .frame(width: 650,height: 150)
                     .scaledToFit()
                 
                 Text("""
@@ -43,13 +43,20 @@ struct StateView : View {
             HStack{
                 Image("sentenceFSA")
                     .resizable()
-                    .frame(width: 700,height: 200)
-                    .scaledToFit()
+                    .frame(width: 550,height: 200)
+                    .aspectRatio(contentMode: .fill)
                 Text("""
                     Discuss amongst yourselves what this state machine constructs? 
                     """)
             }
         }
+        #if os(iOS)
+        .frame(maxWidth: .infinity,maxHeight: .infinity)
+        .background(backgroundGradient)
+        #endif
     }
 }
 
+#Preview {
+    StateView()
+}

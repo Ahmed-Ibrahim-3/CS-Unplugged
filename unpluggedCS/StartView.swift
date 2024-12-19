@@ -16,27 +16,59 @@ struct StartView: View {
     @State private var name: String = ""
     @State private var showingAlert = false
 
-        var body: some View {
+    var body: some View {
+        NavigationStack {
             ZStack {
-                backgroundGradient
-                    NavigationStack{
-                        HStack {
-                            Text("Start")
-                                .font(.title)
-                                .padding(50)
-                                .navigationTitle("CS-Unplugged-Replugged-Start")
-                            
-                            TextField("Enter name", text: $name)
-                                .textFieldStyle(.plain)
-                                NavigationLink("Go!") {
-                                    HomeView(name:name)
-                                }
-                                .padding(50)
-                        }
-                    }
-                }
+                backgroundGradient.ignoresSafeArea()
+                content
             }
         }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+#if os(tvOS)
+        HStack {
+            titleView.padding(50)
+                .navigationTitle("CS-Unplugged-Replugged-Main")
+
+            textFieldView
+                .textFieldStyle(.plain)
+
+            navigationLinkView.padding(50)
+        }
+#elseif os(iOS)
+        VStack {
+            titleView.padding()
+                .multilineTextAlignment(.center)
+
+            textFieldView
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 400, height: 50)
+
+            navigationLinkView
+        }
+#endif
+    }
+    private var titleView: some View {
+        Text("Start")
+            .font(.title)
+            .foregroundColor(.white)
+    }
+    private var textFieldView: some View {
+        TextField("Enter name", text: $name)
+            .padding()
+            .cornerRadius(20)
+    }
+
+    private var navigationLinkView: some View {
+        NavigationLink("Go!") {
+            HomeView(name: name)
+        }
+        .foregroundColor(.white)
+    }
+}
+
 
 struct ViewItem {
     let name: String
@@ -65,10 +97,30 @@ struct HomeView : View {
             self.name = name
         }
     var body: some View{
-        NavigationView {
+        #if os(tvOS)
+        NavigationView{
             GridView(viewItems: views)
                 .navigationTitle("Hello, " + name)
+            
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(backgroundGradient)
+        #elseif os(iOS)
+        VStack{
+            NavigationStack{
+                GridView(viewItems: views)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar{
+                        ToolbarItem(placement: .principal) {
+                            Text("Hello, " + name)
+                                .font(.largeTitle.bold())
+                                .accessibilityAddTraits(.isHeader)
+                                .foregroundColor(.white)
+                    }
+                }
+            }
+        }
+        #endif
     }
 }
 
@@ -82,25 +134,56 @@ struct GridView: View {
     ]
     
     var body: some View {
+        #if os(tvOS)
         VStack {
-            ScrollView {
-                LazyVGrid(columns: columns) {
-                    ForEach(viewItems, id: \.name) { item in
-                        NavigationLink(destination: item.view) {
-                            Text(item.name)
-                                .foregroundColor(.white)
-                                .frame(width: 350, height: 100)
-                                .shadow(radius: 5)
-                            Image(systemName:item.image)
-                        }
-                        .cornerRadius(30)
+            LazyVGrid(columns: columns) {
+                ForEach(viewItems, id: \.name) { item in
+                    NavigationLink(destination: item.view) {
+                        Text(item.name)
+                            .foregroundColor(.white)
+                            .frame(width: 350, height: 100)
+                            .shadow(radius: 5)
+                            .padding(10)
+                        Image(systemName:item.image)
                     }
+                    .cornerRadius(30)
                 }
             }
         }
-        .background(Color.gray.opacity(0.1))
+        #elseif os(iOS)
+        VStack{
+            NavigationStack{
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(viewItems, id: \..name) { item in
+                        NavigationLink(destination: item.view) {
+                            VStack(spacing: 10) {
+                                Text(item.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(width: 150, height: 40)
+                                    .cornerRadius(10)
+                                
+                                Image(systemName: item.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                            }
+                            .padding()
+                            .background(Color.white.opacity(0.5))
+                            .cornerRadius(20)
+                            .shadow(radius: 5)
+                        }
+                    }
+                }
+                .padding()
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(backgroundGradient)
+        #endif
     }
 }
 #Preview {
-    HomeView(name:"test")
+//    StartView()
+    HomeView(name: "test")
 }

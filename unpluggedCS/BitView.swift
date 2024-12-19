@@ -16,8 +16,31 @@ struct BitView : View {
         "Grid5"
     ]
     
+    private let bitActivity = """
+                    Discuss the following:
+                       \u{2022} What is the smallest nymber you can make?
+                       \u{2022} What is the largest? 
+                    
+                    Starting from 0, count up each number one by one (1,2,3,4...)
+                       \u{2022} What patterns do you see?
+                       \u{2022} Once you have reached 31, whats next? how might we get 32
+                    
+                    Lets look deeper...
+                       \u{2022} What is the maximum number you can make with 2 bits?
+                       \u{2022} How many dots would the next card have?
+                       \u{2022} What is the maximum value of these **3** bits?
+                       \u{2022} Again, how many dots would the next card have?
+                       \u{2022} What pattern do you see?
+                    
+                    Now we know the maximum, minimum, and how to find them, what else?
+                       \u{2022} How many different numbers can you make with 2 bits?
+                       \u{2022} How many could you make with one more?
+                       \u{2022} Do you see a pattern? If not, keep adding a bit and looking 
+                                numbers you can make until one becomes clear
+                    """
+    
     @State private var imgIndex = 0
-    @State private var isImageOne = [true, true, true, true, true]
+    @State private var isImageOne: [Bool] = Array(repeating: true, count: 5)
     @State private var decimalVal = 0
     
     func calculateBinaryValue(from binaryArray: [Bool]) -> Int {
@@ -31,90 +54,97 @@ struct BitView : View {
     }
     
     var body : some View{
-        
-        ScrollView{
+        VStack{
             Text("Bit Manipulation")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-            
-            VStack(spacing: 40){
-                Button(action: {
-                    if imgIndex < Gimages.count - 1 {
-                        imgIndex += 1
+                .foregroundColor(Color.white)
+#if os(tvOS)
+            ScrollView{
+                VStack(spacing: 40){
+                    Button(action: {
+                        if imgIndex < Gimages.count - 1 {
+                            imgIndex += 1
+                        }
+                    }) {
+                        Image(Gimages[imgIndex])
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 150)
                     }
-                }) {
-                    Image(Gimages[imgIndex])
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 150)
-                }
-                .disabled(imgIndex >= Gimages.count - 1)
-                
-                Text("""
+                    .disabled(imgIndex >= Gimages.count - 1)
+                    
+                    Text("""
                         What do you notice about this pattern? How many dots should the next card have?
                     
                         Now, Lets see what we can do with these 
                     """)
-                
-                HStack(spacing:10){
-                    ForEach(0..<5, id: \.self) { index in
-                        Button(action: {
-                            isImageOne[index].toggle()
-                        }) {
-                            Image(isImageOne[index] ? "Grid1" : "bitOff")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 75,height: 125)
-                                .clipped()
+                    
+                    HStack(spacing:10){
+                        ForEach(0..<5, id: \.self) { index in
+                            Button(action: {
+                                isImageOne[index].toggle()
+                            }) {
+                                Image(isImageOne[index] ? "Grid1" : "bitOff")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 75,height: 125)
+                                    .clipped()
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
+                    }
+                    Button (action: {
+                        decimalVal = calculateBinaryValue(from: isImageOne)
+                    }){
+                        Image(systemName: "equal")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 50,height: 50)
+                            .clipped()
+                    }
+                    Button{
+                    }
+                    label: {Text(String(decimalVal))
+                            .font(.system(size: 30))
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                }
+                Spacer(minLength: 150)
+                Text(bitActivity)
+            }
+#elseif os(iOS)
+            VStack(spacing: 20) {
+                Text(bitActivity)
+                .foregroundColor(.white)
+                
+                HStack(spacing: 10) {
+                    ForEach(0..<5, id: \.self) { index in
+                        Image(isImageOne[index] ? "Grid1" : "bitOff")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 75, height: 125)
+                            .clipped()
+                            .onTapGesture {
+                                isImageOne[index].toggle()
+                                decimalVal = calculateBinaryValue(from: isImageOne)
+                            }
                     }
                 }
-                Button (action: {
-                    decimalVal = calculateBinaryValue(from: isImageOne)
-                }){
-                    Image(systemName: "equal")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 50,height: 50)
-                        .clipped()
-                }
-                Button{
-                }
-                label: {Text(String(decimalVal))
-                        .font(.system(size: 30))
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
+                Text(String(decimalVal))
+                    .font(.system(size: 30))
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .foregroundColor(.white)
             }
-            Text("""
-                    Get into pairs and take a set of binary number cards 
-                
-                    Discuss the following:
-                       \u{2022} What is the smallest nymber you can make?
-                       \u{2022} What is the largest? 
-                
-                    Starting from 0, count up each number one by one (1,2,3,4...)
-                       \u{2022} What patterns do you see?
-                       \u{2022} Once you have reached 31, whats next? how might we get 32
-                
-                    Lets look deeper...
-                       \u{2022} What is the maximum number you can make with 2 bits?
-                       \u{2022} How many dots would the next card have?
-                       \u{2022} What is the maximum value of these **3** bits?
-                       \u{2022} Again, how many dots would the next card have?
-                       \u{2022} What pattern do you see?
-                
-                    Now we know the maximum, minimum, and how to find them, what else?
-                       \u{2022} How many different numbers can you make with 2 bits?
-                       \u{2022} How many could you make with one more?
-                       \u{2022} Do you see a pattern? If not, keep adding a bit and looking 
-                                numbers you can make until one becomes clear
-                """)
+#endif
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(backgroundGradient)
     }
 }
-//#Preview{
-//    BitView()
-//}
+#Preview{
+    BitView()
+}
