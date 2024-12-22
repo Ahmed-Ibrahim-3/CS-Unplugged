@@ -83,7 +83,7 @@ struct HomeView : View {
         ViewItem(name: "Sorting", view: AnyView(SortingView()), image: "chart.bar.xaxis.ascending"),
         ViewItem(name: "Data Structures", view: AnyView(DataView()),image: "square.stack.3d.up"),
         ViewItem(name: "Computer Architecture", view: AnyView(CAView()), image: "cpu.fill"),
-        ViewItem(name: "State Machines", view: AnyView(StateView()), image: "house.fill"),
+        ViewItem(name: "State Machines", view: AnyView(StateView()), image: "house.fill"), //TODO: State machine icon
         ViewItem(name: "Graphs", view: AnyView(GraphView()), image: "point.3.connected.trianglepath.dotted"),
         ViewItem(name: "Security", view: AnyView(SecurityView()), image: "lock.icloud"),
         ViewItem(name: "Programming Languages", view: AnyView(ProgLangView()), image: "books.vertical.fill"),

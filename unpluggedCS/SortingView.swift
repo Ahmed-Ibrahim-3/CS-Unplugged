@@ -15,6 +15,7 @@ struct SortingView : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
+                .foregroundColor(.white)
             
             HStack(spacing: 10) {
                 NavigationLink(destination: selection()) {
@@ -291,6 +292,9 @@ struct insertion: View {
                     clearSelectedCircles: clearSelectedCircles,
                     shuffleAvailableCircles: shuffleAvailableCircles
                 )
+#if os(tvOS)
+                Spacer().frame(height: 200)
+#endif
                 Subviews.DiscussionSection()
             }
             .padding()
@@ -495,7 +499,7 @@ struct merge : View {
 }
 
 #Preview {
-    //SortingView()
+    SortingView()
     //selection()
     //quick()
     //insertion()

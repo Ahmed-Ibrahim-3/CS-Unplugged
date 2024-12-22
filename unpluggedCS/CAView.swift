@@ -10,7 +10,8 @@ struct CAView : View {
     var body : some View{
         VStack{
             Text("Computer Architecture")
-                .font(.title)
+                .font(.largeTitle)
+                .foregroundColor(.white)
             
             HStack{
                 Text("""
@@ -23,7 +24,7 @@ struct CAView : View {
                         for example the *system bus*, a number of wires connecting to 
                         all the components
                     Lets zoom in on the cpu and its individual cores 
-                    """)
+                    """).foregroundColor(.white)
                 Image("cpu")
                     .resizable()
                     .frame(width: 350,height: 300)
@@ -36,10 +37,12 @@ struct CAView : View {
                     specified by an instructions 
                 \u{2022} **Load/Store Logic**: Manages the transfer of data to and 
                     from main memory via the cache.
-                """)
+                """).foregroundColor(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        
+        //TODO: interactive basic CPU builder
     }
 }
 

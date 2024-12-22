@@ -7,6 +7,7 @@ struct DataView : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
+                .foregroundColor(.white)
             HStack(spacing: 30) {
                 DataStructureView(
                     title: "Array",
@@ -32,7 +33,7 @@ struct DataView : View {
                         an array is to store many instances
                         in one variable.
                     """
-                )
+                ).foregroundColor(.white)
 
                 DataStructureView(
                     title: "Queue",
@@ -43,7 +44,7 @@ struct DataView : View {
                         first is the first to leave.
                     """,
                     imageName: "queue",
-                    imageSize: CGSize(width: 350, height: 100),
+                    imageSize: CGSize(width: 325, height: 100),
                     description2: """
                         We define a queue to be a list in which
                         all additions are made at one end and all
@@ -60,7 +61,7 @@ struct DataView : View {
                         • Circular Queue
                         • Priority Queue
                     """
-                )
+                ).foregroundColor(.white)
 
                 DataStructureView(
                     title: "Stack",
@@ -86,7 +87,7 @@ struct DataView : View {
                         dynamic stack on the other hand changes
                         size when elements are added.
                     """
-                )
+                ).foregroundColor(.white)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -110,6 +111,7 @@ struct DataStructureView: View {
                 .frame(width: imageSize.width, height: imageSize.height)
             Text(description2).scaledToFill()
         }
+        //TODO: Interactive visualisations of each data structure
     }
 }
 

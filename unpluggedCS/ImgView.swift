@@ -12,9 +12,10 @@ struct ImgView: View {
             ScrollView {
                 Button(action: {}) {
                     Text("Image Representation")
-                        .font(.system(.title))
+                        .font(.system(.largeTitle))
                         .padding()
                         .multilineTextAlignment(.center)
+                        .foregroundColor(.white)
                 }
                 .buttonStyle(PlainButtonStyle())
                 
@@ -23,7 +24,7 @@ struct ImgView: View {
                         Have you ever looked *really* close at a screen and noticed a grid of small squares making up the image you see?
                         We call these **pixels** in computing science, they are what make up anything you can see on a screen, most screens 
                         have millions of pixels to make the resulting image as sharp as possible. 
-                    """)
+                    """).foregroundColor(.white)
                     
                     HStack {
                         Text("""
@@ -34,11 +35,12 @@ struct ImgView: View {
                         
                         Experiment with this for a while, what kind of images can and can't you make with this, what else do we 
                         need?
-                    """)
+                    """).foregroundColor(.white)
                         Image("blackwhiteimg")
                             .resizable()
                             .frame(width: 350, height: 250)
                             .aspectRatio(contentMode: .fill)
+                            
                     }
                     
                     HStack {
@@ -46,29 +48,17 @@ struct ImgView: View {
                         If we allow each pixel to use **2** bits this time, we can double the colours we can use, and now have
                         grey. Now, rather than each pixel being 0 or 1, each can be 00, 01, 10, or 11, each representing a 
                         different brightness, and allowing us to make images like this.
-                        """)
+                        """).foregroundColor(.white)
                         Image("greyimg")
                             .resizable()
                             .frame(width: 350, height: 250)
                             .aspectRatio(contentMode: .fill)
                     }
-                    
-                    Button("Can we do any more?") {}
-                        .buttonStyle(PlainButtonStyle())
-                        .id("scrollToBottom")
-                        .onAppear {
-                            withAnimation {
-                                proxy.scrollTo("scrollToBottom", anchor: .bottom)
-                            }
-                        }
-                    
-                    Spacer().padding(35)
-                    
-                    HStack {
+                                        HStack {
                         Text("""
                         Let's double the number of bits available to us again, to 4 bits per pixel. This brings us all the way up
                         to **16** different colours, letting us make all sorts of pictures! 
-                        """)
+                        """).foregroundColor(.white)
                         Image("colourimg")
                             .resizable()
                             .frame(width: 350, height: 250)
@@ -80,9 +70,13 @@ struct ImgView: View {
                         In other words, when we go from one 1 bit to 2 to 4 to 8, we go from 2 colours to 4 to 16 to 256. Most TVs and monitors use
                         24-bit colour, that's 8 bits just for each colour channel (red, green, and blue) or 16,777,216 in total!
                         Some even have 32-bit color -- Over 4 **billion**!
-                    """)
+                    """).foregroundColor(.white)
+                        .focusable(true)
                 }
             }
+            .frame(maxWidth: .infinity,maxHeight: .infinity)
+            .background(backgroundGradient)
+            //TODO: 2 or 4 bit colour image builder grid (iOS only probably)
         }
     }
 }

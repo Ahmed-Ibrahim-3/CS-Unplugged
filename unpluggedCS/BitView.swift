@@ -42,6 +42,7 @@ struct BitView : View {
     @State private var imgIndex = 0
     @State private var isImageOne: [Bool] = Array(repeating: true, count: 5)
     @State private var decimalVal = 0
+    @State private var isFocused = false
     
     func calculateBinaryValue(from binaryArray: [Bool]) -> Int {
         var value = 0
@@ -61,59 +62,73 @@ struct BitView : View {
                 .padding()
                 .foregroundColor(Color.white)
 #if os(tvOS)
-            ScrollView{
-                VStack(spacing: 40){
-                    Button(action: {
-                        if imgIndex < Gimages.count - 1 {
-                            imgIndex += 1
-                        }
-                    }) {
-                        Image(Gimages[imgIndex])
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 150)
-                    }
-                    .disabled(imgIndex >= Gimages.count - 1)
-                    
-                    Text("""
-                        What do you notice about this pattern? How many dots should the next card have?
-                    
-                        Now, Lets see what we can do with these 
-                    """)
-                    
-                    HStack(spacing:10){
-                        ForEach(0..<5, id: \.self) { index in
-                            Button(action: {
-                                isImageOne[index].toggle()
-                            }) {
-                                Image(isImageOne[index] ? "Grid1" : "bitOff")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 75,height: 125)
-                                    .clipped()
+            ScrollViewReader { proxy in
+                ScrollView{
+                    VStack(spacing: 40){
+                        Button(action: {
+                            if imgIndex < Gimages.count - 1 {
+                                imgIndex += 1
                             }
-                            .buttonStyle(PlainButtonStyle())
+                        }) {
+                            Image(Gimages[imgIndex])
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 150)
                         }
+                        .disabled(imgIndex >= Gimages.count - 1)
+                        
+                        Text("""
+                            What do you notice about this pattern? How many dots should the next card have?
+                        
+                            Now, Lets see what we can do with these 
+                        """)
+                        
+                        HStack(spacing:10){
+                            ForEach(0..<5, id: \.self) { index in
+                                Button(action: {
+                                    isImageOne[index].toggle()
+                                }) {
+                                    Image(isImageOne[index] ? "Grid1" : "bitOff")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 75,height: 125)
+                                        .clipped()
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                        }
+                        Button (action: {
+                            decimalVal = calculateBinaryValue(from: isImageOne)
+                        }){
+                            Image(systemName: "equal")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 50,height: 50)
+                                .clipped()
+                                .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        Text(String(decimalVal))
+                            .focusable(true)
+                        
+//                        Button(String(decimalVal)) {}
+//                            .buttonStyle(PlainButtonStyle())
+//                            .foregroundColor(.white)
+//                            .id("scrollToBottom")
+//                            .onAppear {
+//                                withAnimation {
+//                                    proxy.scrollTo(999, anchor: .bottom)
+//                                }
+//                            }
+                        
                     }
-                    Button (action: {
-                        decimalVal = calculateBinaryValue(from: isImageOne)
-                    }){
-                        Image(systemName: "equal")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50,height: 50)
-                            .clipped()
-                    }
-                    Button{
-                    }
-                    label: {Text(String(decimalVal))
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding()
+                    Spacer().frame(height: 200)
+                    Text(bitActivity)
+                        .id(999)
+                        .scaleEffect(isFocused ? 1.2: 1)
+                        .focusable(true)
+                        .animation(.easeInOut, value: isFocused)
                 }
-                Spacer(minLength: 150)
-                Text(bitActivity)
             }
 #elseif os(iOS)
             VStack(spacing: 20) {
