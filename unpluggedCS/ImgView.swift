@@ -77,7 +77,6 @@ struct ImgView: View {
                 }
                 .padding()
                 
-                // MARK: - 4-bit Color Image Builder (iOS Only)
                 #if os(iOS)
                 Divider()
                     .background(Color.white)
@@ -123,6 +122,8 @@ struct ColorPixelBuilderView: View {
     @State private var pixels: [Int] = Array(repeating: 0, count: 256)
     
     @State private var selectedColor: Int = 0
+    @State private var isLandscape: Bool = UIDevice.current.orientation.isLandscape
+    @State private var ColumnSpacing: CGFloat = UIDevice.current.orientation.isLandscape ? -800 : -450
     
     var body: some View {
         VStack {
@@ -144,9 +145,7 @@ struct ColorPixelBuilderView: View {
                 .padding(.horizontal)
             }
             .padding(.bottom, 10)
-            let isLandscape = UIDevice.current.orientation.isLandscape
-            let columnSpacing : CGFloat = isLandscape ? -800 : -450
-            let columns = Array(repeating: GridItem(.flexible(), spacing: columnSpacing), count: gridSize)
+            let columns = Array(repeating: GridItem(.flexible(), spacing: ColumnSpacing), count: gridSize)
             LazyVGrid(columns: columns, spacing: 1) {
                 ForEach(0..<pixels.count, id: \.self) { index in
                     Rectangle()
@@ -158,7 +157,7 @@ struct ColorPixelBuilderView: View {
                 }
             }
             .padding()
-            Text(String(columnSpacing.description))
+            Text(String(ColumnSpacing.description))
             HStack {
                 Button(action: resetGrid) {
                     Text("Reset")

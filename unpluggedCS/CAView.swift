@@ -8,27 +8,21 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-// MARK: - CPUComponent
 
-/// The possible CPU components, each one draggable.
 enum CPUComponent: String, CaseIterable, Identifiable {
-    // Major CPU sections
     case controlUnit = "Control Unit"
     case alu = "Arithmetic / Logic Unit"
     
-    // Registers
     case pc = "Program Counter (PC)"
     case cir = "Current Instruction Register (CIR)"
     case ac = "Accumulator (AC)"
     case mar = "Memory Address Register (MAR)"
     case mdr = "Memory Data Register (MDR)"
     
-    // Memory
     case memoryUnit = "Memory Unit"
     
     var id: String { self.rawValue }
     
-    /// Helper to see if this component is one of the registers.
     var isRegister: Bool {
         switch self {
         case .pc, .cir, .ac, .mar, .mdr:
@@ -39,35 +33,22 @@ enum CPUComponent: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - CPUSlotType
-
-/// The types of slots in our CPU diagram.
 enum CPUSlotType {
     case controlUnit
     case alu
     case memory
-    case registerAny   // Accepts any of the register components.
+    case registerAny
 }
 
-// MARK: - CPUSlot
-
-/// Represents one “slot” in the diagram, either a specific component or a generic "register" slot.
 struct CPUSlot: Identifiable {
     let id = UUID()
     let slotType: CPUSlotType
-    
-    /// The component that ended up being placed in this slot
     var placedComponent: CPUComponent? = nil
-    
-    /// Whether the slot has been filled
     var isFilled: Bool {
         placedComponent != nil
     }
 }
 
-// MARK: - Draggable Component View
-
-/// A simple view for each draggable CPU component.
 struct CPUDraggableComponentView: View {
     let component: CPUComponent
     
@@ -85,10 +66,6 @@ struct CPUDraggableComponentView: View {
     }
 }
 
-// MARK: - CPUComponentSlotView (with expanded hit area)
-
-/// A custom view that visually represents a “slot” for a CPU component and handles the onDrop logic.
-/// We add `.padding(...)` and `.contentShape(...)` to expand the interactive region.
 struct CPUComponentSlotView: View {
     @Binding var slot: CPUSlot
     let onDropReceived: (String, CPUSlot) -> Void
@@ -107,8 +84,6 @@ struct CPUComponentSlotView: View {
                     slot.isFilled ? Color.green.opacity(0.2) : Color.clear
                 )
                 .overlay {
-                    // If the slot is not filled, show "?"
-                    // If filled, show the placed component's name
                     Text(slot.isFilled ? slot.placedComponent?.rawValue ?? "" : "?")
                         .font(.caption2)
                         .foregroundColor(.white)
@@ -116,12 +91,9 @@ struct CPUComponentSlotView: View {
                         .padding(4)
                 }
         }
-        // Increase the drop target area by adding padding
         .padding(10)
-        // Make the entire padded area count as the drop shape
         .contentShape(Rectangle())
         .onDrop(of: [.text], isTargeted: $isTargeted) { providers in
-            // If this slot is already filled, ignore
             guard !slot.isFilled else { return false }
             
             if let provider = providers.first {
@@ -140,11 +112,8 @@ struct CPUComponentSlotView: View {
     }
 }
 
-// MARK: - Interactive CPU Builder
-
 struct CPUBuilderView: View {
     
-    // We'll define the initial state as constants, so we can easily reset them later.
     private let initialSlots: [CPUSlot] = [
         CPUSlot(slotType: .controlUnit),
         CPUSlot(slotType: .alu),
@@ -156,13 +125,11 @@ struct CPUBuilderView: View {
         CPUSlot(slotType: .memory)
     ]
     
-    // We keep them in @State, so the UI reacts to changes.
     @State private var slots: [CPUSlot]
     @State private var availableComponents: [CPUComponent]
     @State private var allPlacedCorrectly = false
     @State private var outlineColour: Color = .white
     
-    // We define an init so we can shuffle the initial components.
     init() {
         _slots = State(initialValue: initialSlots)
         _availableComponents = State(initialValue: CPUComponent.allCases.shuffled())
@@ -171,35 +138,29 @@ struct CPUBuilderView: View {
     var body: some View {
         VStack(spacing: 20) {
             
-            // CPU Box + Memory Layout
             VStack(spacing: 0) {
-                // CPU Box Outline (wider for clarity)
                 RoundedRectangle(cornerRadius: 6)
                     .strokeBorder(outlineColour, lineWidth: 2)
                     .background(Color.clear)
                     .overlay {
                         VStack(spacing: 10) {
-                            // "Central Processing Unit" label at the top
                             Text("Central Processing Unit")
                                 .foregroundColor(outlineColour)
                                 .padding(.top, 5)
                                 .font(.headline)
                             
-                            // Control Unit Slot (slots[0])
                             CPUBuilderRowView(
                                 slotBinding: $slots[0],
                                 onDropReceived: handleDrop
                             )
                             .padding(.horizontal)
                             
-                            // ALU Slot (slots[1])
                             CPUBuilderRowView(
                                 slotBinding: $slots[1],
                                 onDropReceived: handleDrop
                             )
                             .padding(.horizontal)
                             
-                            // Registers row
                             Text("Registers")
                                 .foregroundColor(outlineColour)
                                 .font(.subheadline)
@@ -216,7 +177,6 @@ struct CPUBuilderView: View {
                     }
                     .frame(width: 750, height: 300)
                 
-                // Arrow from CPU to Memory
                 HStack(spacing:4) {
                     Image(systemName: "arrow.down")
                         .foregroundColor(outlineColour)
@@ -226,14 +186,12 @@ struct CPUBuilderView: View {
                         .padding(.vertical, 4)
                 }
                 
-                // Memory Unit Slot (slots[7])
                 CPUBuilderRowView(
                     slotBinding: $slots[7],
                     onDropReceived: handleDrop
                 )
             }
             
-            // Success message
             if allPlacedCorrectly {
                 Text("All components placed correctly! Great job!")
                     .font(.headline)
@@ -241,7 +199,6 @@ struct CPUBuilderView: View {
                     .padding(.top)
             }
             
-            // Draggable components area
             if !allPlacedCorrectly {
                 Text("Drag the components into the correct slots:")
                     .foregroundColor(.white)
@@ -262,7 +219,6 @@ struct CPUBuilderView: View {
             }
             .padding(.bottom)
             
-            // MARK: - Reset Button
             Button("Reset") {
                 resetGame()
             }
@@ -280,13 +236,10 @@ struct CPUBuilderView: View {
         .shadow(radius: 10)
         .padding([.leading, .trailing], 10)
     }
-    
-    // MARK: - Drop Handling
-    
+        
     private func handleDrop(componentName: String, slot: CPUSlot) {
         guard let droppedComponent = CPUComponent(rawValue: componentName) else { return }
         
-        // Figure out if it matches the slot rules:
         switch slot.slotType {
         case .controlUnit:
             if droppedComponent == .controlUnit {
@@ -301,14 +254,12 @@ struct CPUBuilderView: View {
                 fill(slot: slot, with: droppedComponent)
             }
         case .registerAny:
-            // Accept any register
             if droppedComponent.isRegister {
                 fill(slot: slot, with: droppedComponent)
             }
         }
     }
     
-    /// If valid, mark the slot as filled and remove the component from the draggable list.
     private func fill(slot: CPUSlot, with component: CPUComponent) {
         if let index = slots.firstIndex(where: { $0.id == slot.id }) {
             slots[index].placedComponent = component
@@ -319,7 +270,6 @@ struct CPUBuilderView: View {
         checkIfAllPlaced()
     }
     
-    /// Checks if all slots have been correctly placed, then sets `allPlacedCorrectly`.
     private func checkIfAllPlaced() {
         let allCorrect = slots.allSatisfy { slot in
             guard let placed = slot.placedComponent else { return false }
@@ -340,7 +290,6 @@ struct CPUBuilderView: View {
         }
     }
     
-    /// Resets the game to its initial state: slots are empty, components are shuffled, and no success message.
     private func resetGame() {
         slots = initialSlots
         availableComponents = CPUComponent.allCases.shuffled()
@@ -349,9 +298,6 @@ struct CPUBuilderView: View {
     }
 }
 
-// MARK: - CPUBuilderRowView
-
-/// A row with just a slot in the center.
 struct CPUBuilderRowView: View {
     @Binding var slotBinding: CPUSlot
     let onDropReceived: (String, CPUSlot) -> Void
@@ -365,13 +311,10 @@ struct CPUBuilderRowView: View {
     }
 }
 
-// MARK: - Integrated CAView
-
 struct CAView: View {
     var body: some View {
         ScrollView {
             VStack {
-                // Basic introduction
                 Text("Computer Architecture")
                     .font(.largeTitle)
                     .foregroundColor(.white)
@@ -408,7 +351,6 @@ struct CAView: View {
                 .padding(.all)
                 Text("Now, Let's build a CPU!").foregroundColor(.white).font(.title2)
                 
-                // Integrated CPU builder (with multiple register slots accepting any register)
                 CPUBuilderView()
                     .padding(.horizontal)
             }
