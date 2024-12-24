@@ -4,6 +4,7 @@
 //
 //  Created by Ahmed Ibrahim on 17/10/2024.
 //
+
 import SwiftUI
 
 struct ImgView: View {
@@ -42,7 +43,7 @@ struct ImgView: View {
                             .aspectRatio(contentMode: .fill)
                             
                     }
-                    
+                    Spacer()
                     HStack {
                         Text("""
                         If we allow each pixel to use **2** bits this time, we can double the colours we can use, and now have
@@ -54,7 +55,8 @@ struct ImgView: View {
                             .frame(width: 350, height: 250)
                             .aspectRatio(contentMode: .fill)
                     }
-                                        HStack {
+                                        
+                    HStack {
                         Text("""
                         Let's double the number of bits available to us again, to 4 bits per pixel. This brings us all the way up
                         to **16** different colours, letting us make all sorts of pictures! 
@@ -73,15 +75,107 @@ struct ImgView: View {
                     """).foregroundColor(.white)
                         .focusable(true)
                 }
+                .padding()
+                
+                // MARK: - 4-bit Color Image Builder (iOS Only)
+                #if os(iOS)
+                Divider()
+                    .background(Color.white)
+                    .padding(.vertical, 20)
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("4-Bit Color Image Builder")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    
+                    ColorPixelBuilderView()
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.black.opacity(0.8))
+                        .cornerRadius(10)
+                }
+                .padding()
+                #endif
             }
-            .frame(maxWidth: .infinity,maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(backgroundGradient)
-            //TODO: 2 or 4 bit colour image builder grid (iOS only probably)
         }
     }
 }
 
-
-#Preview {
-    ImgView()
+struct ImgView_Previews: PreviewProvider {
+    static var previews: some View {
+        ColorPixelBuilderView()
+    }
 }
+
+#if os(iOS)
+struct ColorPixelBuilderView: View {
+    let palette: [Color] = [
+        .black, .white, .red, .green,
+        .blue, .yellow, .orange, .purple,
+        .pink, .gray, .brown, .cyan,
+        .mint, .indigo, .teal, Color("#32CD32")
+    ]
+    
+    let gridSize: Int = 16
+    
+    @State private var pixels: [Int] = Array(repeating: 0, count: 256)
+    
+    @State private var selectedColor: Int = 0
+    
+    var body: some View {
+        VStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(0..<palette.count, id: \.self) { index in
+                        Circle()
+                            .fill(palette[index])
+                            .frame(width: 30, height: 30)
+                            .overlay(
+                                Circle()
+                                    .stroke(selectedColor == index ? Color.yellow : Color.clear, lineWidth: 2)
+                            )
+                            .onTapGesture {
+                                selectedColor = index
+                            }
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .padding(.bottom, 10)
+            let isLandscape = UIDevice.current.orientation.isLandscape
+            let columnSpacing : CGFloat = isLandscape ? -800 : -450
+            let columns = Array(repeating: GridItem(.flexible(), spacing: columnSpacing), count: gridSize)
+            LazyVGrid(columns: columns, spacing: 1) {
+                ForEach(0..<pixels.count, id: \.self) { index in
+                    Rectangle()
+                        .fill(palette[pixels[index]])
+                        .frame(width: 20, height: 20)
+                        .onTapGesture {
+                            pixels[index] = selectedColor
+                        }
+                }
+            }
+            .padding()
+            Text(String(columnSpacing.description))
+            HStack {
+                Button(action: resetGrid) {
+                    Text("Reset")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.red)
+                        .cornerRadius(8)
+                }
+                
+                Spacer()
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    func resetGrid() {
+        pixels = Array(repeating: 0, count: 256)
+    }
+}
+#endif
