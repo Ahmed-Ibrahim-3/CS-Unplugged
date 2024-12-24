@@ -8,7 +8,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-
+#if os(iOS)
 enum CPUComponent: String, CaseIterable, Identifiable {
     case controlUnit = "Control Unit"
     case alu = "Arithmetic / Logic Unit"
@@ -310,7 +310,7 @@ struct CPUBuilderRowView: View {
         }
     }
 }
-
+#endif
 struct CAView: View {
     var body: some View {
         ScrollView {
@@ -349,10 +349,12 @@ struct CAView: View {
                      """)
                 .foregroundColor(.white)
                 .padding(.all)
+                #if os(iOS)
                 Text("Now, Let's build a CPU!").foregroundColor(.white).font(.title2)
-                
                 CPUBuilderView()
                     .padding(.horizontal)
+                #endif
+                
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

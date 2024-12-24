@@ -104,7 +104,7 @@ struct ImgView: View {
 
 struct ImgView_Previews: PreviewProvider {
     static var previews: some View {
-        ColorPixelBuilderView()
+        ImgView()
     }
 }
 
