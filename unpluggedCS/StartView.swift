@@ -185,7 +185,6 @@ struct GridView: View {
         }.frame(width: 450, height: 100)
     }
 
-    // MARK: - iOS Item Label
     private func iOSItemLabel(for item: ViewItem) -> some View {
         VStack(spacing: 10) {
             Text(item.name)
@@ -195,13 +194,11 @@ struct GridView: View {
                 .cornerRadius(10)
 
             if item.name == "State Machines" {
-                // Use asset image
                 Image(item.image)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
             } else {
-                // Use SF Symbol
                 Image(systemName: item.image)
                     .resizable()
                     .scaledToFit()

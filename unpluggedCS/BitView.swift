@@ -3,7 +3,7 @@
 //  unpluggedCS
 //
 //  Created by Ahmed Ibrahim on 17/10/2024.
-//
+// TODO: use shapes instead of images
 import SwiftUI
 
 struct BitView : View {
