@@ -3,11 +3,67 @@
 //  unpluggedCS
 //
 //  Created by Ahmed Ibrahim on 17/10/2024.
-// TODO: use shapes instead of images
 import SwiftUI
 
-struct BitView : View {
+struct SectionView: View {
+    let circleCount: Int
+    func createCircle(size: CGFloat) -> some View{
+        Circle()
+            .fill(Color.orange.opacity(0.7))
+            .frame(width: size, height: size)
+    }
     
+    var body: some View {
+        switch circleCount {
+        case 1:
+            let size: CGFloat = 60
+            createCircle(size: size)
+        case 2:
+            let size: CGFloat = 50
+            VStack(spacing: 16) {
+                createCircle(size: size)
+                createCircle(size: size)
+            }
+        case 4:
+            let size: CGFloat = 40
+            VStack(spacing: 16) {
+                HStack(spacing: 16) {
+                    createCircle(size: size)
+                    createCircle(size: size)
+                }
+                HStack(spacing: 16) {
+                    createCircle(size: size)
+                    createCircle(size: size)
+                }
+            }
+        case 8:
+            let size: CGFloat = 30
+            VStack(spacing: 16) {
+                HStack(spacing: 16) {
+                    createCircle(size: size); createCircle(size: size); createCircle(size: size); createCircle(size: size)
+                }
+                HStack(spacing: 16) {
+                    createCircle(size: size); createCircle(size: size); createCircle(size: size); createCircle(size: size)
+                }
+            }
+        case 16:
+            let size: CGFloat = 10
+            VStack(spacing: 16) {
+                ForEach(0..<4, id: \.self) { _ in
+                    HStack(spacing: 16) {
+                        ForEach(0..<4, id: \.self) { _ in
+                            createCircle(size: size)
+                        }
+                    }
+                }
+            }
+        default:
+            EmptyView()
+        }
+    }
+}
+
+struct BitView : View {
     private let Gimages = [
         "Grid1",
         "Grid2",
@@ -43,6 +99,10 @@ struct BitView : View {
     @State private var isImageOne: [Bool] = Array(repeating: true, count: 5)
     @State private var decimalVal = 0
     @State private var isFocused = false
+    @State private var totalShapes = 1
+    private let bitCounts = [1,2,4,8,16]
+    @State private var currentSectionIndex = 0
+    private let maxBits = 5
     
     func calculateBinaryValue(from binaryArray: [Bool]) -> Int {
         var value = 0
@@ -65,62 +125,76 @@ struct BitView : View {
             ScrollViewReader { proxy in
                 ScrollView{
                     VStack(spacing: 40){
-                        Button(action: {
-                            if imgIndex < Gimages.count - 1 {
-                                imgIndex += 1
+                        HStack{
+                            Button(action: {
+                                if currentSectionIndex < bitCounts.count - 1 {
+                                    currentSectionIndex += 1
+                                }
+                            }) {
+                                HStack(spacing: 30) {
+                                    ForEach(0...currentSectionIndex, id: \.self) { index in
+                                        SectionView(circleCount: bitCounts[index])
+                                        Divider()
+                                    }
+                                }
+                                .padding()
                             }
-                        }) {
-                            Image(Gimages[imgIndex])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
+                            .buttonStyle(PlainButtonStyle())
+                            .frame(width: 100, height: 100)
                         }
-                        .disabled(imgIndex >= Gimages.count - 1)
+                        .padding()
+                        .frame(width:1100, height:400)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .padding([.leading, .trailing], 10)
+                        .foregroundColor(Color.white)
                         
                         Text("""
                             What do you notice about this pattern? How many dots should the next card have?
                         
                             Now, Lets see what we can do with these 
                         """)
-                        
-                        HStack(spacing:10){
-                            ForEach(0..<5, id: \.self) { index in
-                                Button(action: {
-                                    isImageOne[index].toggle()
-                                }) {
-                                    Image(isImageOne[index] ? "Grid1" : "bitOff")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 75,height: 125)
-                                        .clipped()
+                        VStack{
+                            HStack(spacing:25){
+                                ForEach(0..<5, id: \.self) { index in
+                                    Button(action: {
+                                        isImageOne[index].toggle()
+                                    }) {
+                                        Image(systemName: isImageOne[index] ? "circle.fill" : "circle.dotted")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 75)
+                                            .clipped()
+                                            .foregroundColor(Color.orange.opacity(0.7))
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
-                                .buttonStyle(PlainButtonStyle())
                             }
+                            
+                            Button (action: {
+                                decimalVal = calculateBinaryValue(from: isImageOne)
+                            }){
+                                Image(systemName: "equal")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 50,height: 50)
+                                    .clipped()
+
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding()
+                            
+                            Text(String(decimalVal))
+                                .focusable(true)
                         }
-                        Button (action: {
-                            decimalVal = calculateBinaryValue(from: isImageOne)
-                        }){
-                            Image(systemName: "equal")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 50,height: 50)
-                                .clipped()
-                                .buttonStyle(PlainButtonStyle())
-                        }
-                        
-                        Text(String(decimalVal))
-                            .focusable(true)
-                        
-//                        Button(String(decimalVal)) {}
-//                            .buttonStyle(PlainButtonStyle())
-//                            .foregroundColor(.white)
-//                            .id("scrollToBottom")
-//                            .onAppear {
-//                                withAnimation {
-//                                    proxy.scrollTo(999, anchor: .bottom)
-//                                }
-//                            }
-                        
+                        .padding()
+                        .frame(width:1100, height:400)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .padding([.leading, .trailing], 10)
+                        .foregroundColor(Color.white)
                     }
                     Spacer().frame(height: 200)
                     Text(bitActivity)
@@ -137,11 +211,12 @@ struct BitView : View {
                 
                 HStack(spacing: 10) {
                     ForEach(0..<5, id: \.self) { index in
-                        Image(isImageOne[index] ? "Grid1" : "bitOff")
+                        Image(systemName: isImageOne[index] ? "circle.fill" : "circle.dotted")
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 75, height: 125)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 75)
                             .clipped()
+                            .foregroundColor(Color.orange.opacity(0.7))
                             .onTapGesture {
                                 isImageOne[index].toggle()
                                 decimalVal = calculateBinaryValue(from: isImageOne)
