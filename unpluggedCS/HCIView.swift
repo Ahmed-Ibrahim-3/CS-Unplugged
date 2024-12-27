@@ -33,7 +33,7 @@ struct HCIView : View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         
-        //TODO: honestly just delete maybe
+        //TODO: Potentially replace with different topic
     }
 }
 

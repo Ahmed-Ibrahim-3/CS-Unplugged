@@ -3,7 +3,7 @@
 //  unpluggedCS
 //
 //  Created by Ahmed Ibrahim on 17/10/2024.
-//
+// TODO: tvOS -- maybe image showcase from ipad if feasible
 
 import SwiftUI
 

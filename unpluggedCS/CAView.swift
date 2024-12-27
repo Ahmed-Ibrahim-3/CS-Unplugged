@@ -359,6 +359,7 @@ struct CAView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        // TODO: tvOS interactive/engagement improvement
     }
 }
 

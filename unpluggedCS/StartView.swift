@@ -128,7 +128,6 @@ struct HomeView: View {
 struct GridView: View {
     let viewItems: [ViewItem]
 
-    // 3 columns in both tvOS and iOS
     let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -165,22 +164,20 @@ struct GridView: View {
         #endif
     }
 
-    // MARK: - tvOS Item Label
     private func tvOSItemLabel(for item: ViewItem) -> some View {
         HStack {
             Text(item.name)
                 .foregroundColor(.white)
                 .frame(width: 300, height: 100)
                 .shadow(radius: 5)
-            // For "State Machines" use asset, else system name
             if item.name == "State Machines" {
-                Image(item.image) // Asset named "statemachine"
+                Image(item.image)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 125, height: 125)
                     .foregroundColor(.white)
             } else {
-                Image(systemName: item.image) // SF Symbol
+                Image(systemName: item.image)
             }
         }.frame(width: 450, height: 100)
     }
