@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B9D2842E2CD8E6180060E3A0 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B9D2842D2CD8E6180060E3A0 /* SDWebImageSwiftUI */; };
+		E2297AA62D204AAD002A7D20 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2297AA42D204A8E002A7D20 /* MultipeerConnectivity.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		B9C1CE362CBEDC86006BCEC2 /* unpluggedCS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = unpluggedCS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C1CE462CBEDC8B006BCEC2 /* unpluggedCSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = unpluggedCSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C1CE502CBEDC8C006BCEC2 /* unpluggedCSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = unpluggedCSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2297AA42D204A8E002A7D20 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,6 +59,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9D2842E2CD8E6180060E3A0 /* SDWebImageSwiftUI in Frameworks */,
+				E2297AA62D204AAD002A7D20 /* MultipeerConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +86,7 @@
 				B9C1CE382CBEDC86006BCEC2 /* unpluggedCS */,
 				B9C1CE492CBEDC8B006BCEC2 /* unpluggedCSTests */,
 				B9C1CE532CBEDC8C006BCEC2 /* unpluggedCSUITests */,
+				E2297AA32D204A8E002A7D20 /* Frameworks */,
 				B9C1CE372CBEDC86006BCEC2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,6 +99,14 @@
 				B9C1CE502CBEDC8C006BCEC2 /* unpluggedCSUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E2297AA32D204A8E002A7D20 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E2297AA42D204A8E002A7D20 /* MultipeerConnectivity.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

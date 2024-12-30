@@ -9,19 +9,20 @@ enum DataStructureType {
 
 struct DataView: View {
     var body: some View {
-        ScrollView {
-            VStack {
-                Text("Data Structures")
-                    .font(.system(size: 60))
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .foregroundColor(.white)
-                
-                VStack(spacing: 50) {
-                    DataStructureView(
-                        type: .array,
-                        title: "Array",
-                        description1: """
+        ScrollViewReader{ proxy in
+            ScrollView {
+                VStack {
+                    Text("Data Structures")
+                        .font(.system(size: 60))
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .foregroundColor(.white)
+                    
+                    VStack(spacing: 50) {
+                        DataStructureView(
+                            type: .array,
+                            title: "Array",
+                            description1: """
                             In memory, all the elements in
                             an array are stored in contiguous
                             memory locations, meaning they are
@@ -31,9 +32,9 @@ struct DataView: View {
                             memory, allowing for efficient
                             access and manipulation of elements
                         """,
-                        imageName: "arraymem",
-                        imageSize: CGSize(width: 300, height: 100),
-                        description2: """
+                            imageName: "arraymem",
+                            imageSize: CGSize(width: 300, height: 100),
+                            description2: """
                             Let's say we were trying to create a
                             variable to represent the marks for
                             each student in a class. We could use
@@ -42,19 +43,23 @@ struct DataView: View {
                             have many values to track. The idea of
                             an array is to store many instances
                             in one variable.
-                        """)
-                    DataStructureView(
-                        type: .queue,
-                        title: "Queue",
-                        description1: """
+                        """,
+                            scrollProxy: proxy
+                        )
+                        .id(DataStructureType.array)
+                        
+                        DataStructureView(
+                            type: .queue,
+                            title: "Queue",
+                            description1: """
                             A queue is a linear data structure
                             that follows the First In First Out
                             principle, so the element inserted
                             first is the first to leave.
                         """,
-                        imageName: "queue",
-                        imageSize: CGSize(width: 300, height: 100),
-                        description2: """
+                            imageName: "queue",
+                            imageSize: CGSize(width: 300, height: 100),
+                            description2: """
                             We define a queue to be a list in which
                             all additions are made at one end and all
                             deletions are made at the other. A queue,
@@ -69,22 +74,24 @@ struct DataView: View {
                             • Double ended Queue
                             • Circular Queue
                             • Priority Queue
-                        """
-                    )
-                    
-                    DataStructureView(
-                        type: .stack,
-                        title: "Stack",
-                        description1: """
+                        """,
+                            scrollProxy: proxy
+                        )
+                        .id(DataStructureType.queue)
+                        
+                        DataStructureView(
+                            type: .stack,
+                            title: "Stack",
+                            description1: """
                             A stack is another linear data
                             structure, this time following
                             the Last In First Out principle,
                             meaning the last element inserted
                             is the first element to be removed.
                         """,
-                        imageName: "stack",
-                        imageSize: CGSize(width: 300, height: 200),
-                        description2: """
+                            imageName: "stack",
+                            imageSize: CGSize(width: 300, height: 200),
+                            description2: """
                             Imagine a pile of plates kept on top of
                             each other. The plate which was put on
                             last is the only one we can (safely) access
@@ -96,14 +103,17 @@ struct DataView: View {
                             gets full, no more can be added to it. A
                             dynamic stack on the other hand changes
                             size when elements are added.
-                        """
-                    )
+                        """,
+                        scrollProxy: proxy
+                        )
+                        .id(DataStructureType.array)
+                    }
+                    .padding()
                 }
-                .padding()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(backgroundGradient)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(backgroundGradient)
     }
 }
 
@@ -114,12 +124,15 @@ struct DataStructureView: View {
     let imageName: String
     let imageSize: CGSize
     let description2: String
+    let scrollProxy: ScrollViewProxy
     
     @State private var arrayElements: [String] = []
     @State private var queueElements: [String] = []
     @State private var stackElements: [String] = []
     
     @State private var elementCount: Int = 0
+    
+    @FocusState private var isButtonFocused: Bool
     
     private var elementSpacing: CGFloat {
         #if os(tvOS)
@@ -130,6 +143,13 @@ struct DataStructureView: View {
     }
     
     var body: some View {
+        content
+        #if os(tvOS)
+            .focusSection()
+        #endif
+    }
+    
+    private var content: some View {
         VStack(spacing: 10) {
             Text(title)
                 .font(.title3)
@@ -171,9 +191,7 @@ struct DataStructureView: View {
     @ViewBuilder
     private func InteractiveView() -> some View {
         VStack(spacing: 20) {
-
             Spacer()
-            
             switch type {
             case .array:
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -191,16 +209,18 @@ struct DataStructureView: View {
                 .frame(height: 50)
                 
             case .queue:
-                HStack(spacing: elementSpacing){
-                    ForEach(queueElements, id: \.self) { element in
-                        Text(element)
-                            .padding()
-                            .background(Color.green.opacity(0.7))
-                            .cornerRadius(8)
-                            .transition(.scale)
+                ScrollView(.horizontal, showsIndicators: false){
+                    HStack(spacing: elementSpacing){
+                        ForEach(queueElements, id: \.self) { element in
+                            Text(element)
+                                .padding()
+                                .background(Color.green.opacity(0.7))
+                                .cornerRadius(8)
+                                .transition(.scale)
+                        }
                     }
+                    .animation(.default, value: queueElements)
                 }
-                .animation(.default, value: queueElements)
                 .frame(height: 50)
                 
             case .stack:
@@ -226,8 +246,16 @@ struct DataStructureView: View {
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
-                .buttonStyle(PlainButtonStyle())
-                
+                .hoverEffect(.highlight)
+                .buttonStyle(.plain)
+                .focused($isButtonFocused)
+                .onChange(of: isButtonFocused) { focused in
+                    if focused {
+                        withAnimation {
+                            scrollProxy.scrollTo(type, anchor: .center)
+                        }
+                    }
+                }
                 Button(action: removeElement) {
                     Text("Remove")
                         .padding()
@@ -235,6 +263,17 @@ struct DataStructureView: View {
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
+                .hoverEffect(.highlight)
+                .buttonStyle(.plain)
+                .focused($isButtonFocused)
+                .onChange(of: isButtonFocused) { focused in
+                    if focused {
+                        withAnimation {
+                            scrollProxy.scrollTo(type, anchor: .center)
+                        }
+                    }
+                }
+                
             }
         }
     }

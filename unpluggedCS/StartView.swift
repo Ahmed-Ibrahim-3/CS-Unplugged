@@ -20,52 +20,48 @@ struct StartView: View {
         NavigationStack {
             ZStack {
                 backgroundGradient.ignoresSafeArea()
-                content
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var content: some View {
 #if os(tvOS)
         HStack {
-            titleView.padding(50)
-                .navigationTitle("CS-Unplugged-Replugged-Main")
+            Text("Start")
+                .font(.title)
+                .foregroundColor(.white)
+                .padding(50)
+                
 
-            textFieldView
+            TextField("Enter name", text: $name)
+                .padding()
+                .cornerRadius(20)
                 .textFieldStyle(.plain)
 
-            navigationLinkView.padding(50)
+            NavigationLink("Go!") {
+                HomeView(name: name)
+            }
+            .foregroundColor(.white)
+            .padding(50)
         }
 #elseif os(iOS)
         VStack {
-            titleView.padding()
+            Text("Start")
+                .font(.title)
+                .foregroundColor(.white)
+                .padding()
                 .multilineTextAlignment(.center)
 
-            textFieldView
+            TextField("Enter name", text: $name)
+                .padding()
+                .cornerRadius(20)
                 .textFieldStyle(.roundedBorder)
                 .frame(width: 400, height: 50)
 
-            navigationLinkView
+            NavigationLink("Go!") {
+                HomeView(name: name)
+            }
+            .foregroundColor(.white)
         }
 #endif
-    }
-    private var titleView: some View {
-        Text("Start")
-            .font(.title)
-            .foregroundColor(.white)
-    }
-    private var textFieldView: some View {
-        TextField("Enter name", text: $name)
-            .padding()
-            .cornerRadius(20)
-    }
 
-    private var navigationLinkView: some View {
-        NavigationLink("Go!") {
-            HomeView(name: name)
+            }
         }
-        .foregroundColor(.white)
     }
 }
 
@@ -210,6 +206,6 @@ struct GridView: View {
 }
 
 #Preview {
-//    StartView()
-    HomeView(name: "test")
+    StartView()
+//    HomeView(name: "test")
 }
