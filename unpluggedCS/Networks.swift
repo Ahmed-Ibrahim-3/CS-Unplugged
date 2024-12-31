@@ -16,13 +16,9 @@ struct NetworkView : View {
                 
             
             Text("""
-                A computer network is a collection of interconnected devices that share resources and information. These devices can
-                includes computers, servers, printers, and other hardware. Networks allow for the efficient exchange of data, enabling
-                various applications for example, email, file sharing, and internet browsing. 
-                Think back to what you learned about graphs. A network is a good example of these, its building blocks are nodes and links, 
-                where nodes can be any communication device like a router, and links can be either wireless connections between them or physical
-                cables.
+                A computer network is a collection of interconnected devices that share resources and information. These devices can includes computers, servers, printers, and other hardware. Networks allow for the efficient exchange of data, enabling various applications for example, email, file sharing, and internet browsing. Think back to what you learned about graphs. A network is a good example of these, its building blocks are nodes and links, where nodes can be any communication device like a router, and links can be either wireless connections between them or physical cables.
                 """)
+            .padding()
             Spacer().frame(height:25)
             Text("""
                 The way different computer systems communicate over a network is explained by the Open Systems Interconnection (OSI) model
@@ -77,11 +73,7 @@ struct PhysicalLayer : View {
                 
             Spacer().frame(height: 20)
             Text("""
-                The lowest layer of the OSI reference model is the **physical layer**. It is responsible for the actual phsyical connection 
-                between the devices. The physical layer contains information in the form of bits. This layer is responsible for transmitting
-                individual bits from one node to the next. When receiving data, this layer will get the signal received and convert it into 
-                1s and 0s and send them to the Data Link Layer, which will put the *frame* back together. Common physical layer devices are 
-                Hubs, Repeaters, Modems, and Cables
+                The lowest layer of the OSI reference model is the **physical layer**. It is responsible for the actual phsyical connection between the devices. The physical layer contains information in the form of bits. This layer is responsible for transmitting individual bits from one node to the next. When receiving data, this layer will get the signal received and convert it into 1s and 0s and send them to the Data Link Layer, which will put the *frame* back together. Common physical layer devices are Hubs, Repeaters, Modems, and Cables
                 """)
             Image("physical")
                 .resizable()
@@ -93,7 +85,7 @@ struct PhysicalLayer : View {
                     synchronising at the but level.
                     \u{2022} Bit Rate Control - The physical layer defines the transmission rate, i.e. the number of bits sent per second.
                     \u{2022} Transmission Mode: Physical layer also defines how the data flows between the two connected devices.
-                """)
+                """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -111,10 +103,7 @@ struct DataLinkLayer : View {
                 
             
             Text("""
-                The data link layer is responsible for the node-to-node delivery of the message. The main function of this layer is to make
-                sure data transfer is error-free from one node to another, over the physical layer. When a packet arrives in a network, it
-                is the responsibility of the DLL to transmit it to the Host using its MAC address. Packet in the Data Link layer is referred
-                to as Frame. Switches and Bridges are common Data Link Layer devices.
+                The data link layer is responsible for the node-to-node delivery of the message. The main function of this layer is to make sure data transfer is error-free from one node to another, over the physical layer. When a packet arrives in a network, it is the responsibility of the DLL to transmit it to the Host using its MAC address. Packet in the Data Link layer is referred to as Frame. Switches and Bridges are common Data Link Layer devices.
                 
                 Functions of the Data Link Layer
                     \u{2022} Framing: Framing is a function of the data link layer. It provides a way for a sender to transmit a set of bits 
@@ -130,6 +119,7 @@ struct DataLinkLayer : View {
                     \u{2022} Access Control: When a single communication channel is shared by multiple devices, the MAC sub-layer of the data
                     link layer helps to determine which device has control over the channel at a given time.
                 """)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -147,12 +137,7 @@ struct NetworkLayer : View {
                 
             
             Text("""
-                The netwokr layer works for the transmission of data from one host to the other in different 
-                networks. It also takes care of packet routing, i.e. selecting the shortest path to transmit
-                the packets from the number of available routes. The sender and receiver's IP addresses are 
-                placed into the header by the network layer. Segments in the network layer are reffered to as
-                **packets**. The network layer is implemented by networking deviecs such as *routers and 
-                switches*
+                The network layer works for the transmission of data from one host to the other in different networks. It also takes care of packet routing, i.e. selecting the shortest path to transmit the packets from the number of available routes. The sender and receiver's IP addresses are placed into the header by the network layer. Segments in the network layer are reffered to as **packets**. The network layer is implemented by networking deviecs such as *routers and switches*
                 
                 Functions of the Network Layer:
                     \u{2022} Routing: The network layer protocols determine which route is suitable from source
@@ -161,7 +146,7 @@ struct NetworkLayer : View {
                         layer defines an addressing scheme. The sender and receiver's IP addresses are placed
                         in the header by the network layer. Such an address distinguishes each device uniquely
                         and universally
-                """)
+                """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -178,26 +163,14 @@ struct TransportLayer : View {
                 .multilineTextAlignment(.center)
                 
             Text("""
-                The transport layer provides services to the applications layer and takes services from the
-                network layer. The data in the transport layer is reffered to as **segments**. It is responsible
-                for the end-to-end delivery of the complete message. The transport layer also provides the 
-                acknowledgements of the successful data transmission and re-transmits the data if an error is 
-                found.
-                At the sender’s side, the transport layer receives the formatted data from the upper layers,
-                performs Segmentation, and also implements Flow and error control to ensure proper data
-                transmission. It also adds Source and Destination port number in its header and forwards the
-                segmented data to the Network Layer.
+                The transport layer provides services to the applications layer and takes services from the network layer. The data in the transport layer is reffered to as **segments**. It is responsible for the end-to-end delivery of the complete message. The transport layer also provides the acknowledgements of the successful data transmission and re-transmits the data if an error is found.
+                
+                At the sender’s side, the transport layer receives the formatted data from the upper layers, performs Segmentation, and also implements Flow and error control to ensure proper data transmission. It also adds Source and Destination port number in its header and forwards the segmented data to the Network Layer.
                 Functions of the Transport Layer:
-                    \u{2022} Segmentation and Reassembly: This layer accepts the message from the (session)
-                        layer, and breaks the message into smaller units. Each of the segments 
-                        produced has a header associated with it. The transport layer at the
-                        destination station reassembles the message.
-                        to destination. This function of the network layer is known as routing. 
-                    \u{2022} Service Point Addressing: To deliver the message to the correct process, the
-                        transport layer header includes a type of address called service point address or port
-                        address. Thus by specifying this address, the transport layer makes sure that the
-                        message is delivered to the correct process.
+                    \u{2022} Segmentation and Reassembly: This layer accepts the message from the (session) layer, and breaks the message into smaller units. Each of the segments produced has a header associated with it. The transport layer at the destination station reassembles the message. to destination. This function of the network layer is known as routing. 
+                    \u{2022} Service Point Addressing: To deliver the message to the correct process, the transport layer header includes a type of address called service point address or port address. Thus by specifying this address, the transport layer makes sure that the message is delivered to the correct process.
                 """)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -214,20 +187,14 @@ struct SessionLayer : View {
                 .multilineTextAlignment(.center)
                 
             Text("""
-                Session Layer in the OSI Model is responsible for the establishment of connections, 
-                management of connections, terminations of sessions between two devices. It also provides
-                authentication and security.
+                Session Layer in the OSI Model is responsible for the establishment of connections, management of connections, terminations of sessions between two devices. It also provides authentication and security.
                 
                 Functions of the Session Layer:
                     \u{2022} Session Establishment, Maintenance, and Termination: The layer allows the two
                         processes to establish, use, and terminate a connection.
-                   \u{2022} Synchronization: This layer allows a process to add checkpoints that are considered
-                        synchronization points in the data. These synchronization points help to identify the
-                        error so that the data is re-synchronized properly, and ends of the messages are not
-                        cut prematurely and data loss is avoided.
-                    \u{2022} Dialog Controller: The session layer allows two systems to start communication 
-                        with each other in half-duplex or full-duplex.
-                """)
+                   \u{2022} Synchronization: This layer allows a process to add checkpoints that are considered synchronization points in the data. These synchronization points help to identify the error so that the data is re-synchronized properly, and ends of the messages are not cut prematurely and data loss is avoided.
+                    \u{2022} Dialog Controller: The session layer allows two systems to start communication with each other in half-duplex or full-duplex.
+                """).padding()
             Image("session")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -249,17 +216,13 @@ struct PresentationLayer : View {
                 .multilineTextAlignment(.center)
                 
             Text("""
-                The presentation layer is also called the Translation layer. The data from the application layer
-                is extracted here and manipulated as per the required format to transmit over the network.
-                Protocols used in the Presentation Layer are JPEG, MPEG, GIF, TLS/SSL, etc.
+                The presentation layer is also called the Translation layer. The data from the application layer is extracted here and manipulated as per the required format to transmit over the network. Protocols used in the Presentation Layer are JPEG, MPEG, GIF, TLS/SSL, etc.
                 
                 Functions of the Presentation Layer:
                     \u{2022} Translation: For example, ASCII to EBCDIC.
-                    \u{2022} Encryption/ Decryption: Data encryption translates the data into another form or
-                        code. The encrypted data is known as the ciphertext and the decrypted data is
-                        known as plain text. A key value is used for encrypting as well as decrypting data.
+                    \u{2022} Encryption/ Decryption: Data encryption translates the data into another form or code. The encrypted data is known as the ciphertext and the decrypted data is plain text. A key value is used for encrypting as well as decrypting data.
                     \u{2022} Compression: Reduces the number of bits that need to be transmitted on the network.
-                """)
+                """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -276,12 +239,8 @@ struct ApplicationLayer : View {
                 .multilineTextAlignment(.center)
                 
             Text("""
-                At the very top of the OSI Reference Model stack of layers, we find the Application layer which
-                is implemented by the network applications. These applications produce the data to be 
-                transferred over the network. This layer also serves as a window for the application services to
-                access the network and for displaying the received information to the user. Protocols used in 
-                the Application layer are SMTP, FTP, DNS, etc.
-                """)
+                At the very top of the OSI Reference Model stack of layers, we find the Application layer which is implemented by the network applications. These applications produce the data to be transferred over the network. This layer also serves as a window for the application services to access the network and for displaying the received information to the user. Protocols used in the Application layer are SMTP, FTP, DNS, etc.
+                """).padding()
             Image("Application")
                 .resizable()
                 .frame(width: 950,height: 200)
@@ -289,13 +248,10 @@ struct ApplicationLayer : View {
             Text("""
                 Functions of the Application Layer:
                     \u{2022} Network Virtual Terminal(NVT): It allows a user to log on to a remote host.
-                    \u{2022} File Transfer Access and Management(FTAM): This application allows a user to files
-                         in a remote host, retrieve files in a remote host, and manage or control files from 
-                         a remote computer.
+                    \u{2022} File Transfer Access and Management(FTAM): This application allows a user to files in a remote host, retrieve files in a remote host, and manage or control files from a remote computer.
                    \u{2022} Mail Services: Provide email service.
-                   \u{2022} Directory Services: This application provides distributed database sources and 
-                        access for global information about various objects and services.
-                """)
+                   \u{2022} Directory Services: This application provides distributed database sources and access for global information about various objects and services.
+                """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -305,12 +261,12 @@ struct ApplicationLayer : View {
 }
 
 #Preview {
-    //NetworkView()
-    //PhysicalLayer()
-    //DataLinkLayer()
-    //NetworkLayer()
-    //TransportLayer()
-    //SessionLayer()
-    //PresentationLayer()
+//    NetworkView()
+//    PhysicalLayer()
+//    DataLinkLayer()
+//    NetworkLayer()
+//    TransportLayer()
+//    SessionLayer()
+//    PresentationLayer()
     ApplicationLayer()
 }

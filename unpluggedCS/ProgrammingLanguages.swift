@@ -6,20 +6,7 @@
 //
 import SwiftUI
 
-struct Rule: Identifiable {
-    let id = UUID()
-    let name: String
-    let description: String
-}
-
 struct ProgLangView : View {
-    
-    @State var ReRules = [Rule(name: "'__'", description: "matches the string within the quotes"),
-                          Rule(name: "(__)", description: "matches any string, grouped by brackets"),
-                          Rule(name: "__1|__2", description: "matches string one **or** string two"),
-                          Rule(name: "__*", description: "matches any number of the occurences of the string"),
-                          Rule(name: "__+", description: "matches occurences with one or more of the string")]
-
     var body : some View{
         VStack(spacing: 50){
             ScrollView{
@@ -28,15 +15,9 @@ struct ProgLangView : View {
                     .multilineTextAlignment(.center)
                     .padding()
                 Text("""
-                Computers work by following a series of instructions exactly as they are written, regardless of 
-                whether or not they are logical, the computer will at least attempt to complete them. Programming 
-                languages are how we give these instructions, and are made up of several low level building blocks.
-                The part you are likely most familiar with, is a language's **syntax**, which describes how things like
-                *expressions*, *commands*, *declarations*, and other constructs are arranged to make a program.
+                Computers work by following a series of instructions exactly as they are written, regardless of whether or not they are logical, the computer will at least attempt to complete them. Programming languages are how we give these instructions, and are made up of several low level building blocks. The part you are likely most familiar with, is a language's **syntax**, which describes how things like *expressions*, *commands*, *declarations*, and other constructs are arranged to make a program.
                 
-                One way we reperesent syntax rules is with **Regular Expressions**, which is a kind of pattern we use to 
-                match a set of strings. Here are some examples of how we can use regular expressions to find patterns in 
-                strings
+                One way we reperesent syntax rules is with **Regular Expressions**, which is a kind of pattern we use to match a set of strings. Here are some examples of how we can use regular expressions to find patterns in strings
                 
                 Regular expression notation has some important rules, namely:
                 
@@ -46,7 +27,7 @@ struct ProgLangView : View {
                 \u{2022} "xyz*": matches any number of the occurences of the string
                 \u{2022} "xyz+": matches occurences with one or more of the string
                 
-                """)
+                """).padding()
                 
                 Text("""
                 \u{2022} 'M'('r'|'rs'|'iss')
@@ -58,13 +39,8 @@ struct ProgLangView : View {
                 
                 """)
                 Text("""
-                Now, think about what programming languages you know. How could regular expressions be used to define
-                Their syntax rules? For example, consider an **if** statement in python, this can be represented as 
-                'if' *command*+ ':' *expression*+ 
-                This is a much more simplified represenatation, as it doesn't include the new line and indentation before the
-                expression(s), and doesn't have the 'and's or 'or's between the command(s), which in this case are the conditions
-                of the if statement
-                """)
+                Now, think about what programming languages you know. How could regular expressions be used to define Their syntax rules? For example, consider an **if** statement in python, this can be represented as 'if' *command*+ ':' *expression*+ This is a much more simplified represenatation, as it doesn't include the new line and indentation before the expression(s), and doesn't have the 'and's or 'or's between the command(s), which in this case are the conditions of the if statement
+                """).padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(backgroundGradient)

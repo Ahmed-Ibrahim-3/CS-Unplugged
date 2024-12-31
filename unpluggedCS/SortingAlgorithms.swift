@@ -49,14 +49,6 @@ struct SortingView : View {
                         .cornerRadius(10)
                         .shadow(radius: 5)
                 }
-                
-                NavigationLink(destination: merge()) {
-                    Text("Merge Sort")
-                        
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                }
             }
             AnimatedImage(name: "sorting.gif")
                 .resizable()
@@ -498,17 +490,10 @@ struct bubble : View {
     }
 }
 
-struct merge : View {
-    var body: some View {
-        Text("placeholder")
-    }
-}
-
 #Preview {
     SortingView()
     //selection()
     //quick()
     //insertion()
     //bubble()
-    //merge()
 }

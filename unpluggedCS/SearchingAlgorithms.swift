@@ -44,7 +44,6 @@ struct SearchView: View {
                 
             
             Spacer().frame(height: 50)
-#if os(tvOS)
             HStack(spacing: 20) {
                 NavigationLink(destination: Linear(qrCodeViewModel: qrCodeViewModel)) {
                     Text("Game 1 - Linear Search")
@@ -70,33 +69,6 @@ struct SearchView: View {
                         .shadow(radius: 5)
                 }
             }
-#elseif os(iOS)
-            HStack(spacing: 20) {
-                NavigationLink(destination: iOSLinear()) {
-                    Text("Game 1 - Linear Search")
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        
-                }
-                
-                NavigationLink(destination: iOSBinary()) {
-                    Text("Game 2 - Binary Search")
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        
-                }
-                
-                NavigationLink(destination: iOSHashing()) {
-                    Text("Game 3 - Hashing")
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        
-                }
-            }
-#endif
             Spacer().frame(height: 100)
             
             Text("""
@@ -121,15 +93,22 @@ struct SearchView: View {
 struct Linear: View {
     
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
-   
-    private let Limages = [
+    
+    private let tvOSUrls = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch2.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch3.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/LSearch4.png"
     ]
+    
+    private let iOSImages = ["L_A", "L_B", "L_C", "L_D"]
+    
+    @State private var selectedImage: String?
+    
     var body: some View {
-        VStack{
+        #if os(tvOS)
+        
+        VStack {
             Text("Linear Search")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
@@ -137,109 +116,111 @@ struct Linear: View {
             
             Spacer().frame(height: 50)
             Text("""
-                    In your pairs, scan the QR code below and keep your card to yourself
-                    Next, pick a ship under "My Ships" and circle or memorise it
-                    Tell your partner the ***number*** of your ship (not the letter!!)
-                """)
+                 In your pairs, scan the QR code below and keep your card to yourself.
+                 Next, pick a ship under "My Ships" and circle or memorise it.
+                 Tell your partner the ***number*** of your ship (not the letter!!)
+                 """)
             Spacer().frame(height: 50)
             
             if let qrCodeImage = qrCodeViewModel.qrCodeImage {
                 Button(action: {
-                    qrCodeViewModel.generateRandomQRCode(from: Limages)
+                    qrCodeViewModel.generateRandomQRCode(from: tvOSUrls)
                 }) {
                     Image(uiImage: qrCodeImage)
                         .resizable()
                         .interpolation(.none)
-                        .frame(width: 200,height: 200)
+                        .frame(width: 200, height: 200)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .accessibilityLabel("Tap to generate a new QR code")
             } else {
                 Text("Generating QR Code...")
-                    .onAppear{
-                        qrCodeViewModel.generateRandomQRCode(from: Limages)
+                    .onAppear {
+                        qrCodeViewModel.generateRandomQRCode(from: tvOSUrls)
                     }
             }
             
             Spacer().frame(height: 50)
             Text("""
-                    Now, in turns, guess the letter where your partners ship is.
-                        -- with each guess, one player gives a letter, and the
-                            other gives its number
-                    Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
-                    Once youre finished, discuss amongst your pairs what the minimum 
-                    and maximum scores would have been? and how could you have optimised
-                    this 
+                 Now, in turns, guess the letter where your partner's ship is.
+                 -- with each guess, one player gives a letter, and the other gives its number.
+                 \u{2022} Keep count of how many guesses you have taken. At the end, write down the number of guesses you took.
+                 \u{2022} Once you're finished, discuss amongst yourselves what the minimum
+                   and maximum scores would have been, and how you could have optimized this.
                  """)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
-    }
-}
-struct iOSLinear : View{
-    @State private var img: String?
-    private let images = ["L_A", "L_B", "L_C", "L_D"]
-
-    var body : some View{
-        VStack{
+        
+        #elseif os(iOS)
+        
+        VStack {
             Text("Linear Search")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                
-            Spacer()
-                .frame(width: 100 , height:  70)
+            
+            Spacer().frame(width: 100, height: 70)
             Text("""
-                Tell your partner the ***number*** of your ship (not the letter!!)
-                
-                In turns, guess the letter where your partners ship is.
-                    -- with each guess, one player gives a letter, and the other gives its number
-                Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
-                """)
+                 Tell your partner the ***number*** of your ship (not the letter!!)
+                 
+                 In turns, guess the letter where your partners ship is.
+                     -- with each guess, one player gives a letter, and the other gives its number.
+                 Keep count of how many guesses you have taken. At the end, write down the number of guesses you took.
+                 """)
             .padding()
             
             Button("get new ships!") {
-                img = images.randomElement()
+                selectedImage = iOSImages.randomElement()
             }
             .foregroundStyle(.red)
-            if let img = img {
+            
+            if let img = selectedImage {
                 Image(img)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 600, height: 300)
                     .padding()
             } else {
-                Image(images.randomElement()!)
+                Image(iOSImages.randomElement()!)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 600, height: 300)
                     .padding()
             }
-            Text("""
-                Once youre finished, discuss amongst your pairs what the minimum 
-                and maximum scores would have been? and how could you have optimised this 
-                """)
             
+            Text("""
+                 Once you're finished, discuss amongst your pairs what the minimum and maximum scores would have been, and how could you have optimized this?
+                 """)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
+        
+        #endif
     }
 }
 
 struct Binary: View {
-
+    
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
-
-    var Bimages = [
+    
+    private let tvOSUrls = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch2.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch3.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/BSearch4.png"
     ]
+    
+    private let iOSImages = ["B_A", "B_B", "B_C", "B_D"]
+    @State private var selectedImage: String?
+    
     var body: some View {
-        VStack{
+        #if os(tvOS)
+        VStack {
             Text("Binary Search Game")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
@@ -247,18 +228,18 @@ struct Binary: View {
             
             Spacer().frame(height: 50)
             
-            VStack(spacing: 50){
+            VStack(spacing: 50) {
                 Text("""
-                        Again, In your pairs, scan the QR code below and keep your card to yourself
-                        Next, pick a ship under "My Ships" and circle or memorise it
-                        Tell your partner the ***number*** of your ship (not the letter!!)
-                    
-                          **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**
-                    """)
+                     Again, in your pairs, scan the QR code below and keep your card to yourself.
+                     Next, pick a ship under "My Ships" and circle or memorise it. 
+                     Tell your partner the ***number*** of your ship (not the letter!!).
+                     
+                     **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**
+                     """)
                 
                 if let qrCodeImage = qrCodeViewModel.qrCodeImage {
                     Button(action: {
-                        qrCodeViewModel.generateRandomQRCode(from: Bimages)
+                        qrCodeViewModel.generateRandomQRCode(from: tvOSUrls)
                     }) {
                         Image(uiImage: qrCodeImage)
                             .resizable()
@@ -266,79 +247,71 @@ struct Binary: View {
                             .frame(width: 200,height: 200)
                     }
                     .buttonStyle(PlainButtonStyle())
-                    .accessibilityLabel("Tap to generate a new QR code")
                 } else {
                     Text("Generating QR Code...")
-                        .onAppear{
-                            qrCodeViewModel.generateRandomQRCode(from: Bimages)
+                        .onAppear {
+                            qrCodeViewModel.generateRandomQRCode(from: tvOSUrls)
                         }
                 }
                 
                 Text("""
-                        Now, in turns, guess the letter where your partners ship is.
-                            -- with each guess, one player gives a letter, and the
-                                other gives its number
-                        Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
-                        Once youre finished, discuss amongst your pairs what the minimum 
-                        and maximum scores would have been? and how could you have optimised
-                        this 
+                     In turns, guess the letter where your partner's ship is.
+                     -- with each guess, one player gives a letter, and the other gives its number.
+                     \u{2022} Keep count of how many guesses you have taken. At the end, write down the number.
+                     \u{2022} Once you're finished, discuss the min and max scores, and how to optimize.
                      """)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
-    }
-}
-struct iOSBinary : View{
-    @State private var img: String?
-    private let images = ["B_A", "B_B", "B_C", "B_D"]
-
-    var body : some View{
-        VStack{
+        
+        #elseif os(iOS)
+        VStack {
             Text("Binary Search")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                
-            Spacer()
-                .frame(width: 100 , height:  50)
-            Text("""
-                Tell your partner the ***number*** of your ship (not the letter!!)
-                **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**
-                
-                
-                In turns, guess the letter where your partners ship is.
-                    -- with each guess, one player gives a letter, and the other gives its number
-                Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
-                """)
             
+            Spacer().frame(width: 100, height: 50)
+            
+            Text("""
+                 Tell your partner the ***number*** of your ship (not the letter!!).
+                 **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**.
+                 
+                 In turns, guess the letter where your partner's ship is.
+                 -- with each guess, one player gives a letter, and the other gives its number.
+                 Keep count of your guesses. 
+                 """)
             .padding()
+            
             Button("get new ships!") {
-                img = images.randomElement()
+                selectedImage = iOSImages.randomElement()
             }
             .foregroundStyle(.red)
-            if let img = img {
+            
+            if let img = selectedImage {
                 Image(img)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 600, height: 300)
             } else {
-                Image(images.randomElement()!)
+                Image(iOSImages.randomElement()!)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 600, height: 300)
             }
-            Text("""
-                Once youre finished, discuss amongst your pairs what the minimum 
-                and maximum scores would have been? and how could you have optimised this? 
-                How does it compare to the other method(s)?
-                """)
             
+            Text("""
+                 Once you're finished, discuss the min and max scores, and how to optimize. 
+                 How does it compare to the other methods?
+                 """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
+        
+        #endif
     }
 }
 
@@ -346,18 +319,25 @@ struct Hashing: View {
     
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
     
-    var images_A = [
+    private let tvOS_A = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/blob/main/unpluggedCS/Images/Search/Hashing/A/hashing1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/images/Search/Hashing/A/hashing2.png"
     ]
-    
-    var images_B = [
+    private let tvOS_B = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/blob/main/unpluggedCS/Images/Search/Hashing/B/hashing1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/images/Search/Hashing/B/hashing2.png"
     ]
     
+    private let iOS_A = ["A_1", "A_2"]
+    private let iOS_B = ["B_1", "B_2"]
+    
+    @State private var selectedPlayer: Int? = nil
+    @State private var selectedImage: String?
+    
     var body: some View {
-        VStack{
+        #if os(tvOS)
+        
+        VStack {
             Text("Searching with Hashing")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
@@ -365,118 +345,95 @@ struct Hashing: View {
             
             Spacer().frame(height: 50)
             
-            VStack(spacing: 50){
+            VStack(spacing: 50) {
                 Text("""
-                        This time, each player scans one of the two codes below, again,keep the card to
-                        yourself. pick a ship under "My Ships" and 
-                        circle or memorise it. Tell your partner the ***number*** of your ship
-                            (not the letter!!)
-                    
-                        In this game, you can find out which column (0-9) the ship belongs to. Add together
-                        the digits of the ships number, and the last digit is the column. For example,
-                        to find 2345, do 2+3+4+5, giving 14. The lastdigit is 4, so the ship must be
-                        in column 4. 
-                    """)
-                HStack{
-                    Text("Player 1: ")
-                    if let qrCodeImage = qrCodeViewModel.qrCodeImage {
-                        Button(action: {
-                            qrCodeViewModel.generateRandomQRCode(from: images_A)
-                        }) {
-                            Image(uiImage: qrCodeImage)
-                                .resizable()
-                                .interpolation(.none)
-                                .frame(width: 200,height: 200)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .accessibilityLabel("Tap to generate a new QR code")
-                    } else {
-                        Text("Generating QR Code...")
-                            .onAppear{
-                                qrCodeViewModel.generateRandomQRCode(from: images_B)
+                     Each player scans one of the two codes below. Keep the card to yourself.
+                     Pick a ship under "My Ships" and circle or memorise it. 
+                     Tell your partner the ***number*** of your ship (not the letter!!).
+                     
+                     In this game, you can find out which column (0-9) the ship belongs to 
+                     by adding the digits of the ship's number, and using the last digit of the sum.
+                     """)
+                HStack {
+                    VStack {
+                        Text("Player 1:")
+                        if let qrCodeImage = qrCodeViewModel.qrCodeImage {
+                            Button(action: {
+                                qrCodeViewModel.generateRandomQRCode(from: tvOS_A)
+                            }) {
+                                Image(uiImage: qrCodeImage)
+                                    .resizable()
+                                    .interpolation(.none)
+                                    .frame(width: 200, height: 200)
                             }
+                            .buttonStyle(PlainButtonStyle())
+                        } else {
+                            Text("Generating QR Code...")
+                                .onAppear {
+                                    qrCodeViewModel.generateRandomQRCode(from: tvOS_A)
+                                }
+                        }
                     }
-                    Text("Player 2: ")
-                    if let qrCodeImage = qrCodeViewModel.qrCodeImage {
-                        Button(action: {
-                            qrCodeViewModel.generateRandomQRCode(from: images_A)
-                        }) {
-                            Image(uiImage: qrCodeImage)
-                                .resizable()
-                                .interpolation(.none)
-                                .frame(width: 200,height: 200)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .accessibilityLabel("Tap to generate a new QR code")
-                    } else {
-                        Text("Generating QR Code...")
-                            .onAppear{
-                                qrCodeViewModel.generateRandomQRCode(from: images_B)
+                    
+                    VStack {
+                        Text("Player 2:")
+                        if let qrCodeImage = qrCodeViewModel.qrCodeImage {
+                            Button(action: {
+                                qrCodeViewModel.generateRandomQRCode(from: tvOS_B)
+                            }) {
+                                Image(uiImage: qrCodeImage)
+                                    .resizable()
+                                    .interpolation(.none)
+                                    .frame(width: 200, height: 200)
                             }
+                            .buttonStyle(PlainButtonStyle())
+                        } else {
+                            Text("Generating QR Code...")
+                                .onAppear {
+                                    qrCodeViewModel.generateRandomQRCode(from: tvOS_B)
+                                }
+                        }
                     }
                 }
                 
-                
                 Text("""
-                        Play the game as before, but this time using the new searching strategy. 
-                        Once youre finished, discuss amongst your pairs what ships are easiest/hardest
-                        to find? which of the searching strategies is fastest? and why?
-                        What are the advantages and disadvantages of each one? What might speed up or 
-                        slow down each one?
+                     Play as before, but use the new hashing strategy. 
+                     \u{2022} Discuss which ships are easiest/hardest to find. 
+                     \u{2022} Which searching strategy is fastest, and why?
+                     \u{2022} What are advantages and disadvantages of each one?
                      """)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
-    }
-}
-struct iOSHashing: View {
-    @State private var img: String?
-    @State private var selectedPlayer: Int? = nil
+        
+        #elseif os(iOS)
 
-    private let Aimages = ["A_1", "A_2"]
-    private let Bimages = ["B_1", "B_2"]
-
-    var body: some View {
         VStack {
             Text("Searching with Hashing")
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                
-
-            Spacer()
-                .frame(height: 50)
-
-            Text("""
-                Tell your partner the ***number*** of your ship (not the letter!!). Decide who will be player 1 and player 2 now before moving forward.
-                
-                In this game, you can find out which column (0-9) the ship belongs to. Add together
-                the digits of the ship's number, and the last digit is the column. For example,
-                to find 2345, do 2+3+4+5, giving 14. The last digit is 4, so the ship must be
-                in column 4. 
-                
-                Press the player number you were given, and **not** the other (the game will not work otherwise).
-                In turns, guess the letter where your partner's ship is.
-                    -- with each guess, one player gives a letter, and the other gives its number.
-                Keep count of how many guesses you have taken at the end, write down 
-                the number of guesses you took.
-                """)
             
+            Spacer().frame(height: 50)
+            
+            Text("""
+                 Decide who will be Player 1 or Player 2.
+                 In this game, you can find out which column (0-9) the ship belongs to 
+                 by adding together the digits of the ship's number, 
+                 then using the last digit of the sum.
+                 """)
             .padding()
-
-            if let img = img, let selectedPlayer = selectedPlayer {
-                VStack {
-                    Text("Player \(selectedPlayer)")
-                        .font(.title)
-                        
-                    Image(img)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 600, height: 300)
-                        .padding()
-                }
+            
+            if let selectedPlayer = selectedPlayer, let selectedImage = selectedImage {
+                Text("Player \(selectedPlayer)")
+                    .font(.title)
+                Image(selectedImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 600, height: 300)
+                    .padding()
             } else {
                 Image(systemName: "questionmark")
                     .resizable()
@@ -485,41 +442,39 @@ struct iOSHashing: View {
                     .padding()
                     .foregroundColor(.gray)
             }
-
+            
             HStack {
                 Button("Player 1") {
-                    img = Aimages.randomElement()
+                    selectedImage = iOS_A.randomElement()
                     selectedPlayer = 1
                 }
                 .foregroundStyle(.yellow)
-
+                
                 Button("Player 2") {
-                    img = Bimages.randomElement()
+                    selectedImage = iOS_B.randomElement()
                     selectedPlayer = 2
                 }
                 .foregroundStyle(.green)
             }
             .padding()
-
+            
             Text("""
-                Play the game as before, but this time using the new searching strategy. 
-                
-                Once you're finished, discuss amongst your pairs what ships are easiest/hardest to find? Which of the searching strategies is fastest? And why?
-                
-                What are the advantages and disadvantages of each one? What might speed up or slow down each one?
-                """)
+                 \u{2022} Play the game as before, but using the hashing strategy. 
+                 \u{2022} Which ships are easiest/hardest to find? 
+                 \u{2022} Which strategy is fastest, and why?
+                 \u{2022} Pros/cons of each approach?
+                 """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
-
+        
+        #endif
     }
 }
 
-
 #Preview {
     @Previewable @StateObject var qrCodeViewModel = QRCodeViewModel()
-    //Linear(qrCodeViewModel: qrCodeViewModel)
-    //iOSLinear()
+//    Hashing(qrCodeViewModel: qrCodeViewModel)
     SearchView()
 }
