@@ -13,7 +13,7 @@ struct NetworkView : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             
             Text("""
                 A computer network is a collection of interconnected devices that share resources and information. These devices can
@@ -22,7 +22,7 @@ struct NetworkView : View {
                 Think back to what you learned about graphs. A network is a good example of these, its building blocks are nodes and links, 
                 where nodes can be any communication device like a router, and links can be either wireless connections between them or physical
                 cables.
-                """).foregroundColor(.white)
+                """)
             Spacer().frame(height:25)
             Text("""
                 The way different computer systems communicate over a network is explained by the Open Systems Interconnection (OSI) model
@@ -34,7 +34,7 @@ struct NetworkView : View {
                     \u{2022} Session Layer
                     \u{2022} Presentation Layer
                     \u{2022} Application Layer
-                """).foregroundColor(.white)
+                """)
 
             VStack(spacing: 10) {
                 HStack(spacing: 10) {
@@ -53,6 +53,7 @@ struct NetworkView : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
     @ViewBuilder
     func navigationButton<Destination: View>(title: String, destination: Destination) -> some View {
@@ -73,7 +74,7 @@ struct PhysicalLayer : View {
                 .font(.largeTitle)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             Spacer().frame(height: 20)
             Text("""
                 The lowest layer of the OSI reference model is the **physical layer**. It is responsible for the actual phsyical connection 
@@ -81,7 +82,7 @@ struct PhysicalLayer : View {
                 individual bits from one node to the next. When receiving data, this layer will get the signal received and convert it into 
                 1s and 0s and send them to the Data Link Layer, which will put the *frame* back together. Common physical layer devices are 
                 Hubs, Repeaters, Modems, and Cables
-                """).foregroundColor(.white)
+                """)
             Image("physical")
                 .resizable()
                 .frame(width: 950, height: 200)
@@ -92,10 +93,11 @@ struct PhysicalLayer : View {
                     synchronising at the but level.
                     \u{2022} Bit Rate Control - The physical layer defines the transmission rate, i.e. the number of bits sent per second.
                     \u{2022} Transmission Mode: Physical layer also defines how the data flows between the two connected devices.
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -106,7 +108,7 @@ struct DataLinkLayer : View {
                 .font(.largeTitle)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             
             Text("""
                 The data link layer is responsible for the node-to-node delivery of the message. The main function of this layer is to make
@@ -127,10 +129,11 @@ struct DataLinkLayer : View {
                     of data that can be sent before receiving an acknowledgment.
                     \u{2022} Access Control: When a single communication channel is shared by multiple devices, the MAC sub-layer of the data
                     link layer helps to determine which device has control over the channel at a given time.
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -141,7 +144,7 @@ struct NetworkLayer : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             
             Text("""
                 The netwokr layer works for the transmission of data from one host to the other in different 
@@ -158,10 +161,11 @@ struct NetworkLayer : View {
                         layer defines an addressing scheme. The sender and receiver's IP addresses are placed
                         in the header by the network layer. Such an address distinguishes each device uniquely
                         and universally
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -172,7 +176,7 @@ struct TransportLayer : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             Text("""
                 The transport layer provides services to the applications layer and takes services from the
                 network layer. The data in the transport layer is reffered to as **segments**. It is responsible
@@ -193,10 +197,11 @@ struct TransportLayer : View {
                         transport layer header includes a type of address called service point address or port
                         address. Thus by specifying this address, the transport layer makes sure that the
                         message is delivered to the correct process.
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -207,7 +212,7 @@ struct SessionLayer : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             Text("""
                 Session Layer in the OSI Model is responsible for the establishment of connections, 
                 management of connections, terminations of sessions between two devices. It also provides
@@ -222,7 +227,7 @@ struct SessionLayer : View {
                         cut prematurely and data loss is avoided.
                     \u{2022} Dialog Controller: The session layer allows two systems to start communication 
                         with each other in half-duplex or full-duplex.
-                """).foregroundColor(.white)
+                """)
             Image("session")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -231,6 +236,7 @@ struct SessionLayer : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -241,7 +247,7 @@ struct PresentationLayer : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             Text("""
                 The presentation layer is also called the Translation layer. The data from the application layer
                 is extracted here and manipulated as per the required format to transmit over the network.
@@ -253,10 +259,11 @@ struct PresentationLayer : View {
                         code. The encrypted data is known as the ciphertext and the decrypted data is
                         known as plain text. A key value is used for encrypting as well as decrypting data.
                     \u{2022} Compression: Reduces the number of bits that need to be transmitted on the network.
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -267,14 +274,14 @@ struct ApplicationLayer : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+                
             Text("""
                 At the very top of the OSI Reference Model stack of layers, we find the Application layer which
                 is implemented by the network applications. These applications produce the data to be 
                 transferred over the network. This layer also serves as a window for the application services to
                 access the network and for displaying the received information to the user. Protocols used in 
                 the Application layer are SMTP, FTP, DNS, etc.
-                """).foregroundColor(.white)
+                """)
             Image("Application")
                 .resizable()
                 .frame(width: 950,height: 200)
@@ -288,10 +295,12 @@ struct ApplicationLayer : View {
                    \u{2022} Mail Services: Provide email service.
                    \u{2022} Directory Services: This application provides distributed database sources and 
                         access for global information about various objects and services.
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
+
     }
 }
 

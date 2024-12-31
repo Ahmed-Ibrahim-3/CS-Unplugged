@@ -13,7 +13,6 @@ struct HCIView : View {
                 .font(.title)
                 .padding()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.white)
             Text("""
                     Human Computer interaction is about designing, evaluating, and implementing computer sytems in a way that lets people
                     use them productively and safely. Since computers are so common now, and are everyday tools that everyone uses, as computer
@@ -22,7 +21,6 @@ struct HCIView : View {
                     Consider the doors below...
                     How might you open them? Which side do they open on? Do they open in or out? how do you know?
                 """)
-            .foregroundColor(.white)
             Image("doors")
                 .resizable()
                 .scaledToFill()
@@ -32,6 +30,7 @@ struct HCIView : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
         
         //TODO: Potentially replace with different topic
     }

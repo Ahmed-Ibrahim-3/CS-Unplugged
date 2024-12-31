@@ -20,11 +20,12 @@ struct StartView: View {
         NavigationStack {
             ZStack {
                 backgroundGradient.ignoresSafeArea()
+                
 #if os(tvOS)
         HStack {
             Text("Start")
                 .font(.title)
-                .foregroundColor(.white)
+                
                 .padding(50)
                 
 
@@ -36,14 +37,14 @@ struct StartView: View {
             NavigationLink("Go!") {
                 HomeView(name: name)
             }
-            .foregroundColor(.white)
+            
             .padding(50)
         }
 #elseif os(iOS)
         VStack {
             Text("Start")
                 .font(.title)
-                .foregroundColor(.white)
+                
                 .padding()
                 .multilineTextAlignment(.center)
 
@@ -56,11 +57,12 @@ struct StartView: View {
             NavigationLink("Go!") {
                 HomeView(name: name)
             }
-            .foregroundColor(.white)
+            
         }
 #endif
 
             }
+            .foregroundStyle(.white)
         }
     }
 }
@@ -95,29 +97,32 @@ struct HomeView: View {
     }
     
     var body: some View {
-        #if os(tvOS)
-        NavigationView {
-            GridView(viewItems: views)
-                .navigationTitle("Hello, " + name)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(backgroundGradient)
-        #elseif os(iOS)
-        VStack {
-            NavigationStack {
+        VStack{
+#if os(tvOS)
+            NavigationView {
                 GridView(viewItems: views)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .principal) {
-                            Text("Hello, " + name)
-                                .font(.largeTitle.bold())
-                                .accessibilityAddTraits(.isHeader)
-                                .foregroundColor(.white)
-                        }
-                    }
+                    .navigationTitle("Hello, " + name)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(backgroundGradient)
+#elseif os(iOS)
+            VStack {
+                NavigationStack {
+                    GridView(viewItems: views)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .principal) {
+                                Text("Hello, " + name)
+                                    .font(.largeTitle.bold())
+                                    .accessibilityAddTraits(.isHeader)
+                                
+                            }
+                        }
+                }
+            }
+#endif
         }
-        #endif
+        .foregroundColor(.white)
     }
 }
 
@@ -157,13 +162,14 @@ struct GridView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
         #endif
     }
 
     private func tvOSItemLabel(for item: ViewItem) -> some View {
         HStack {
             Text(item.name)
-                .foregroundColor(.white)
+                
                 .frame(width: 300, height: 100)
                 .shadow(radius: 5)
             if item.name == "State Machines" {
@@ -171,7 +177,7 @@ struct GridView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 125, height: 125)
-                    .foregroundColor(.white)
+                    
             } else {
                 Image(systemName: item.image)
             }
@@ -182,7 +188,7 @@ struct GridView: View {
         VStack(spacing: 10) {
             Text(item.name)
                 .font(.headline)
-                .foregroundColor(.white)
+                
                 .frame(width: 150, height: 40)
                 .cornerRadius(10)
 
@@ -206,6 +212,6 @@ struct GridView: View {
 }
 
 #Preview {
-    StartView()
-//    HomeView(name: "test")
+//    StartView()
+    HomeView(name: "test")
 }

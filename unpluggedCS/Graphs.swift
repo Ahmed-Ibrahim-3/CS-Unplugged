@@ -127,7 +127,6 @@ struct GraphExplanationView : View {
                     .font(.system(.largeTitle))
                     .padding()
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
             }
             .buttonStyle(PlainButtonStyle())
             HStack{
@@ -155,7 +154,6 @@ struct GraphExplanationView : View {
                         \u{2022} Directed - meaning the edges between vertices have a direction, representing a flow
                         \u{2022} Cyclic - meaning you can follow a path along the edges and get back to where you started
                     """)
-                .foregroundColor(.white)
                 
                 VStack{
                     Image("weightedgraph")
@@ -206,7 +204,6 @@ struct GraphEditorView: View {
             .cornerRadius(15)
             .shadow(radius: 10)
             .padding([.leading, .trailing], 10)
-            .foregroundColor(Color.white)
             
             ZStack {
                 ForEach(graph.edges) { edge in
@@ -251,7 +248,6 @@ struct GraphEditorView: View {
                     }
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Color.green)
-                    .foregroundColor(.white)
                     .cornerRadius(8)
                 }
                 
@@ -276,7 +272,6 @@ struct GraphEditorView: View {
                     }
                     .padding(.horizontal, 12).padding(.vertical, 8)
                     .background(Color.green)
-                    .foregroundColor(.white)
                     .cornerRadius(8)
                 }
             }
@@ -285,7 +280,6 @@ struct GraphEditorView: View {
             .cornerRadius(15)
             .shadow(radius: 10)
             .padding([.leading, .trailing], 10)
-            .foregroundColor(Color.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -361,7 +355,6 @@ struct NodeView: View {
                 .frame(width: 50, height: 50)
             
             Text(node.label)
-                .foregroundColor(.white)
                 .bold()
         }
     }
@@ -393,7 +386,6 @@ struct GraphEditorView_tvOS: View {
             .cornerRadius(15)
             .shadow(radius: 10)
             .padding([.leading, .trailing], 10)
-            .foregroundColor(Color.white)
             
             ZStack {
                 ForEach(graph.edges) { edge in
@@ -448,9 +440,10 @@ struct GraphEditorView_tvOS: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(Color.green)
-                    .foregroundColor(.white)
                     .cornerRadius(8)
+                    
                     Spacer()
+                    
                     TextField("From node label", text: $fromNode)
                         .textFieldStyle(.automatic)
                         .frame(width: 150)
@@ -474,7 +467,6 @@ struct GraphEditorView_tvOS: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(Color.green)
-                    .foregroundColor(.white)
                     .cornerRadius(8)
                 }
             }
@@ -483,7 +475,6 @@ struct GraphEditorView_tvOS: View {
             .cornerRadius(15)
             .shadow(radius: 10)
             .padding([.leading, .trailing], 10)
-            .foregroundColor(Color.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -520,6 +511,7 @@ struct GraphView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 

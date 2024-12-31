@@ -41,14 +41,14 @@ struct SearchView: View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             
             Spacer().frame(height: 50)
 #if os(tvOS)
             HStack(spacing: 20) {
                 NavigationLink(destination: Linear(qrCodeViewModel: qrCodeViewModel)) {
                     Text("Game 1 - Linear Search")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -56,7 +56,7 @@ struct SearchView: View {
                 
                 NavigationLink(destination: Binary(qrCodeViewModel: qrCodeViewModel)) {
                     Text("Game 2 - Binary Search")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -64,7 +64,7 @@ struct SearchView: View {
                 
                 NavigationLink(destination: Hashing(qrCodeViewModel: qrCodeViewModel)) {
                     Text("Game 3- Hashing")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -77,7 +77,7 @@ struct SearchView: View {
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
-                        .foregroundColor(.white)
+                        
                 }
                 
                 NavigationLink(destination: iOSBinary()) {
@@ -85,7 +85,7 @@ struct SearchView: View {
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
-                        .foregroundColor(.white)
+                        
                 }
                 
                 NavigationLink(destination: iOSHashing()) {
@@ -93,7 +93,7 @@ struct SearchView: View {
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
-                        .foregroundColor(.white)
+                        
                 }
             }
 #endif
@@ -104,7 +104,7 @@ struct SearchView: View {
                    \u{2022} Any mobile device, preferably with the companion app
                    \u{2022} Someone to play against
                 """)
-            .foregroundColor(.white)
+            
             .font(.system(size: 35))
             Image(.search)
                 .resizable()
@@ -114,6 +114,7 @@ struct SearchView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -173,6 +174,7 @@ struct Linear: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 struct iOSLinear : View{
@@ -185,7 +187,7 @@ struct iOSLinear : View{
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             Spacer()
                 .frame(width: 100 , height:  70)
             Text("""
@@ -196,7 +198,7 @@ struct iOSLinear : View{
                 Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
                 """)
             .padding()
-            .foregroundColor(.white)
+            
             Button("get new ships!") {
                 img = images.randomElement()
             }
@@ -218,10 +220,11 @@ struct iOSLinear : View{
                 Once youre finished, discuss amongst your pairs what the minimum 
                 and maximum scores would have been? and how could you have optimised this 
                 """)
-            .foregroundColor(Color.white)
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -284,6 +287,7 @@ struct Binary: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 struct iOSBinary : View{
@@ -296,7 +300,7 @@ struct iOSBinary : View{
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             Spacer()
                 .frame(width: 100 , height:  50)
             Text("""
@@ -308,7 +312,7 @@ struct iOSBinary : View{
                     -- with each guess, one player gives a letter, and the other gives its number
                 Keep count of how many guesses you have taken at the end, write down \n the number of guesses you took
                 """)
-            .foregroundColor(Color.white)
+            
             .padding()
             Button("get new ships!") {
                 img = images.randomElement()
@@ -330,10 +334,11 @@ struct iOSBinary : View{
                 and maximum scores would have been? and how could you have optimised this? 
                 How does it compare to the other method(s)?
                 """)
-            .foregroundColor(.white)
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 
@@ -423,11 +428,12 @@ struct Hashing: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 struct iOSHashing: View {
     @State private var img: String?
-    @State private var selectedPlayer: Int? = nil // Track the selected player
+    @State private var selectedPlayer: Int? = nil
 
     private let Aimages = ["A_1", "A_2"]
     private let Bimages = ["B_1", "B_2"]
@@ -438,7 +444,7 @@ struct iOSHashing: View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
 
             Spacer()
                 .frame(height: 50)
@@ -457,14 +463,14 @@ struct iOSHashing: View {
                 Keep count of how many guesses you have taken at the end, write down 
                 the number of guesses you took.
                 """)
-            .foregroundColor(.white)
+            
             .padding()
 
             if let img = img, let selectedPlayer = selectedPlayer {
                 VStack {
                     Text("Player \(selectedPlayer)")
                         .font(.title)
-                        .foregroundColor(.white)
+                        
                     Image(img)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -502,10 +508,11 @@ struct iOSHashing: View {
                 
                 What are the advantages and disadvantages of each one? What might speed up or slow down each one?
                 """)
-            .foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
+
     }
 }
 

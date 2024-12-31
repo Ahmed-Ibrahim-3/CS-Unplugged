@@ -64,14 +64,7 @@ struct SectionView: View {
 }
 
 struct BitView : View {
-    private let Gimages = [
-        "Grid1",
-        "Grid2",
-        "Grid3",
-        "Grid4",
-        "Grid5"
-    ]
-    
+
     private let bitActivity = """
                     Discuss the following:
                        \u{2022} What is the smallest nymber you can make?
@@ -120,7 +113,6 @@ struct BitView : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(Color.white)
 #if os(tvOS)
             ScrollViewReader { proxy in
                 ScrollView{
@@ -148,7 +140,6 @@ struct BitView : View {
                         .cornerRadius(15)
                         .shadow(radius: 10)
                         .padding([.leading, .trailing], 10)
-                        .foregroundColor(Color.white)
                         
                         Text("""
                             What do you notice about this pattern? How many dots should the next card have?
@@ -194,7 +185,6 @@ struct BitView : View {
                         .cornerRadius(15)
                         .shadow(radius: 10)
                         .padding([.leading, .trailing], 10)
-                        .foregroundColor(Color.white)
                     }
                     Spacer().frame(height: 200)
                     Text(bitActivity)
@@ -207,7 +197,6 @@ struct BitView : View {
 #elseif os(iOS)
             VStack(spacing: 20) {
                 Text(bitActivity)
-                .foregroundColor(.white)
                 
                 HStack(spacing: 10) {
                     ForEach(0..<5, id: \.self) { index in
@@ -227,12 +216,12 @@ struct BitView : View {
                     .font(.system(size: 30))
                     .multilineTextAlignment(.center)
                     .padding()
-                    .foregroundColor(.white)
             }
 #endif
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 #Preview{

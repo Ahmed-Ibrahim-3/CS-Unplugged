@@ -15,12 +15,12 @@ struct SortingView : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             
             HStack(spacing: 10) {
                 NavigationLink(destination: selection()) {
                     Text("Selection Sort")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -28,7 +28,7 @@ struct SortingView : View {
                 
                 NavigationLink(destination: quick()) {
                     Text("Quick Sort")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -36,7 +36,7 @@ struct SortingView : View {
                 
                 NavigationLink(destination: insertion()) {
                     Text("Insertion Sort")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -44,7 +44,7 @@ struct SortingView : View {
                 
                 NavigationLink(destination: bubble()) {
                     Text("Bubble Sort")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -52,7 +52,7 @@ struct SortingView : View {
                 
                 NavigationLink(destination: merge()) {
                     Text("Merge Sort")
-                        .foregroundColor(.white)
+                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -65,6 +65,7 @@ struct SortingView : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundStyle(.white)
     }
 }
 
@@ -98,7 +99,7 @@ struct toSort: View {
                                 
                                 Text("\(circle.number)")
                                     .font(.headline)
-                                    .foregroundColor(.white)
+                                    
                             }
                         }
                         .buttonStyle(.plain)
@@ -114,7 +115,7 @@ struct toSort: View {
                         .font(.title2)
                         .padding()
                         .background(Color.blue)
-                        .foregroundColor(.white)
+                        
                         .cornerRadius(10)
                         .shadow(radius: 5)
                 }
@@ -182,6 +183,7 @@ struct selection : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundStyle(.white)
     }
 }
     
@@ -202,11 +204,11 @@ struct quick : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             
             toSort(circles:$circles)
             
-            Text("What to do: ").font(.title3).foregroundColor(.white)
+            Text("What to do: ").font(.title3)
             Text("""
                     \u{2022} Shuffle the list so that they are in random order
                     \u{2022} Choose one element at random, this is your **pivot**.
@@ -216,8 +218,8 @@ struct quick : View {
                                 and repeat the process
                     \u{2022} Keep repeating until every group only has one element,
                                 the list will now be sorted
-                """).foregroundColor(.white)
-            Text("Discuss the following: ").font(.title3).foregroundColor(.white)
+                """)
+            Text("Discuss the following: ").font(.title3)
             Text("""
                     \u{2022} How many comparisons did this take?
                     \u{2022} What is the worst case for this method?
@@ -225,10 +227,11 @@ struct quick : View {
                                 worst case? 
                     \u{2022} How does this scale with having more elements in the list
                     \u{2022} Why is this better than selection sort?
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundStyle(.white)
     }
 }
 
@@ -301,6 +304,8 @@ struct insertion: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
+        
     }
 
     fileprivate enum Subviews {
@@ -310,7 +315,7 @@ struct insertion: View {
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .padding()
-                    .foregroundColor(.white)
+                    
             }
         }
 
@@ -322,7 +327,7 @@ struct insertion: View {
                         \u{2022} Place it into its correct position in the sorted group.
                         \u{2022} Repeat until all elements have been moved to the sorted group, and are all in order.
                     """)
-                .foregroundColor(.white)
+                
             }
         }
 
@@ -335,7 +340,7 @@ struct insertion: View {
                 VStack {
                     Text("Sorted")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        
                     HStack(spacing: 20) {
                         ForEach(selectedCircles.indices, id: \.self) { index in
                             Button(action: {
@@ -348,7 +353,7 @@ struct insertion: View {
                                     if let circle = selectedCircles[index] {
                                         Text("\(circle.number)")
                                             .font(.headline)
-                                            .foregroundColor(.white)
+                                            
                                     }
                                 }
                             }
@@ -369,7 +374,7 @@ struct insertion: View {
                 VStack {
                     Text("Unsorted")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        
                     HStack(spacing: 20) {
                         ForEach(availableCircles) { circle in
                             Button(action: {
@@ -385,7 +390,7 @@ struct insertion: View {
                                         )
                                     Text("\(circle.number)")
                                         .font(.headline)
-                                        .foregroundColor(.white)
+                                        
                                 }
                             }
                             .buttonStyle(.plain)
@@ -407,7 +412,7 @@ struct insertion: View {
                         Text("Clear Sorted")
                             .font(.system(size: 40))
                             .padding()
-                            .foregroundColor(.white)
+                            
                             .cornerRadius(10)
                             .shadow(radius: 5)
                             .frame(width: 350)
@@ -418,7 +423,7 @@ struct insertion: View {
                         Text("Shuffle Unsorted")
                             .font(.system(size: 40))
                             .padding()
-                            .foregroundColor(.white)
+                            
                             .cornerRadius(10)
                             .shadow(radius: 5)
                             .frame(width: 350)
@@ -432,7 +437,7 @@ struct insertion: View {
                 VStack {
                     Text("Discuss the following: ")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        
                     Text("""
                         \u{2022} How many comparisons did this take?
                         \u{2022} What is the worst case for this method?
@@ -440,7 +445,7 @@ struct insertion: View {
                         \u{2022} What is the best case list for this method?
                         \u{2022} How does this scale with having more elements in the list
                         """)
-                    .foregroundColor(.white)
+                    
                 }
             }
         }
@@ -463,11 +468,11 @@ struct bubble : View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(.white)
+                
             
             toSort(circles:$circles)
             
-            Text("What to do: ").font(.title3).foregroundColor(.white)
+            Text("What to do: ").font(.title3)
             Text("""
                     \u{2022} Shuffle the list so that they are in random order
                     \u{2022} Start at the front of the list and go through to the end,
@@ -476,8 +481,8 @@ struct bubble : View {
                                 and repeat from the start of the list.
                     \u{2022} Continue to repeat, swapping elements until the list is
                                 in order.
-                """).foregroundColor(.white)
-            Text("Discuss the following: ").font(.title3).foregroundColor(.white)
+                """)
+            Text("Discuss the following: ").font(.title3)
             Text("""
                     \u{2022} How many comparisons did this take?
                     \u{2022} What is the worst case for this method?
@@ -485,10 +490,11 @@ struct bubble : View {
                                 worst case? 
                     \u{2022} How does this scale with having more elements in the list
                     \u{2022} How does this compare with the other methods?
-                """).foregroundColor(.white)
+                """)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
+        .foregroundColor(.white)
     }
 }
 

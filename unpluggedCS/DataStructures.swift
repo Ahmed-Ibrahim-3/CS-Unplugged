@@ -1,4 +1,3 @@
-// TODO: Fix tvOS scrolling issue
 import SwiftUI
 
 enum DataStructureType {
@@ -16,7 +15,6 @@ struct DataView: View {
                         .font(.system(size: 60))
                         .multilineTextAlignment(.center)
                         .padding()
-                        .foregroundColor(.white)
                     
                     VStack(spacing: 50) {
                         DataStructureView(
@@ -32,8 +30,6 @@ struct DataView: View {
                             memory, allowing for efficient
                             access and manipulation of elements
                         """,
-                            imageName: "arraymem",
-                            imageSize: CGSize(width: 300, height: 100),
                             description2: """
                             Let's say we were trying to create a
                             variable to represent the marks for
@@ -57,8 +53,6 @@ struct DataView: View {
                             principle, so the element inserted
                             first is the first to leave.
                         """,
-                            imageName: "queue",
-                            imageSize: CGSize(width: 300, height: 100),
                             description2: """
                             We define a queue to be a list in which
                             all additions are made at one end and all
@@ -89,8 +83,6 @@ struct DataView: View {
                             meaning the last element inserted
                             is the first element to be removed.
                         """,
-                            imageName: "stack",
-                            imageSize: CGSize(width: 300, height: 200),
                             description2: """
                             Imagine a pile of plates kept on top of
                             each other. The plate which was put on
@@ -113,6 +105,7 @@ struct DataView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(backgroundGradient)
+            .foregroundColor(.white)
         }
     }
 }
@@ -121,8 +114,6 @@ struct DataStructureView: View {
     let type: DataStructureType
     let title: String
     let description1: String
-    let imageName: String
-    let imageSize: CGSize
     let description2: String
     let scrollProxy: ScrollViewProxy
     
@@ -153,13 +144,11 @@ struct DataStructureView: View {
         VStack(spacing: 10) {
             Text(title)
                 .font(.title3)
-                .foregroundColor(.white)
             
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(description1)
                         .font(.body)
-                        .foregroundColor(.white)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,7 +159,6 @@ struct DataStructureView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(description2)
                         .font(.body)
-                        .foregroundColor(.white)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -243,7 +231,6 @@ struct DataStructureView: View {
                     Text("Add")
                         .padding()
                         .background(Color.green)
-                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
                 .hoverEffect(.highlight)
@@ -260,7 +247,6 @@ struct DataStructureView: View {
                     Text("Remove")
                         .padding()
                         .background(Color.red)
-                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
                 .hoverEffect(.highlight)

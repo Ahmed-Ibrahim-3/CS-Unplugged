@@ -141,7 +141,7 @@ struct TransitionLineView: View {
             LineShape(from: from, to: to)
                 .stroke(Color.white, lineWidth: 2)
             Text(label)
-                .foregroundColor(.white)
+                
                 .position(
                     x: (from.x + to.x)/2,
                     y: (from.y + to.y)/2
@@ -159,7 +159,7 @@ struct SelfLoopView: View {
             SelfLoopShape(center: center)
                 .stroke(Color.white, lineWidth: 2)
             Text(label)
-                .foregroundColor(.white)
+                
                 .position(x: center.x, y: center.y - 60)
         }
     }
@@ -181,7 +181,7 @@ struct StateCircleView: View {
             }
             
             Text(state.name)
-                .foregroundColor(.white)
+                
         }
     }
 }
@@ -292,19 +292,19 @@ struct UnifiedDFABuilderView: View {
     var body: some View {
         Text("Interactive DFA Builder")
             .font(.title)
-            .foregroundColor(.white)
+            
         HStack(spacing: 10) {
             #if os(iOS)
             DFACanvasiOSView(viewModel: viewModel)
                 .frame(minHeight: 300)
             HStack(alignment: .top, spacing: 30) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("States").font(.headline).foregroundColor(.white)
+                    Text("States").font(.headline)
                     
                     ForEach(viewModel.states) { state in
                         HStack {
                             Text("State \(state.name)")
-                                .foregroundColor(.white)
+                                
                             Button(action: { viewModel.toggleAccepting(state) }) {
                                 Text(state.isAccepting ? "Accepting" : "Mark Accepting")
                             }.frame(width: 150, height: 20)
@@ -322,7 +322,7 @@ struct UnifiedDFABuilderView: View {
                 .frame(width: 350)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Transitions").font(.headline).foregroundColor(.white)
+                    Text("Transitions").font(.headline)
                     
                     ForEach(viewModel.transitions) { transition in
                         if let fromState = viewModel.states.first(where: { $0.id == transition.fromStateID }),
@@ -330,10 +330,10 @@ struct UnifiedDFABuilderView: View {
                             HStack {
                                 if fromState.id == toState.id {
                                     Text("\(fromState.name) -\(transition.symbol)-> (self)")
-                                        .foregroundColor(.white)
+                                        
                                 } else {
                                     Text("\(fromState.name) -\(transition.symbol)-> \(toState.name)")
-                                        .foregroundColor(.white)
+                                        
                                 }
                                 Spacer()
                                 Button(action: {
@@ -346,7 +346,7 @@ struct UnifiedDFABuilderView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Add Transition").foregroundColor(.white)
+                        Text("Add Transition")
                         
                         Picker("From:", selection: $selectedFromState) {
                             Text("Select").tag(DFAState?.none)
@@ -366,7 +366,7 @@ struct UnifiedDFABuilderView: View {
                         
                         TextField("Symbol (e.g. a, b, c)", text: $transitionSymbol)
                             .textFieldStyle(.plain)
-                            .foregroundColor(.white)
+                            
                         
                         Button("Add Transition") {
                             guard
@@ -391,12 +391,12 @@ struct UnifiedDFABuilderView: View {
                 .frame(minWidth:300 , maxWidth: 600, minHeight: 300, maxHeight: 600)
             HStack(alignment: .top, spacing: 30) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("States").font(.headline).foregroundColor(.white)
+                    Text("States").font(.headline)
                     
                     ForEach(viewModel.states) { state in
                         HStack {
                             Text("State \(state.name)")
-                                .foregroundColor(.white)
+                                
                             Button(action: { viewModel.toggleAccepting(state) }) {
                                 Text(state.isAccepting ? "Accepting" : "Mark Accepting")
                             }.frame(width: 350, height: 20)
@@ -414,7 +414,7 @@ struct UnifiedDFABuilderView: View {
                 .frame(width: 800)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Transitions").font(.headline).foregroundColor(.white)
+                    Text("Transitions").font(.headline)
                     
                     ForEach(viewModel.transitions) { transition in
                         if let fromState = viewModel.states.first(where: { $0.id == transition.fromStateID }),
@@ -422,10 +422,10 @@ struct UnifiedDFABuilderView: View {
                             HStack {
                                 if fromState.id == toState.id {
                                     Text("\(fromState.name) -\(transition.symbol)-> (self)")
-                                        .foregroundColor(.white)
+                                        
                                 } else {
                                     Text("\(fromState.name) -\(transition.symbol)-> \(toState.name)")
-                                        .foregroundColor(.white)
+                                        
                                 }
                                 Spacer()
                                 Button(action: {
@@ -438,7 +438,7 @@ struct UnifiedDFABuilderView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Add Transition").foregroundColor(.white)
+                        Text("Add Transition")
                         
                         Picker("From:", selection: $selectedFromState) {
                             Text("Select").tag(DFAState?.none)
@@ -458,7 +458,7 @@ struct UnifiedDFABuilderView: View {
                         
                         TextField("Symbol (e.g. a, b, c)", text: $transitionSymbol)
                             .textFieldStyle(.plain)
-                            .foregroundColor(.white)
+                            
                         
                         Button("Add Transition") {
                             guard
@@ -494,7 +494,7 @@ struct StateView: View {
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .padding()
-                    .foregroundColor(.white)
+                    
                 
                 Text("""
                 Finite-State Automata (FSA) — The simplest form of state machine — are a good way to
@@ -506,7 +506,7 @@ struct StateView: View {
                     \u{2022} an initial input state represented by an arrow
                     \u{2022} an exit (accepting) state represented by a double circle
                 """)
-                .foregroundColor(.white)
+                
                 
                 HStack {
                     Image("FSA")
@@ -522,7 +522,7 @@ struct StateView: View {
                     
                     How will each of these finite state automata reach an exit state?
                     """)
-                    .foregroundColor(.white)
+                    
                 }
                 
                 HStack {
@@ -533,7 +533,7 @@ struct StateView: View {
                         .colorInvert()
                     
                     Text("Discuss amongst yourselves what this state machine constructs?")
-                        .foregroundColor(.white)
+                        
                 }
                 
                 Divider().padding(.vertical, 10)
@@ -542,6 +542,7 @@ struct StateView: View {
             }
             .padding()
             .background(backgroundGradient)
+            .foregroundColor(.white)
         }
         .edgesIgnoringSafeArea(.all)
     }
