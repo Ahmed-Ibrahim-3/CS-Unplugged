@@ -12,6 +12,23 @@ let backgroundGradient = LinearGradient(
     startPoint: .init(x: 1, y: 0), endPoint: .init(x: 0, y: 1)
 )
 
+struct InteractiveAreaModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding()
+            .background(Color.black.opacity(0.6))
+            .cornerRadius(15)
+            .shadow(radius: 10)
+            .padding([.leading, .trailing], 10)
+    }
+}
+
+extension View {
+    func interactiveArea() -> some View {
+        self.modifier(InteractiveAreaModifier())
+    }
+}
+
 struct StartView: View {
     @State private var name: String = ""
     @State private var showingAlert = false
@@ -212,6 +229,6 @@ struct GridView: View {
 }
 
 #Preview {
-//    StartView()
-    HomeView(name: "test")
+    StartView()
+//    HomeView(name: "test")
 }

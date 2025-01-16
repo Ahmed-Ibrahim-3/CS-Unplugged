@@ -162,20 +162,18 @@ struct Linear: View {
                 .multilineTextAlignment(.center)
                 .padding()
             
-            Spacer().frame(width: 100, height: 70)
             Text("""
-                 Tell your partner the ***number*** of your ship (not the letter!!)
+                 In your pairs, scan the QR code below and keep your card to yourself. Next, pick a ship under "My Ships" and circle or memorise it. Tell your partner the ***number*** of your ship (not the letter!!)
                  
                  In turns, guess the letter where your partners ship is.
-                     -- with each guess, one player gives a letter, and the other gives its number.
-                 Keep count of how many guesses you have taken. At the end, write down the number of guesses you took.
+                     -- with each guess, one player gives a letter, and the other gives its number. Keep count of how many guesses you have taken.
+                 At the end, write down the number of guesses you took.
                  """)
             .padding()
-            
             Button("get new ships!") {
                 selectedImage = iOSImages.randomElement()
             }
-            .foregroundStyle(.red)
+            .interactiveArea()
             
             if let img = selectedImage {
                 Image(img)
@@ -272,12 +270,9 @@ struct Binary: View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-            
-            Spacer().frame(width: 100, height: 50)
-            
+                        
             Text("""
-                 Tell your partner the ***number*** of your ship (not the letter!!).
-                 **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**.
+                 Tell your partner the ***number*** of your ship (not the letter!!). **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**.
                  
                  In turns, guess the letter where your partner's ship is.
                  -- with each guess, one player gives a letter, and the other gives its number.
@@ -288,7 +283,7 @@ struct Binary: View {
             Button("get new ships!") {
                 selectedImage = iOSImages.randomElement()
             }
-            .foregroundStyle(.red)
+            .interactiveArea()
             
             if let img = selectedImage {
                 Image(img)
@@ -303,8 +298,7 @@ struct Binary: View {
             }
             
             Text("""
-                 Once you're finished, discuss the min and max scores, and how to optimize. 
-                 How does it compare to the other methods?
+                 Once you're finished, discuss the min and max scores, and how to optimize. How does it compare to the other methods?
                  """).padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -415,14 +409,9 @@ struct Hashing: View {
                 .font(.system(size: 60))
                 .multilineTextAlignment(.center)
                 .padding()
-            
-            Spacer().frame(height: 50)
-            
+                        
             Text("""
-                 Decide who will be Player 1 or Player 2.
-                 In this game, you can find out which column (0-9) the ship belongs to 
-                 by adding together the digits of the ship's number, 
-                 then using the last digit of the sum.
+                 Decide who will be Player 1 or Player 2. In this game, you can find out which column (0-9) the ship belongs to by adding together the digits of the ship's number,  then using the last digit of the sum.
                  """)
             .padding()
             
@@ -449,7 +438,8 @@ struct Hashing: View {
                     selectedPlayer = 1
                 }
                 .foregroundStyle(.yellow)
-                
+                .padding()
+                Spacer().frame(width: 50)
                 Button("Player 2") {
                     selectedImage = iOS_B.randomElement()
                     selectedPlayer = 2
@@ -457,7 +447,7 @@ struct Hashing: View {
                 .foregroundStyle(.green)
             }
             .padding()
-            
+            .interactiveArea()
             Text("""
                  \u{2022} Play the game as before, but using the hashing strategy. 
                  \u{2022} Which ships are easiest/hardest to find? 
@@ -475,6 +465,6 @@ struct Hashing: View {
 
 #Preview {
     @Previewable @StateObject var qrCodeViewModel = QRCodeViewModel()
-//    Hashing(qrCodeViewModel: qrCodeViewModel)
-    SearchView()
+    Hashing(qrCodeViewModel: qrCodeViewModel)
+//    SearchView()
 }

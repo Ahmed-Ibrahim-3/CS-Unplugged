@@ -75,10 +75,10 @@ struct BitView : View {
                        \u{2022} Once you have reached 31, whats next? how might we get 32
                     
                     Lets look deeper...
-                       \u{2022} What is the maximum number you can make with 2 bits?
-                       \u{2022} How many dots would the next card have?
-                       \u{2022} What is the maximum value of these **3** bits?
-                       \u{2022} Again, how many dots would the next card have?
+                       \u{2022} What is the maximum number you can make with 5 bits?
+                       \u{2022} What value would the next bit have?
+                       \u{2022} What is the maximum value of these 6 bits?
+                       \u{2022} Again, what value would the next bit have?
                        \u{2022} What pattern do you see?
                     
                     Now we know the maximum, minimum, and how to find them, what else?
@@ -90,7 +90,7 @@ struct BitView : View {
     
     @State private var imgIndex = 0
     @State private var isImageOne: [Bool] = Array(repeating: true, count: 5)
-    @State private var decimalVal = 0
+    @State private var decimalVal = 31
     @State private var isFocused = false
     @State private var totalShapes = 1
     private let bitCounts = [1,2,4,8,16]
@@ -211,7 +211,8 @@ struct BitView : View {
                                 decimalVal = calculateBinaryValue(from: isImageOne)
                             }
                     }
-                }
+                }.interactiveArea()
+                
                 Text(String(decimalVal))
                     .font(.system(size: 30))
                     .multilineTextAlignment(.center)

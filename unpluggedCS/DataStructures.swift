@@ -164,11 +164,7 @@ struct DataStructureView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .padding()
-        .background(Color.black.opacity(0.6))
-        .cornerRadius(15)
-        .shadow(radius: 10)
-        .padding([.leading, .trailing], 10)
+        .interactiveArea()
         .onChange(of: currentElements()) { newValue in
             if newValue.isEmpty {
                 elementCount = 0

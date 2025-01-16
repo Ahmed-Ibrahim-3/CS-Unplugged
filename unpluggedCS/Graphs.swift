@@ -190,11 +190,7 @@ struct GraphEditorView: View {
                 Text("Connected: \(graph.isConnected ? "Yes" : "No")")
                 Text("Cyclic: \(graph.isCyclic ? "Yes" : "No")")
             }
-            .padding()
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(15)
-            .shadow(radius: 10)
-            .padding([.leading, .trailing], 10)
+            .interactiveArea()
             
             ZStack {
                 ForEach(graph.edges) { edge in
@@ -223,9 +219,7 @@ struct GraphEditorView: View {
                 }
             }
             .frame(minHeight: 500)
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(10)
-            .padding()
+            .interactiveArea()
             
             VStack(spacing: 10) {
                 HStack {
@@ -245,11 +239,13 @@ struct GraphEditorView: View {
                 HStack {
                     TextField("From node label", text: $fromNode)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.gray)
                     TextField("To node label", text: $toNode)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.gray)
                     TextField("Weight (opt)", text: $edgeWeight)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
+                        .foregroundColor(.gray)
                     Button("Add Edge") {
                         if let fromId = graph.nodes.first(where: { $0.label == fromNode })?.id,
                            let toId = graph.nodes.first(where: { $0.label == toNode })?.id {
@@ -266,11 +262,7 @@ struct GraphEditorView: View {
                     .cornerRadius(8)
                 }
             }
-            .padding()
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(15)
-            .shadow(radius: 10)
-            .padding([.leading, .trailing], 10)
+            .interactiveArea()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -372,11 +364,7 @@ struct GraphEditorView_tvOS: View {
                 Text("Connected: \(graph.isConnected ? "Yes" : "No")")
                 Text("Cyclic: \(graph.isCyclic ? "Yes" : "No")")
             }
-            .padding()
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(15)
-            .shadow(radius: 10)
-            .padding([.leading, .trailing], 10)
+            .interactiveArea()
             
             ZStack {
                 ForEach(graph.edges) { edge in
@@ -390,9 +378,7 @@ struct GraphEditorView_tvOS: View {
                 }
             }
             .frame(minHeight: 500)
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(10)
-            .padding()
+            .interactiveArea()
             
             VStack{
                 HStack(spacing:25){
@@ -438,12 +424,15 @@ struct GraphEditorView_tvOS: View {
                     TextField("From node label", text: $fromNode)
                         .textFieldStyle(.automatic)
                         .frame(width: 150)
+                        .foregroundColor(.gray)
                     TextField("To node label", text: $toNode)
                         .textFieldStyle(.automatic)
                         .frame(width: 150)
+                        .foregroundColor(.gray)
                     TextField("Weight (opt)", text: $edgeWeight)
                         .textFieldStyle(.automatic)
                         .frame(width: 100)
+                        .foregroundColor(.gray)
                     
                     Button("Add Edge") {
                         if let fromId = graph.nodes.first(where: { $0.label == fromNode })?.id,
@@ -461,11 +450,7 @@ struct GraphEditorView_tvOS: View {
                     .cornerRadius(8)
                 }
             }
-            .padding()
-            .background(Color.black.opacity(0.6))
-            .cornerRadius(15)
-            .shadow(radius: 10)
-            .padding([.leading, .trailing], 10)
+            .interactiveArea()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

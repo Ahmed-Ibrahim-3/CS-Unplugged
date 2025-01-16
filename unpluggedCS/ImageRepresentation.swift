@@ -75,10 +75,7 @@ struct ImgView: View {
                     .font(.headline)
                 
                 ColorPixelBuilderView()
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.black.opacity(0.8))
-                    .cornerRadius(10)
+                    .interactiveArea()
             }
             .padding()
 #elseif os(tvOS)
@@ -174,9 +171,9 @@ struct ColorPixelBuilderView: View {
             }
             .padding(.horizontal)
         }
-        .background(Color.black.opacity(0.7))
-        .cornerRadius(10)
-        .padding()
+//        .background(Color.black.opacity(0.7))
+//        .cornerRadius(10)
+//        .padding()
     }
 }
 #endif
@@ -224,9 +221,7 @@ struct PixelArtShowcaseView: View {
             
             Spacer()
         }
-        .background(Color.black.opacity(0.6))
-        .cornerRadius(10)
-        .padding()
+        .interactiveArea()
     }
     
     @ViewBuilder

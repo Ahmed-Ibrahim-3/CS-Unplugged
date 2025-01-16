@@ -49,7 +49,7 @@ struct SortingView : View {
                         .cornerRadius(10)
                         .shadow(radius: 5)
                 }
-            }
+            }.interactiveArea()
             AnimatedImage(name: "sorting.gif")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -116,7 +116,7 @@ struct toSort: View {
             .onAppear {
                 focusedCircleID = circles.first?.id
             }
-        }
+        }.interactiveArea()
     }
     
     private func handleCircleTap(id: UUID) {
@@ -273,20 +273,22 @@ struct insertion: View {
             VStack(spacing: 30) {
                 Subviews.TitleSection()
                 Subviews.InstructionsSection()
-                Subviews.SortedCirclesView(
-                    selectedCircles: $selectedCircles,
-                    selectedCircle: $selectedCircle,
-                    placeCircle: placeCircle
-                )
-                Subviews.UnsortedCirclesView(
-                    availableCircles: availableCircles,
-                    selectedCircle: $selectedCircle,
-                    selectCircleToMove: selectCircleToMove
-                )
-                Subviews.ActionButtons(
-                    clearSelectedCircles: clearSelectedCircles,
-                    shuffleAvailableCircles: shuffleAvailableCircles
-                )
+                VStack{
+                    Subviews.SortedCirclesView(
+                        selectedCircles: $selectedCircles,
+                        selectedCircle: $selectedCircle,
+                        placeCircle: placeCircle
+                    )
+                    Subviews.UnsortedCirclesView(
+                        availableCircles: availableCircles,
+                        selectedCircle: $selectedCircle,
+                        selectCircleToMove: selectCircleToMove
+                    )
+                    Subviews.ActionButtons(
+                        clearSelectedCircles: clearSelectedCircles,
+                        shuffleAvailableCircles: shuffleAvailableCircles
+                    )
+                }.interactiveArea()
 #if os(tvOS)
                 Spacer().frame(height: 200)
 #endif
@@ -402,7 +404,7 @@ struct insertion: View {
                         clearSelectedCircles()
                     }) {
                         Text("Clear Sorted")
-                            .font(.system(size: 40))
+                            .font(.system(size: 25))
                             .padding()
                             
                             .cornerRadius(10)
@@ -413,7 +415,7 @@ struct insertion: View {
                         shuffleAvailableCircles()
                     }) {
                         Text("Shuffle Unsorted")
-                            .font(.system(size: 40))
+                            .font(.system(size: 25))
                             .padding()
                             
                             .cornerRadius(10)
@@ -491,9 +493,9 @@ struct bubble : View {
 }
 
 #Preview {
-    SortingView()
-    //selection()
-    //quick()
-    //insertion()
-    //bubble()
+//    SortingView()
+//    selection()
+//    quick()
+//    insertion()
+    bubble()
 }

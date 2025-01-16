@@ -190,12 +190,7 @@ struct CPUBuilderView: View {
             .cornerRadius(8)
             .padding(.bottom, 10)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-        .background(Color.black.opacity(0.6))
-        .cornerRadius(15)
-        .shadow(radius: 10)
-        .padding([.leading, .trailing], 10)
+        .interactiveArea()
         .onChange(of: allPlacedCorrectly) { newValue in
             if newValue {
                 service.notifyCoreComplete()
@@ -392,9 +387,7 @@ struct MultiCoreTVOSView: View {
                 
                 Spacer()
             }
-            .padding()
-            .background(Color.black.opacity(0.5))
-            .cornerRadius(20)
+            .interactiveArea()
         }
     }
 }

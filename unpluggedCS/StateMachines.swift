@@ -307,6 +307,7 @@ struct UnifiedDFABuilderView: View {
                                 
                             Button(action: { viewModel.toggleAccepting(state) }) {
                                 Text(state.isAccepting ? "Accepting" : "Mark Accepting")
+                                    .foregroundColor(state.isAccepting ? .green : .red)
                             }.frame(width: 150, height: 20)
                             Button(action: { viewModel.removeState(state) }) {
                                 Image(systemName: "trash").foregroundColor(.red)
@@ -365,8 +366,8 @@ struct UnifiedDFABuilderView: View {
                         .pickerStyle(.menu)
                         
                         TextField("Symbol (e.g. a, b, c)", text: $transitionSymbol)
-                            .textFieldStyle(.plain)
-                            
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .foregroundColor(.gray)
                         
                         Button("Add Transition") {
                             guard
@@ -399,6 +400,7 @@ struct UnifiedDFABuilderView: View {
                                 
                             Button(action: { viewModel.toggleAccepting(state) }) {
                                 Text(state.isAccepting ? "Accepting" : "Mark Accepting")
+                                    .foregroundColor(state.isAccepting ? .green : .red)
                             }.frame(width: 350, height: 20)
                             Button(action: { viewModel.removeState(state) }) {
                                 Image(systemName: "trash").foregroundColor(.red)
@@ -458,6 +460,7 @@ struct UnifiedDFABuilderView: View {
                         
                         TextField("Symbol (e.g. a, b, c)", text: $transitionSymbol)
                             .textFieldStyle(.plain)
+                            .foregroundColor(.gray)
                             
                         
                         Button("Add Transition") {
@@ -481,8 +484,7 @@ struct UnifiedDFABuilderView: View {
             #endif
             
         }
-        .padding()
-        .background(Color.black.opacity(0.6))
+        .interactiveArea()
     }
 }
 
