@@ -7,38 +7,37 @@
 import SwiftUI
 
 struct HCIView : View {
+
+    @State var doors = [
+        "glassDoor",
+        "hingeDoor",
+        "knobDoor",
+        "labeledDoor",
+        "panelDoor",
+        "plainDoor",
+        "pushBarDoor",
+        "slidingDoor"
+    ]
     
-    @State var doors = ["glassDoor",
-                        "hingeDoor",
-                        "knobDoor",
-                        "labeledDoor",
-                        "panelDoor",
-                        "plainDoor",
-                        "pushBarDoor",
-                        "slidingDoor"]
-    
-    let correctAnswers: [String: String] = [
-        "glassDoor"   : "Pull Right",
-        "hingeDoor"   : "Push Right",
-        "knobDoor"    : "Pull Right",
-        "labeledDoor" : "Pull Right",
-        "panelDoor"   : "Push",
-        "plainDoor"   : "Push Left",
-        "pushBarDoor" : "Push",
-        "slidingDoor" : "Slide Right"
+    let correctAnswers: [String: [String]] = [
+        "glassDoor"   : ["Pull Right"],
+        "hingeDoor"   : ["Push Right"],
+        "knobDoor"    : ["Pull Right"],
+        "labeledDoor" : ["Pull Right"],
+        "panelDoor"   : ["Push Right"],
+        "plainDoor"   : ["Push Left"],
+        "pushBarDoor" : ["Push Left", "Push Right"],
+        "slidingDoor" : ["Slide Right"]
     ]
     
     let possibleChoices = [
-            "Push",
-            "Push Left",
-            "Push Right",
-            "Pull",
-            "Pull Left",
-            "Pull Right",
-            "Slide",
-            "Slide Left",
-            "Slide Right"
-        ]
+        "Push Left",
+        "Push Right",
+        "Pull Left",
+        "Pull Right",
+        "Slide Left",
+        "Slide Right"
+    ]
     
     @State private var currentDoorIndex = 0
     @State private var isAnswered = false
@@ -50,32 +49,31 @@ struct HCIView : View {
         return [
             GridItem(.fixed(250)),
             GridItem(.fixed(250)),
-            GridItem(.fixed(250))
         ]
         #else
         return [
             GridItem(.fixed(120)),
             GridItem(.fixed(120)),
-            GridItem(.fixed(120))
         ]
         #endif
     }()
     
     var body: some View {
-        GeometryReader{ geometry in
+        GeometryReader { geometry in
             
             VStack {
+                
                 Text("Human-Computer Interaction")
                     .font(.title)
                     .padding()
                     .multilineTextAlignment(.center)
                 
                 Text("""
-            Human Computer interaction is about designing, evaluating, and implementing computer sytems in a way that lets people use them productively and safely. Since computers are so common now, and are everyday tools that everyone uses, as computer scientists we need to pay attention to the human interface of both hardware and software.
-            
-            Consider the doors below...
-            How might you open them? Which side do they open on? Do they open in or out? how do you know?
-            """)
+                     Human Computer Interaction is about designing, evaluating, and implementing computer systems in a way that lets people use them productively and safely. Since computers are so common now, and are everyday tools that everyone uses, as computer scientists we need to pay attention to the human interface of both hardware and software.
+                     
+                     Consider the doors below...
+                     How might you open them? Which side do they open on? Do they open in or out? How do you know?
+                     """)
                 .padding(.horizontal)
                 
                 if currentDoorIndex >= doors.count {
@@ -89,8 +87,13 @@ struct HCIView : View {
                         .padding()
                     
                     Text("""
-                What did you look for to find an answer? Which doors were easiest to get right? We use the same principles in computer science so that users can clearly understand how to use our products without needing much explanation. HCI makes technology more accessible, efficient, and enjoyable to use. Good HCI improves the uesr experience, usability, functionality, and accessibility of systems, and without it.
-                """)
+                         What did you look for to find an answer? Which doors were easiest to get right? 
+                         We use the same principles in computer science so that users can clearly 
+                         understand how to use our products without needing much explanation. HCI makes 
+                         technology more accessible, efficient, and enjoyable to use. Good HCI improves 
+                         the user experience, usability, functionality, and accessibility of systems.
+                         """)
+                    .padding()
                     
                 } else {
                     HStack {
@@ -116,15 +119,14 @@ struct HCIView : View {
                                         .padding()
                                         .frame(maxWidth: .infinity)
                                         .background(buttonBackgroundColor(for: choice))
-                                        .background(Color.blue)
                                         .cornerRadius(10)
                                 }
                                 .disabled(isAnswered)
-#if os(tvOS)
+                                #if os(tvOS)
                                 .frame(width: 250)
                                 .padding()
                                 .buttonStyle(PlainButtonStyle())
-#endif
+                                #endif
                             }
                         }
                         .padding()
@@ -149,27 +151,28 @@ struct HCIView : View {
             .foregroundColor(.white)
         }
     }
-        
+    
     func buttonBackgroundColor(for choice: String) -> Color {
-            guard isAnswered else {
-                return .blue
-            }
-            let door = doors[currentDoorIndex]
-            let correctAnswer = correctAnswers[door, default: ""]
-            return choice == correctAnswer ? .green : .red
+        guard isAnswered else {
+            return .blue
         }
+        let door = doors[currentDoorIndex]
+        let correct = correctAnswers[door, default: []]
+        return correct.contains(choice) ? .green : .red
+    }
     
     func handleAnswer(_ userChoice: String) {
         isAnswered = true
         
         let door = doors[currentDoorIndex]
-        let correctAnswer = correctAnswers[door] ?? ""
+        let correct = correctAnswers[door] ?? []
         
-        if userChoice == correctAnswer {
+        if correct.contains(userChoice) {
             answerFeedback = "Correct!"
             score += 1
         } else {
-            answerFeedback = "Oops! The correct answer is \(correctAnswer)."
+            let joinedAnswers = correct.joined(separator: " or ")
+            answerFeedback = "Oops! The correct answer is \(joinedAnswers)."
         }
     }
     

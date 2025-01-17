@@ -7,16 +7,25 @@
 
 import SwiftUI
 
+extension Color {
+    init(hex: Int, opacity: Double = 1.0) {
+        let red = Double((hex & 0xff0000) >> 16) / 255.0
+        let green = Double((hex & 0xff00) >> 8) / 255.0
+        let blue = Double((hex & 0xff) >> 0) / 255.0
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
+    }
+}
+
 let backgroundGradient = LinearGradient(
-    colors: [Color.purple, Color.blue, Color.green],
-    startPoint: .init(x: 1, y: 0), endPoint: .init(x: 0, y: 1)
+    colors: [Color(.teal1),Color(.navyBlue),Color(.darkPurple)],
+    startPoint: .init(x: 1.1, y: 1.1), endPoint: .init(x: 0.1, y: 0.1)
 )
 
 struct InteractiveAreaModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding()
-            .background(Color.black.opacity(0.6))
+            .background(Color.black.opacity(0.3))
             .cornerRadius(15)
             .shadow(radius: 10)
             .padding([.leading, .trailing], 10)
@@ -229,6 +238,6 @@ struct GridView: View {
 }
 
 #Preview {
-    StartView()
-//    HomeView(name: "test")
+//    StartView()
+    HomeView(name: "test")
 }

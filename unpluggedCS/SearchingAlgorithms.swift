@@ -38,7 +38,7 @@ struct SearchView: View {
     var body: some View {
         VStack {
             Text("Searching Algorithms - Battleships!")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
                 
@@ -69,7 +69,9 @@ struct SearchView: View {
                         .shadow(radius: 5)
                 }
             }
+            .interactiveArea()
             Spacer().frame(height: 100)
+                
             
             Text("""
                  For this you will need : 
@@ -110,7 +112,7 @@ struct Linear: View {
         
         VStack {
             Text("Linear Search")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
             
@@ -158,7 +160,7 @@ struct Linear: View {
         
         VStack {
             Text("Linear Search")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
             
@@ -220,7 +222,7 @@ struct Binary: View {
         #if os(tvOS)
         VStack {
             Text("Binary Search Game")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
             
@@ -267,7 +269,7 @@ struct Binary: View {
         #elseif os(iOS)
         VStack {
             Text("Binary Search")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
                         
@@ -333,7 +335,7 @@ struct Hashing: View {
         
         VStack {
             Text("Searching with Hashing")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
             
@@ -406,7 +408,7 @@ struct Hashing: View {
 
         VStack {
             Text("Searching with Hashing")
-                .font(.system(size: 60))
+                .font(.largeTitle)
                 .multilineTextAlignment(.center)
                 .padding()
                         
@@ -465,6 +467,6 @@ struct Hashing: View {
 
 #Preview {
     @Previewable @StateObject var qrCodeViewModel = QRCodeViewModel()
-    Hashing(qrCodeViewModel: qrCodeViewModel)
-//    SearchView()
+//    Hashing(qrCodeViewModel: qrCodeViewModel)
+    SearchView()
 }
