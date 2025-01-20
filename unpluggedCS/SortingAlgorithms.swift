@@ -20,23 +20,6 @@ struct SortingView : View {
             HStack(spacing: 10) {
                 NavigationLink(destination: selection()) {
                     Text("Selection Sort")
-                        
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                }
-                
-                NavigationLink(destination: quick()) {
-                    Text("Quick Sort")
-                        
-                        .frame(width: 250)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                }
-                
-                NavigationLink(destination: insertion()) {
-                    Text("Insertion Sort")
-                        
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -44,12 +27,26 @@ struct SortingView : View {
                 
                 NavigationLink(destination: bubble()) {
                     Text("Bubble Sort")
-                        
+                        .frame(width: 250)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                
+                NavigationLink(destination: quick()) {
+                    Text("Quick Sort")
+                        .frame(width: 250)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                
+                NavigationLink(destination: insertion()) {
+                    Text("Insertion Sort")
                         .frame(width: 250)
                         .cornerRadius(10)
                         .shadow(radius: 5)
                 }
             }.interactiveArea()
+            
             AnimatedImage(name: "sorting.gif")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -228,70 +225,56 @@ struct quick : View {
 }
 
 struct insertion: View {
-    @State private var availableCircles: [CircleItem] = [
-        CircleItem(color: Color(.systemRed), number: 1),
+    
+    @State private var circles: [CircleItem] = [
+        CircleItem(color: Color(.systemRed),    number: 1),
         CircleItem(color: Color(.systemOrange), number: 2),
         CircleItem(color: Color(.systemYellow), number: 3),
-        CircleItem(color: Color(.systemGreen), number: 4),
-        CircleItem(color: Color(.systemBlue), number: 5),
+        CircleItem(color: Color(.systemGreen),  number: 4),
+        CircleItem(color: Color(.systemBlue),   number: 5),
         CircleItem(color: Color(.systemIndigo), number: 6),
         CircleItem(color: Color(.systemPurple), number: 7)
     ]
-
-    @State private var selectedCircles: [CircleItem?] = Array(repeating: nil, count: 7)
+    
     @State private var selectedCircle: CircleItem? = nil
-
-    private func selectCircleToMove(circle: CircleItem) {
-        if selectedCircle == nil {
-            selectedCircle = circle
-            availableCircles.removeAll { $0.id == circle.id }
-        }
+    
+    private func selectCircle(at index: Int) {
+        guard selectedCircle == nil else { return }
+        selectedCircle = circles.remove(at: index)
     }
+    
 
     private func placeCircle(at index: Int) {
-        if let circle = selectedCircle, selectedCircles[index] == nil {
-            selectedCircles[index] = circle
-            selectedCircle = nil
-        }
+        guard let circle = selectedCircle else { return }
+        circles.insert(circle, at: index)
+        selectedCircle = nil
     }
-
-    private func clearSelectedCircles() {
-        if let circle = selectedCircle {
-            availableCircles.append(circle)
-            selectedCircle = nil
-        }
-        availableCircles.append(contentsOf: selectedCircles.compactMap { $0 })
-        selectedCircles = Array(repeating: nil, count: 7)
+        
+    private func shuffleCircles() {
+        circles.shuffle()
+        selectedCircle = nil
     }
-
-    private func shuffleAvailableCircles() {
-        availableCircles.shuffle()
-    }
-
+        
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
                 Subviews.TitleSection()
                 Subviews.InstructionsSection()
+                
                 VStack{
-                    Subviews.SortedCirclesView(
-                        selectedCircles: $selectedCircles,
+                    Subviews.InPlaceCirclesView(
+                        circles: $circles,
                         selectedCircle: $selectedCircle,
+                        selectCircle: selectCircle,
                         placeCircle: placeCircle
                     )
-                    Subviews.UnsortedCirclesView(
-                        availableCircles: availableCircles,
-                        selectedCircle: $selectedCircle,
-                        selectCircleToMove: selectCircleToMove
-                    )
+                    
                     Subviews.ActionButtons(
-                        clearSelectedCircles: clearSelectedCircles,
-                        shuffleAvailableCircles: shuffleAvailableCircles
+                        shuffleCircles: shuffleCircles
                     )
-                }.interactiveArea()
-#if os(tvOS)
-                Spacer().frame(height: 200)
-#endif
+                }
+                .interactiveArea()
+                
                 Subviews.DiscussionSection()
             }
             .padding()
@@ -299,148 +282,125 @@ struct insertion: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
         .foregroundColor(.white)
-        
     }
+}
 
+extension insertion {
     fileprivate enum Subviews {
+        
         struct TitleSection: View {
             var body: some View {
                 Text("Insertion Sort")
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .padding()
-                    
             }
         }
-
+        
         struct InstructionsSection: View {
             var body: some View {
                 Text("""
                     **What to do:**
-                        \u{2022} Select one element from the unsorted group.
-                        \u{2022} Place it into its correct position in the sorted group.
-                        \u{2022} Repeat until all elements have been moved to the sorted group, and are all in order.
+                    1. Insertion sort compares adjacent values in a list from left to right
+                    2. Starting from the **second** value, compare this with the value to its right, if they are in the wrong order, swap them
+                    3. After swapping a value, compare the value in its new position with the value to its left, swap them if they are in the wrong order
+                    4. When doing a comparison, if the values are alraedy in the correct order, move to the right and compare the next values.
+                    5. Repeat this process until the list is fully sorted. 
                     """)
-                
             }
         }
-
-        struct SortedCirclesView: View {
-            @Binding var selectedCircles: [CircleItem?]
+        struct InPlaceCirclesView: View {
+            @Binding var circles: [CircleItem]
             @Binding var selectedCircle: CircleItem?
+            
+            var selectCircle: (Int) -> Void
             var placeCircle: (Int) -> Void
-
+            
             var body: some View {
                 VStack {
-                    Text("Sorted")
-                        .font(.title3)
-                        
                     HStack(spacing: 20) {
-                        ForEach(selectedCircles.indices, id: \.self) { index in
+                        
+                        ForEach(circles.indices, id: \.self) { index in
                             Button(action: {
-                                placeCircle(index)
+                                handleTap(index: index)
                             }) {
                                 ZStack {
                                     Circle()
-                                        .fill(selectedCircles[index]?.color ?? Color.gray.opacity(0.4))
-                                        .frame(width: 50, height: 50)
-                                    if let circle = selectedCircles[index] {
-                                        Text("\(circle.number)")
-                                            .font(.headline)
-                                            
-                                    }
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .background(selectedCircle != nil && selectedCircles[index] == nil ? Color.blue.opacity(0.3) : Color.clear)
-                        }
-                    }
-                }
-            }
-        }
-
-        struct UnsortedCirclesView: View {
-            var availableCircles: [CircleItem]
-            @Binding var selectedCircle: CircleItem?
-            var selectCircleToMove: (CircleItem) -> Void
-
-            var body: some View {
-                VStack {
-                    Text("Unsorted")
-                        .font(.title3)
-                        
-                    HStack(spacing: 20) {
-                        ForEach(availableCircles) { circle in
-                            Button(action: {
-                                selectCircleToMove(circle)
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(circle.color)
+                                        .fill(circles[index].color)
                                         .frame(width: 50, height: 50)
                                         .overlay(
                                             Circle()
-                                                .stroke(selectedCircle == circle ? Color.white : Color.clear, lineWidth: 4)
+                                                .stroke(
+                                                    (selectedCircle?.id == circles[index].id) ?
+                                                    Color.white : Color.clear,
+                                                    lineWidth: 4
+                                                )
                                         )
-                                    Text("\(circle.number)")
+                                    Text("\(circles[index].number)")
                                         .font(.headline)
-                                        
                                 }
                             }
                             .buttonStyle(.plain)
                         }
+
+                        if selectedCircle != nil {
+                            Button(action: {
+                                placeCircle(circles.count)
+                            }) {
+                                Image(systemName: "plus.circle")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundColor(.white)
+                                    .opacity(0.8)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
+                    .padding()
+                }
+            }
+            
+            private func handleTap(index: Int) {
+                if selectedCircle == nil {
+                    selectCircle(index)
+                } else {
+                    placeCircle(index)
                 }
             }
         }
-
+        
         struct ActionButtons: View {
-            var clearSelectedCircles: () -> Void
-            var shuffleAvailableCircles: () -> Void
-
+            var shuffleCircles: () -> Void
+            
             var body: some View {
                 HStack {
-                    Button(action: {
-                        clearSelectedCircles()
-                    }) {
-                        Text("Clear Sorted")
+                    
+                    Button(action: shuffleCircles) {
+                        Text("Shuffle!")
                             .font(.system(size: 25))
                             .padding()
-                            
+                            .background(Color.blue)
                             .cornerRadius(10)
                             .shadow(radius: 5)
-                            .frame(width: 350)
-                    }
-                    Button(action: {
-                        shuffleAvailableCircles()
-                    }) {
-                        Text("Shuffle Unsorted")
-                            .font(.system(size: 25))
-                            .padding()
-                            
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
-                            .frame(width: 350)
                     }
                 }
             }
         }
-
+        
         struct DiscussionSection: View {
             var body: some View {
-                VStack {
-                    Text("Discuss the following: ")
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Discuss the following:")
                         .font(.title3)
-                        
                     Text("""
-                        \u{2022} How many comparisons did this take?
-                        \u{2022} What is the worst case for this method?
-                        \u{2022} How many comparisons would it have taken in the worst case? 
-                        \u{2022} What is the best case list for this method?
-                        \u{2022} How does this scale with having more elements in the list
+                        • How many comparisons did this take?
+                        • What is the worst case for insertion sort?
+                        • How many comparisons would it have taken in the worst case?
+                        • What is the best case list for insertion sort?
+                        • How does this scale with having more elements in the list?
                         """)
-                    
                 }
+                .padding(.top)
             }
         }
     }
@@ -496,6 +456,6 @@ struct bubble : View {
 //    SortingView()
 //    selection()
 //    quick()
-//    insertion()
-    bubble()
+    insertion()
+//    bubble()
 }

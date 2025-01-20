@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-extension Color {
-    init(hex: Int, opacity: Double = 1.0) {
-        let red = Double((hex & 0xff0000) >> 16) / 255.0
-        let green = Double((hex & 0xff00) >> 8) / 255.0
-        let blue = Double((hex & 0xff) >> 0) / 255.0
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
-    }
-}
 
 let backgroundGradient = LinearGradient(
     colors: [Color(.teal1),Color(.navyBlue),Color(.darkPurple)],
@@ -79,6 +71,7 @@ struct StartView: View {
                 .cornerRadius(20)
                 .textFieldStyle(.roundedBorder)
                 .frame(width: 400, height: 50)
+                .foregroundColor(.gray)
 
             NavigationLink("Go!") {
                 HomeView(name: name)

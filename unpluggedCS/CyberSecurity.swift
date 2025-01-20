@@ -26,13 +26,14 @@ struct SecurityView : View {
                     """)
                         Image("firewall")
                             .resizable()
+                            .frame(width: 500,height: 115)
                             .scaledToFit()
                         Text("""
                         Firewalls act like security guards for your devices/networks, monitoring all data that tries to enter or leave, makiing sure everything trying to enter is authorisd and not letting it in otherwise. While they are effectinve, firewalls still have limitations, so we often need more layers of security.
                         """)
                     }
                     
-                    .frame(width: geometry.size.width * 0.4)
+                    .frame(width: geometry.size.width * 0.45)
                     
                     VStack(spacing:10){
                         Text("Encryption")
@@ -44,12 +45,13 @@ struct SecurityView : View {
                         Image("encryption")
                             .resizable()
                             .scaledToFit()
+                            .frame(height: 200)
                         Text("""
                     Encryption makes use of algorithms to create simple symmetric keys that can encrypt data and keeps this key secure by using public and private keys during transmission of data. Only the correct combination of public and private key will allow access to this key, which is then used again to decrypt the data. 
                     The origins of encryption start before the use of computers, starting with cyrptography - the process of scrambling a message using a *secret key*. For example, the **Caeser Cipher** is a common early key used, in which every letter in the original message is moved forward 3 places - for example, "Hello" becomes "Khoor". This is of course too simple and doesnt provide enough security today, so we use much more complicated alogithms to create keys which can't be as easily figures out
                     """)
                     }
-                    .frame(width: geometry.size.width * 0.4)
+                    .frame(width: geometry.size.width * 0.5)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
