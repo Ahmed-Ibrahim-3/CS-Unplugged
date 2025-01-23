@@ -424,9 +424,7 @@ struct CAView: View {
             CPUBuilderView()
             #elseif os(tvOS)
             MultiCoreTVOSView()
-            #else
-            Text("Not implemented on this platform.")
-                .font(.largeTitle)
+
             #endif
         }
         .background(backgroundGradient)

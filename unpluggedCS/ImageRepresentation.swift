@@ -99,7 +99,7 @@ struct ColorPixelBuilderView: View {
         .black, .white, .red, .green,
         .blue, .yellow, .orange, .purple,
         .pink, .gray, .brown, .cyan,
-        .mint, .indigo, .teal, Color("32CD32")
+        .mint, .indigo, .teal, .darkPurple
     ]
     
     let gridSize = 16
@@ -186,7 +186,7 @@ struct PixelArtShowcaseView: View {
         .black, .white, .red, .green,
         .blue, .yellow, .orange, .purple,
         .pink, .gray, .brown, .cyan,
-        .mint, .indigo, .teal, Color("32CD32")
+        .mint, .indigo, .teal, .darkPurple
     ]
     let gridSize = 16
     

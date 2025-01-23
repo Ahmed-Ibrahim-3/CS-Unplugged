@@ -472,8 +472,6 @@ struct ContentView: View {
         GraphEditorView()
         #elseif os(tvOS)
         GraphEditorView_tvOS()
-        #else
-        Text("Platform not supported")
         #endif
     }
 }

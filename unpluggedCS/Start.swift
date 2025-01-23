@@ -31,7 +31,7 @@ extension View {
 }
 
 struct StartView: View {
-    @State private var name: String = ""
+    @State private var name: String = String()
     @State private var showingAlert = false
 
     var body: some View {
@@ -74,12 +74,14 @@ struct StartView: View {
                 .foregroundColor(.gray)
 
             NavigationLink("Go!") {
-                HomeView(name: name)
+                if name.isEmpty{
+                    HomeView(name: UIDevice.current.name)
+                }
+                else {HomeView(name: name)}
             }
             
         }
 #endif
-
             }
             .foregroundStyle(.white)
         }
@@ -109,10 +111,10 @@ struct HomeView: View {
     ]
     
     let home = "bold"
-    var name : String = ""
+    var name : String?
     
-    init(name: String) {
-        self.name = name
+    init(name: String?) {
+        self.name = name ?? UIDevice.current.name
     }
     
     var body: some View {
@@ -120,7 +122,7 @@ struct HomeView: View {
 #if os(tvOS)
             NavigationView {
                 GridView(viewItems: views)
-                    .navigationTitle("Hello, " + name)
+                    .navigationTitle("Hello, " + name!)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(backgroundGradient)
@@ -131,7 +133,7 @@ struct HomeView: View {
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .principal) {
-                                Text("Hello, " + name)
+                                Text("Hello, " + name!)
                                     .font(.largeTitle.bold())
                                     .accessibilityAddTraits(.isHeader)
                                 
@@ -232,5 +234,5 @@ struct GridView: View {
 
 #Preview {
 //    StartView()
-    HomeView(name: "test")
+    HomeView(name: "")
 }

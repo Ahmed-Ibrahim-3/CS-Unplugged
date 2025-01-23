@@ -208,17 +208,22 @@ struct DataStructureView: View {
                 .frame(height: 50)
                 
             case .stack:
-                VStack(spacing: elementSpacing) {
-                    ForEach(stackElements.reversed(), id: \.self) { element in
-                        Text(element)
-                            .padding()
-                            .background(Color.orange.opacity(0.7))
-                            .cornerRadius(8)
-                            .transition(.scale)
+                ScrollView(.vertical, showsIndicators: false){
+                    VStack(spacing: elementSpacing) {
+                        ForEach(stackElements.reversed(), id: \.self) { element in
+                            Text(element)
+                                .padding()
+                                .background(Color.orange.opacity(0.7))
+                                .cornerRadius(8)
+                                .transition(.scale)
+                                .frame(minWidth:65, maxWidth: 65)
+                        }
                     }
+                    .frame(width: 100)
+                    .animation(.default, value: stackElements)
                 }
-                .animation(.default, value: stackElements)
                 .frame(height: 200)
+
             }
             Spacer()
 

@@ -89,7 +89,7 @@ struct BitView : View {
                     """
     
     @State private var imgIndex = 0
-    @State private var isImageOne: [Bool] = Array(repeating: true, count: 5)
+    @State private var isOne: [Bool] = Array(repeating: true, count: 5)
     @State private var decimalVal = 31
     @State private var isFocused = false
     @State private var totalShapes = 1
@@ -150,9 +150,9 @@ struct BitView : View {
                                     HStack(spacing:25){
                                         ForEach(0..<5, id: \.self) { index in
                                             Button(action: {
-                                                isImageOne[index].toggle()
+                                                isOne[index].toggle()
                                             }) {
-                                                Image(systemName: isImageOne[index] ? "circle.fill" : "circle.dotted")
+                                                Image(systemName: isOne[index] ? "circle.fill" : "circle.dotted")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
                                                     .frame(width: 75)
@@ -164,7 +164,7 @@ struct BitView : View {
                                     }
                                     
                                     Button (action: {
-                                        decimalVal = calculateBinaryValue(from: isImageOne)
+                                        decimalVal = calculateBinaryValue(from: isOne)
                                     }){
                                         Image(systemName: "equal")
                                             .resizable()
@@ -198,15 +198,15 @@ struct BitView : View {
                         
                         HStack(spacing: 10) {
                             ForEach(0..<5, id: \.self) { index in
-                                Image(systemName: isImageOne[index] ? "circle.fill" : "circle.dotted")
+                                Image(systemName: isOne[index] ? "circle.fill" : "circle.dotted")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 50)
                                     .clipped()
                                     .foregroundColor(Color.orange.opacity(0.7))
                                     .onTapGesture {
-                                        isImageOne[index].toggle()
-                                        decimalVal = calculateBinaryValue(from: isImageOne)
+                                        isOne[index].toggle()
+                                        decimalVal = calculateBinaryValue(from: isOne)
                                     }
                             }
                         }.interactiveArea()
