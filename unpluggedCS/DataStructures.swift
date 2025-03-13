@@ -52,13 +52,14 @@ struct DataView: View {
                             that follows the First In First Out
                             principle, so the element inserted
                             first is the first to leave.
-                        """,
-                            description2: """
+                        
                             We define a queue to be a list in which
                             all additions are made at one end and all
-                            deletions are made at the other. A queue,
-                            as the name suggests, is like a line of
-                            people waiting to buy an item. The first
+                            deletions are made at the other.
+                        """,
+                            description2: """
+                            A queue, as the name suggests, is like a line
+                            of people waiting to buy an item. The first
                             person to enter the queue is the first
                             person to be able to buy it, and the
                             last in the queue is the last to be able
@@ -216,10 +217,9 @@ struct DataStructureView: View {
                                 .background(Color.orange.opacity(0.7))
                                 .cornerRadius(8)
                                 .transition(.scale)
-                                .frame(minWidth:65, maxWidth: 65)
                         }
                     }
-                    .frame(width: 100)
+//                    .frame(width: 100)
                     .animation(.default, value: stackElements)
                 }
                 .frame(height: 200)

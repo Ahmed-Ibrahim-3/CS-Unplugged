@@ -42,7 +42,7 @@ struct SecurityView : View {
                         Text("""
                     Encryption is a security measure used to try to prevent unauthorised access to data during transmission from one system to another. It is designed to scramble up data so that if an unauthorised person or organisation manages to intercept data packets, they will not be able to read the content
                     """)
-                        Image("encryption")
+                        Image("Encryption")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 200)

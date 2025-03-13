@@ -51,6 +51,17 @@ struct CPUSlot: Identifiable {
 
 #if os(iOS)
 struct CPUBuilderView: View {
+    public var name : String?
+    
+    @StateObject private var service : iOSMultipeerServiceCPU
+
+    init(name: String?) {
+        self.name = name ?? UIDevice.current.name
+        _slots = State(initialValue: initialSlots)
+        _availableComponents = State(initialValue: CPUComponent.allCases.shuffled())
+        _service = StateObject(wrappedValue: iOSMultipeerServiceCPU(username: name!))
+
+    }
     private let initialSlots: [CPUSlot] = [
         CPUSlot(slotType: .controlUnit),
         CPUSlot(slotType: .alu),
@@ -67,13 +78,7 @@ struct CPUBuilderView: View {
     @State private var allPlacedCorrectly = false
     @State private var outlineColour: Color = .white
     
-    @StateObject private var service = iOSMultipeerServiceCPU()
     @State private var showBrowser = false
-    
-    init() {
-        _slots = State(initialValue: initialSlots)
-        _availableComponents = State(initialValue: CPUComponent.allCases.shuffled())
-    }
     
     var body: some View {
         VStack {
@@ -335,13 +340,12 @@ struct MCConnectViewCPU: UIViewControllerRepresentable {
     @ObservedObject var service: iOSMultipeerServiceCPU
     
     func makeUIViewController(context: Context) -> MCBrowserViewController {
-        let vc = MCBrowserViewController(serviceType: serviceNameCPU, session: service.session)
+        let vc = MCBrowserViewController(serviceType: kServiceCPU, session: service.session)
         vc.delegate = service
         return vc
     }
     
     func updateUIViewController(_ uiViewController: MCBrowserViewController, context: Context) {
-        // No-op
     }
 }
 #endif
@@ -394,6 +398,11 @@ struct MultiCoreTVOSView: View {
 #endif
 
 struct CAView: View {
+    public var name : String?
+    
+    init(name: String?) {
+        self.name = name ?? UIDevice.current.name
+    }
     var body: some View {
         ScrollView {
             VStack {
@@ -421,7 +430,7 @@ struct CAView: View {
                 }
             }
             #if os(iOS)
-            CPUBuilderView()
+            CPUBuilderView(name:name)
             #elseif os(tvOS)
             MultiCoreTVOSView()
 
@@ -434,5 +443,5 @@ struct CAView: View {
 }
 
 #Preview {
-    CAView()
+    CAView(name: "test")
 }

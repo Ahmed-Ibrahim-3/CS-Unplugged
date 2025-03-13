@@ -9,6 +9,12 @@ import SwiftUI
 import MultipeerConnectivity
 
 struct ImgView: View {
+    public var name : String
+    
+    init(name: String) {
+        self.name = name
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -74,7 +80,7 @@ struct ImgView: View {
                 Text("4-Bit Color Image Builder")
                     .font(.headline)
                 
-                ColorPixelBuilderView()
+                ColorPixelBuilderView(name: name)
                     .interactiveArea()
             }
             .padding()
@@ -82,10 +88,8 @@ struct ImgView: View {
             Divider()
                 .background(Color.white)
                 .padding(.vertical, 20)
-            PixelArtShowcaseView(service: TVOSMultipeerService())
-                .edgesIgnoringSafeArea(.all)
-#else
-            Text("Not implemented on this platform.")
+            PixelArtShowcaseView(service: TVOSMultipeerServiceArt())
+//                .edgesIgnoringSafeArea(.all)
 #endif
         }
         .background(backgroundGradient)
@@ -95,6 +99,7 @@ struct ImgView: View {
 
 #if os(iOS)
 struct ColorPixelBuilderView: View {
+    let name: String
     let palette: [Color] = [
         .black, .white, .red, .green,
         .blue, .yellow, .orange, .purple,
@@ -107,8 +112,13 @@ struct ColorPixelBuilderView: View {
     
     @State private var selectedColor: Int = 0
     @State private var ColumnSpacing: CGFloat = -800
-    
-    @StateObject private var mpService = iOSMultipeerService()
+        
+    @StateObject private var mpService: iOSMultipeerServiceArt
+
+    init(name: String) {
+            self.name = name
+            _mpService = StateObject(wrappedValue: iOSMultipeerServiceArt(username: name))
+        }
     
     var body: some View {
         VStack {
@@ -117,7 +127,7 @@ struct ColorPixelBuilderView: View {
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let window = windowScene.windows.first,
                        let rootVC = window.rootViewController {
-                        mpService.startBrowsing(presentingVC: rootVC)
+                        mpService.browseForArtService(presentingVC: rootVC)
                     }
                 }
                 .padding()
@@ -180,7 +190,7 @@ struct ColorPixelBuilderView: View {
 
 #if os(tvOS)
 struct PixelArtShowcaseView: View {
-    @ObservedObject var service: TVOSMultipeerService
+    @ObservedObject var service: TVOSMultipeerServiceArt
     
     let palette: [Color] = [
         .black, .white, .red, .green,
@@ -203,14 +213,13 @@ struct PixelArtShowcaseView: View {
                     HStack(spacing: 40) {
                         ForEach(Array(service.peerPixelArt.keys), id: \.self) { peerID in
                             VStack {
-                                Text(peerID.displayName)
-                                    .font(.title3)
-                                    .padding(.bottom, 20)
-                                
                                 if let pixelArray = service.peerPixelArt[peerID] {
                                     pixelGridView(pixelArray)
                                         .focusable()
                                 }
+                                Text(peerID.displayName)
+                                    .font(.headline)
+                                    .padding(.bottom, 5)
                             }
                             .padding()
                         }
@@ -249,5 +258,5 @@ extension Array {
 #endif
 
 #Preview {
-    ImgView()
+    ImgView(name: "a")
 }

@@ -9,22 +9,32 @@ import Foundation
 import MultipeerConnectivity
 import SwiftUI
 
-public let serviceName = "tv-art"
+public let kServiceArt = "tv-art"
+public let kServiceCPU = "tv-multi-cpu"
 
-public enum MPCMessage: Codable {
+public protocol MPCMessageProtocol: Codable {}
+
+public enum MPCMessageArt: MPCMessageProtocol {
     case pixelArtUpdate(pixels: [Int])
 }
 
+public enum MPCMessageCPU: MPCMessageProtocol {
+    case requestCore
+    case assignCore(coreNumber: Int)
+    case coreComplete(coreNumber: Int)
+}
+
 #if os(iOS)
-public class iOSMultipeerService: NSObject, ObservableObject {
-    private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
+public class iOSMultipeerServiceBase<MessageType: MPCMessageProtocol>: NSObject, ObservableObject, MCSessionDelegate, MCBrowserViewControllerDelegate {
+    private let myPeerID: MCPeerID
     private var mcSession: MCSession!
-    private var mcBrowser: MCBrowserViewController!
     
     @Published public var isConnected = false
     
-    override public init() {
+    public init(serviceName: String, username: String) {
+        self.myPeerID = MCPeerID(displayName: username)
         super.init()
+        
         mcSession = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
         mcSession.delegate = self
     }
@@ -33,26 +43,27 @@ public class iOSMultipeerService: NSObject, ObservableObject {
         mcSession
     }
     
-    public func startBrowsing(presentingVC: UIViewController) {
-        mcBrowser = MCBrowserViewController(serviceType: serviceName, session: mcSession)
-        mcBrowser.delegate = self
-        presentingVC.present(mcBrowser, animated: true)
+    public func startBrowsing(presentingVC: UIViewController, serviceType: String) {
+        let browser = MCBrowserViewController(serviceType: serviceType, session: mcSession)
+        browser.delegate = self
+        presentingVC.present(browser, animated: true)
     }
     
-    public func sendPixelArtUpdate(pixels: [Int]) {
+    public func sendMessage(_ msg: MessageType) {
         guard mcSession.connectedPeers.count > 0 else { return }
-        let msg = MPCMessage.pixelArtUpdate(pixels: pixels)
         
         do {
             let data = try JSONEncoder().encode(msg)
             try mcSession.send(data, toPeers: mcSession.connectedPeers, with: .reliable)
         } catch {
-            print("iOS: Error sending pixelArtUpdate: \(error)")
+            print("iOS: Error sending message: \(error)")
         }
     }
-}
-
-extension iOSMultipeerService: MCSessionDelegate {
+    
+    public func handleReceivedMessage(_ message: MessageType, from peerID: MCPeerID) {
+        // do NOT delete
+    }
+    
     public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         DispatchQueue.main.async {
             self.isConnected = (state == .connected)
@@ -61,6 +72,7 @@ extension iOSMultipeerService: MCSessionDelegate {
         switch state {
         case .connected:
             print("iOS: Connected to \(peerID.displayName)")
+            self.onPeerConnected(peerID)
         case .connecting:
             print("iOS: Connecting to \(peerID.displayName)...")
         case .notConnected:
@@ -70,11 +82,13 @@ extension iOSMultipeerService: MCSessionDelegate {
         }
     }
     
+    public func onPeerConnected(_ peerID: MCPeerID) {}
+    
     public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let msg = try? JSONDecoder().decode(MPCMessage.self, from: data) else { return }
-        switch msg {
-        case .pixelArtUpdate(_):
-            break
+        guard let msg = try? JSONDecoder().decode(MessageType.self, from: data) else { return }
+        
+        DispatchQueue.main.async {
+            self.handleReceivedMessage(msg, from: peerID)
         }
     }
     
@@ -82,17 +96,17 @@ extension iOSMultipeerService: MCSessionDelegate {
                         didReceive stream: InputStream,
                         withName streamName: String,
                         fromPeer peerID: MCPeerID) {}
+    
     public func session(_ session: MCSession,
                         didStartReceivingResourceWithName resourceName: String,
                         fromPeer peerID: MCPeerID,
                         with progress: Progress) {}
+    
     public func session(_ session: MCSession,
                         didFinishReceivingResourceWithName resourceName: String,
                         fromPeer peerID: MCPeerID,
                         at localURL: URL?, withError error: Error?) {}
-}
-
-extension iOSMultipeerService: MCBrowserViewControllerDelegate {
+    
     public func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
         browserViewController.dismiss(animated: true)
     }
@@ -101,112 +115,31 @@ extension iOSMultipeerService: MCBrowserViewControllerDelegate {
         browserViewController.dismiss(animated: true)
     }
 }
-#endif
 
-#if os(tvOS)
-public class TVOSMultipeerService: NSObject, ObservableObject {
-    private let myPeerID = MCPeerID(displayName: "tvOS-Host")
-    private var session: MCSession!
-    private var advertiser: MCNearbyServiceAdvertiser!
-    
-    @Published public var peerPixelArt: [MCPeerID: [Int]] = [:]
-    
-    override public init() {
-        super.init()
-        
-        session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
-        session.delegate = self
-        
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerID,
-                                               discoveryInfo: nil,
-                                               serviceType: serviceName)
-        advertiser.delegate = self
-        advertiser.startAdvertisingPeer()
+public class iOSMultipeerServiceArt: iOSMultipeerServiceBase<MPCMessageArt> {
+    public override init(serviceName: String = kServiceArt, username:String) {
+        super.init(serviceName: serviceName, username: username)
     }
     
-    private func handlePixelArtUpdate(from peer: MCPeerID, pixels: [Int]) {
-        peerPixelArt[peer] = pixels
+    public func sendPixelArtUpdate(pixels: [Int]) {
+        let msg = MPCMessageArt.pixelArtUpdate(pixels: pixels)
+        sendMessage(msg)
+    }
+    
+    public func browseForArtService(presentingVC: UIViewController) {
+        startBrowsing(presentingVC: presentingVC, serviceType: kServiceArt)
     }
 }
 
-extension TVOSMultipeerService: MCSessionDelegate {
-    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        switch state {
-        case .connected:
-            print("tvOS: Peer connected: \(peerID.displayName)")
-        case .connecting:
-            print("tvOS: Peer connecting: \(peerID.displayName)")
-        case .notConnected:
-            print("tvOS: Peer disconnected: \(peerID.displayName)")
-        @unknown default:
-            break
-        }
-    }
-    
-    public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let msg = try? JSONDecoder().decode(MPCMessage.self, from: data) else { return }
-        switch msg {
-        case .pixelArtUpdate(let pixels):
-            DispatchQueue.main.async {
-                self.handlePixelArtUpdate(from: peerID, pixels: pixels)
-            }
-        }
-    }
-    
-    public func session(_ session: MCSession,
-                        didReceive stream: InputStream,
-                        withName streamName: String,
-                        fromPeer peerID: MCPeerID) {}
-    public func session(_ session: MCSession,
-                        didStartReceivingResourceWithName resourceName: String,
-                        fromPeer peerID: MCPeerID, with progress: Progress) {}
-    public func session(_ session: MCSession,
-                        didFinishReceivingResourceWithName resourceName: String,
-                        fromPeer peerID: MCPeerID,
-                        at localURL: URL?, withError error: Error?) {}
-}
-
-extension TVOSMultipeerService: MCNearbyServiceAdvertiserDelegate {
-    public func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
-                           didReceiveInvitationFromPeer peerID: MCPeerID,
-                           withContext context: Data?,
-                           invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        invitationHandler(true, session)
-    }
-}
-#endif
-
-public let serviceNameCPU = "tv-multi-cpu"
-
-public enum MPCMessageCPU: Codable {
-    case requestCore
-    case assignCore(coreNumber: Int)
-    case coreComplete(coreNumber: Int)
-}
-
-#if os(iOS)
-public class iOSMultipeerServiceCPU: NSObject, ObservableObject {
-    private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
-    private var mcSession: MCSession!
-    private var mcBrowser: MCBrowserViewController!
-    
+public class iOSMultipeerServiceCPU: iOSMultipeerServiceBase<MPCMessageCPU> {
     @Published public var assignedCoreNumber: Int?
-    @Published public var isConnected = false
     
-    override public init() {
-        super.init()
-        mcSession = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
-        mcSession.delegate = self
+    public override init(serviceName: String = kServiceCPU, username:String) {
+        super.init(serviceName: serviceName, username: username)
     }
     
-    public var session: MCSession {
-        mcSession
-    }
-    
-    public func startBrowsing(presentingVC: UIViewController) {
-        mcBrowser = MCBrowserViewController(serviceType: serviceNameCPU, session: mcSession)
-        mcBrowser.delegate = self
-        presentingVC.present(mcBrowser, animated: true)
+    public override func onPeerConnected(_ peerID: MCPeerID) {
+        requestCoreFromTV()
     }
     
     public func requestCoreFromTV() {
@@ -220,49 +153,75 @@ public class iOSMultipeerServiceCPU: NSObject, ObservableObject {
         sendMessage(msg)
     }
     
-    private func sendMessage(_ msg: MPCMessageCPU) {
-        guard mcSession.connectedPeers.count > 0 else { return }
-        do {
-            let data = try JSONEncoder().encode(msg)
-            try mcSession.send(data, toPeers: mcSession.connectedPeers, with: .reliable)
-        } catch {
-            print("iOS-CPU: Error sending message: \(error)")
+    public override func handleReceivedMessage(_ message: MPCMessageCPU, from peerID: MCPeerID) {
+        switch message {
+        case .assignCore(let coreNumber):
+            self.assignedCoreNumber = coreNumber
+        case .requestCore, .coreComplete:
+            break
         }
     }
+    
+    public func browseForCPUService(presentingVC: UIViewController) {
+        startBrowsing(presentingVC: presentingVC, serviceType: kServiceCPU)
+    }
 }
+#endif
 
-extension iOSMultipeerServiceCPU: MCSessionDelegate {
-    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        DispatchQueue.main.async {
-            self.isConnected = (state == .connected)
-        }
+#if os(tvOS)
+public class TVOSMultipeerServiceBase<MessageType: MPCMessageProtocol>: NSObject, ObservableObject, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate {
+    private let myPeerID: MCPeerID
+    private var session: MCSession!
+    private var advertiser: MCNearbyServiceAdvertiser!
+    
+    public init(displayName: String, serviceType: String) {
+        self.myPeerID = MCPeerID(displayName: displayName)
+        super.init()
         
+        session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
+        session.delegate = self
+        
+        advertiser = MCNearbyServiceAdvertiser(peer: myPeerID,
+                                              discoveryInfo: nil,
+                                              serviceType: serviceType)
+        advertiser.delegate = self
+        advertiser.startAdvertisingPeer()
+    }
+    
+    public func sendMessage(_ msg: MessageType, to peer: MCPeerID) {
+        do {
+            let data = try JSONEncoder().encode(msg)
+            try session.send(data, toPeers: [peer], with: .reliable)
+        } catch {
+            print("tvOS: Error sending message to \(peer.displayName): \(error)")
+        }
+    }
+    
+    public func handleReceivedMessage(_ message: MessageType, from peerID: MCPeerID) {
+        // do NOT delete
+    }
+    
+    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .connected:
-            print("iOS-CPU: Connected to \(peerID.displayName)")
-            requestCoreFromTV()
+            print("tvOS: Peer connected: \(peerID.displayName)")
         case .connecting:
-            print("iOS-CPU: Connecting to \(peerID.displayName)...")
+            print("tvOS: Peer connecting: \(peerID.displayName)")
         case .notConnected:
-            print("iOS-CPU: Disconnected from \(peerID.displayName)")
+            print("tvOS: Peer disconnected: \(peerID.displayName)")
+            self.onPeerDisconnected(peerID)
         @unknown default:
             break
         }
     }
     
-    public func session(_ session: MCSession,
-                        didReceive data: Data,
-                        fromPeer peerID: MCPeerID) {
-        guard let msg = try? JSONDecoder().decode(MPCMessageCPU.self, from: data) else { return }
+    public func onPeerDisconnected(_ peerID: MCPeerID) {}
+    
+    public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        guard let msg = try? JSONDecoder().decode(MessageType.self, from: data) else { return }
+        
         DispatchQueue.main.async {
-            switch msg {
-            case .requestCore:
-                break
-            case .assignCore(let coreNumber):
-                self.assignedCoreNumber = coreNumber
-            case .coreComplete:
-                break
-            }
+            self.handleReceivedMessage(msg, from: peerID)
         }
     }
     
@@ -270,53 +229,67 @@ extension iOSMultipeerServiceCPU: MCSessionDelegate {
                         didReceive stream: InputStream,
                         withName streamName: String,
                         fromPeer peerID: MCPeerID) {}
+    
     public func session(_ session: MCSession,
                         didStartReceivingResourceWithName resourceName: String,
                         fromPeer peerID: MCPeerID,
                         with progress: Progress) {}
+    
     public func session(_ session: MCSession,
                         didFinishReceivingResourceWithName resourceName: String,
                         fromPeer peerID: MCPeerID,
                         at localURL: URL?, withError error: Error?) {}
+    
+    public func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
+                          didReceiveInvitationFromPeer peerID: MCPeerID,
+                          withContext context: Data?,
+                          invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        invitationHandler(true, session)
+    }
 }
 
-extension iOSMultipeerServiceCPU: MCBrowserViewControllerDelegate {
-    public func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-        browserViewController.dismiss(animated: true)
+public class TVOSMultipeerServiceArt: TVOSMultipeerServiceBase<MPCMessageArt> {
+    @Published public var peerPixelArt: [MCPeerID: [Int]] = [:]
+    
+    public init() {
+        super.init(displayName: "tvOS-Art-Host", serviceType: kServiceArt)
     }
     
-    public func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-        browserViewController.dismiss(animated: true)
+    public override func handleReceivedMessage(_ message: MPCMessageArt, from peerID: MCPeerID) {
+        switch message {
+        case .pixelArtUpdate(let pixels):
+            peerPixelArt[peerID] = pixels
+        }
+    }
+    
+    public override func onPeerDisconnected(_ peerID: MCPeerID) {
+        peerPixelArt.removeValue(forKey: peerID)
     }
 }
-#endif
 
-#if os(tvOS)
 public struct CoreStatus: Identifiable {
     public let id = UUID()
     public let coreNumber: Int
     public var isComplete: Bool
 }
 
-public class TVOSMultipeerServiceCPU: NSObject, ObservableObject {
-    private let myPeerID = MCPeerID(displayName: "tvOS-CPU-Host")
-    private var session: MCSession!
-    private var advertiser: MCNearbyServiceAdvertiser!
-    
+public class TVOSMultipeerServiceCPU: TVOSMultipeerServiceBase<MPCMessageCPU> {
     @Published public var cores: [CoreStatus] = []
     @Published public var allCoresReady = false
     
-    override public init() {
-        super.init()
-        
-        session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
-        session.delegate = self
-        
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerID,
-                                               discoveryInfo: nil,
-                                               serviceType: serviceNameCPU)
-        advertiser.delegate = self
-        advertiser.startAdvertisingPeer()
+    public init() {
+        super.init(displayName: "tvOS-CPU-Host", serviceType: kServiceCPU)
+    }
+    
+    public override func handleReceivedMessage(_ message: MPCMessageCPU, from peerID: MCPeerID) {
+        switch message {
+        case .requestCore:
+            assignNewCore(to: peerID)
+        case .assignCore:
+            break // tvOS doesn't handle this message
+        case .coreComplete(let coreNumber):
+            markCoreComplete(coreNumber)
+        }
     }
     
     private func assignNewCore(to peer: MCPeerID) {
@@ -338,65 +311,6 @@ public class TVOSMultipeerServiceCPU: NSObject, ObservableObject {
     private func checkAllCoresReady() {
         allCoresReady = cores.allSatisfy { $0.isComplete } && !cores.isEmpty
     }
-    
-    private func sendMessage(_ msg: MPCMessageCPU, to peer: MCPeerID) {
-        do {
-            let data = try JSONEncoder().encode(msg)
-            try session.send(data, toPeers: [peer], with: .reliable)
-        } catch {
-            print("tvOS-CPU: Error sending message to \(peer.displayName): \(error)")
-        }
-    }
 }
+#endif
 
-extension TVOSMultipeerServiceCPU: MCSessionDelegate {
-    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        switch state {
-        case .connected:
-            print("tvOS-CPU: Peer connected: \(peerID.displayName)")
-        case .connecting:
-            print("tvOS-CPU: Peer connecting: \(peerID.displayName)")
-        case .notConnected:
-            print("tvOS-CPU: Peer disconnected: \(peerID.displayName)")
-        @unknown default:
-            break
-        }
-    }
-    
-    public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let msg = try? JSONDecoder().decode(MPCMessageCPU.self, from: data) else { return }
-        DispatchQueue.main.async {
-            switch msg {
-            case .requestCore:
-                self.assignNewCore(to: peerID)
-            case .assignCore:
-                break
-            case .coreComplete(let coreNumber):
-                self.markCoreComplete(coreNumber)
-            }
-        }
-    }
-    
-    public func session(_ session: MCSession,
-                        didReceive stream: InputStream,
-                        withName streamName: String,
-                        fromPeer peerID: MCPeerID) {}
-    public func session(_ session: MCSession,
-                        didStartReceivingResourceWithName resourceName: String,
-                        fromPeer peerID: MCPeerID,
-                        with progress: Progress) {}
-    public func session(_ session: MCSession,
-                        didFinishReceivingResourceWithName resourceName: String,
-                        fromPeer peerID: MCPeerID,
-                        at localURL: URL?, withError error: Error?) {}
-}
-
-extension TVOSMultipeerServiceCPU: MCNearbyServiceAdvertiserDelegate {
-    public func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
-                           didReceiveInvitationFromPeer peerID: MCPeerID,
-                           withContext context: Data?,
-                           invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        invitationHandler(true, session)
-    }
-}
-#endif 

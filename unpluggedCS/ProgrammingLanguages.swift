@@ -32,11 +32,10 @@ struct ProgLangView : View {
                 Text("""
                 \u{2022} 'M'('r'|'rs'|'iss')
                     - We read this as: An 'M' followed by either an 'r', 'rs', or 'iss'. This represents the strings 'Mr', 'Mrs', and 'Miss'
-                \u{2022} 'b'('an')*'a'
+                \u{2022} 'b'('an')\u{002A}'a'
                     - A 'b', followed by 0 or more 'an's, followed by an 'a'. This represents the strings 'ba', 'bana', banana', 'bananana', etc.
-                \u{2022} ('x'|'abc')* 
+                \u{2022} ('x'|'abc')\u{066d} 
                     - Any number of occurences of  'x' or 'abc', for example: 'x','abc','xx','xabc','abcx’,'abcabc’,' xxx’,'xxabc’,'xabcx’,'abcxx’, etc.
-                
                 """)
                 Text("""
                 Now, think about what programming languages you know. How could regular expressions be used to define Their syntax rules? For example, consider an **if** statement in python, this can be represented as 'if' *command*+ ':' *expression*+ This is a much more simplified represenatation, as it doesn't include the new line and indentation before the expression(s), and doesn't have the 'and's or 'or's between the command(s), which in this case are the conditions of the if statement

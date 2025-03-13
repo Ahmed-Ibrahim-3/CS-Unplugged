@@ -167,108 +167,6 @@ struct GraphExplanationView : View {
     }
 }
 
-#if os(iOS)
-struct GraphEditorView: View {
-    @ObservedObject var graph = Graph()
-    
-    @State private var draggedNodeId: UUID? = nil
-    
-    @State private var fromNode: String = ""
-    @State private var toNode: String = ""
-    @State private var edgeWeight: String = ""
-    
-    @State private var nodeCounter = 1
-    
-    @State private var defaultPosition = CGPoint(x: 100, y: 100)
-    
-    var body: some View {
-        VStack {
-            HStack(spacing:65) {
-                Toggle("Weighted", isOn: $graph.isWeighted).frame(width: 130)
-                Toggle("Directed", isOn: $graph.isDirected).frame(width: 130)
-                Spacer()
-                Text("Connected: \(graph.isConnected ? "Yes" : "No")")
-                Text("Cyclic: \(graph.isCyclic ? "Yes" : "No")")
-            }
-            .interactiveArea()
-            
-            ZStack {
-                ForEach(graph.edges) { edge in
-                    EdgeView(edge: edge, graph: graph)
-                }
-                
-                ForEach(graph.nodes) { node in
-                    NodeView(node: node, isDragged: draggedNodeId == node.id)
-                        .position(node.position)
-                        .gesture(
-                            DragGesture()
-                                .onChanged { value in
-                                    if draggedNodeId == nil {
-                                        draggedNodeId = node.id
-                                    }
-                                    if draggedNodeId == node.id {
-                                        if let idx = graph.nodes.firstIndex(where: { $0.id == node.id }) {
-                                            graph.nodes[idx].position = value.location
-                                        }
-                                    }
-                                }
-                                .onEnded { _ in
-                                    draggedNodeId = nil
-                                }
-                        )
-                }
-            }
-            .frame(minHeight: 500)
-            .interactiveArea()
-            
-            VStack(spacing: 10) {
-                HStack {
-                    Button("Add Node") {
-                        let label = "\(nodeCounter)"
-                        graph.addNode(label: label, position: defaultPosition)
-                        
-                        nodeCounter += 1
-                        defaultPosition.x += 30
-                        defaultPosition.y += 30
-                    }
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Color.green)
-                    .cornerRadius(8)
-                }
-                
-                HStack {
-                    TextField("From node label", text: $fromNode)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .foregroundColor(.gray)
-                    TextField("To node label", text: $toNode)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .foregroundColor(.gray)
-                    TextField("Weight (opt)", text: $edgeWeight)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .foregroundColor(.gray)
-                    Button("Add Edge") {
-                        if let fromId = graph.nodes.first(where: { $0.label == fromNode })?.id,
-                           let toId = graph.nodes.first(where: { $0.label == toNode })?.id {
-                            let weight = Int(edgeWeight)
-                            graph.addEdge(from: fromId, to: toId, weight: weight)
-                        }
-                        
-                        fromNode = ""
-                        toNode = ""
-                        edgeWeight = ""
-                    }
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(Color.green)
-                    .cornerRadius(8)
-                }
-            }
-            .interactiveArea()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-#endif
-
 struct EdgeView: View {
     let edge: Edge
     @ObservedObject var graph: Graph
@@ -343,23 +241,39 @@ struct NodeView: View {
     }
 }
 
-#if os(tvOS)
-struct GraphEditorView_tvOS: View {
+
+struct GraphEditorView: View {
     @ObservedObject var graph = Graph()
     
-    @State private var nodeCounter = 1
+    #if os(iOS)
+    @State private var draggedNodeId: UUID? = nil
+    @State private var deletionMode: Bool = false
+    #endif
     
+    #if os(tvOS)
     @State private var selectedNodeIndex: Int = 0
+    #endif
     
     @State private var fromNode: String = ""
     @State private var toNode: String = ""
     @State private var edgeWeight: String = ""
     
+    @State private var nodeCounter = 1
+    @State private var defaultPosition = CGPoint(x: 350, y: 350)
+    
     var body: some View {
         VStack {
-            HStack() {
-                Toggle("Weighted", isOn: $graph.isWeighted)
-                Toggle("Directed", isOn: $graph.isDirected)
+            HStack(spacing: 65) {
+                #if os(tvOS)
+                Toggle("Weighted", isOn: $graph.isWeighted).frame(width: UIScreen.main.bounds.width / 4)
+                Toggle("Directed", isOn: $graph.isDirected).frame(width: UIScreen.main.bounds.width / 4)
+                #else
+                Toggle("Weighted", isOn: $graph.isWeighted).frame(width: UIScreen.main.bounds.width / 8)
+                Toggle("Directed", isOn: $graph.isDirected).frame(width: UIScreen.main.bounds.width / 8)
+                #endif
+                #if os(iOS)
+                Toggle("Deletion Mode", isOn: $deletionMode).frame(width: UIScreen.main.bounds.width / 6)
+                #endif
                 Spacer()
                 Text("Connected: \(graph.isConnected ? "Yes" : "No")")
                 Text("Cyclic: \(graph.isCyclic ? "Yes" : "No")")
@@ -368,72 +282,157 @@ struct GraphEditorView_tvOS: View {
             
             ZStack {
                 ForEach(graph.edges) { edge in
+                    #if os(iOS)
+                    Group {
+                        if deletionMode {
+                            EdgeView(edge: edge, graph: graph)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    graph.removeEdge(edge.id)
+                                }
+                        } else {
+                            EdgeView(edge: edge, graph: graph)
+                        }
+                    }
+                    #elseif os(tvOS)
                     EdgeView(edge: edge, graph: graph)
+                    #endif
                 }
                 
+                #if os(iOS)
+                ForEach(graph.nodes) { node in
+                    Group {
+                        if deletionMode {
+                            NodeView(node: node, isDragged: false)
+                                .position(node.position)
+                                .onTapGesture {
+                                    graph.removeNode(node.id)
+                                }
+                        } else {
+                            NodeView(node: node, isDragged: draggedNodeId == node.id)
+                                .position(node.position)
+                                .highPriorityGesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            if draggedNodeId == nil {
+                                                draggedNodeId = node.id
+                                            }
+                                            if draggedNodeId == node.id {
+                                                if let idx = graph.nodes.firstIndex(where: { $0.id == node.id }) {
+                                                    graph.nodes[idx].position = value.location
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in
+                                            draggedNodeId = nil
+                                        }
+                                )
+                        }
+                    }
+                }
+                #elseif os(tvOS)
                 ForEach(graph.nodes.indices, id: \.self) { idx in
                     let node = graph.nodes[idx]
                     NodeView(node: node, isDragged: idx == selectedNodeIndex)
                         .position(node.position)
                 }
+                #endif
             }
             .frame(minHeight: 500)
             .interactiveArea()
             
-            VStack{
-                HStack(spacing:25){
+            VStack(spacing: 10) {
+                #if os(iOS)
+                HStack {
+                    Button("Add Node") {
+                        let label = "\(nodeCounter)"
+                        graph.addNode(label: label, position: defaultPosition)
+                        nodeCounter += 1
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.green)
+                    .cornerRadius(8)
+                }
+                #elseif os(tvOS)
+                HStack(spacing: 5) {
                     Button("Prev Node") {
                         guard !graph.nodes.isEmpty else { return }
                         selectedNodeIndex = (selectedNodeIndex - 1 + graph.nodes.count) % graph.nodes.count
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                     Button("Next Node") {
                         guard !graph.nodes.isEmpty else { return }
                         selectedNodeIndex = (selectedNodeIndex + 1) % graph.nodes.count
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                     Button("Move Up") {
                         moveSelectedNodeBy(CGSize(width: 0, height: -15))
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                     Button("Move Down") {
                         moveSelectedNodeBy(CGSize(width: 0, height: 15))
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                     Button("Move Left") {
                         moveSelectedNodeBy(CGSize(width: -15, height: 0))
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                     Button("Move Right") {
                         moveSelectedNodeBy(CGSize(width: 15, height: 0))
                     }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
+                    Button("Delete Node") {
+                        if !graph.nodes.isEmpty, graph.nodes.indices.contains(selectedNodeIndex) {
+                            let node = graph.nodes[selectedNodeIndex]
+                            graph.removeNode(node.id)
+                            selectedNodeIndex = graph.nodes.isEmpty ? 0 : selectedNodeIndex % graph.nodes.count
+                        }
+                    }
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+
                 }
                 .padding(.bottom, 20)
-                
                 HStack {
                     Button("Add Node") {
                         let label = "\(nodeCounter)"
                         let position = CGPoint(x: 100, y: 100)
                         graph.addNode(label: label, position: position)
                         nodeCounter += 1
-                        
                         selectedNodeIndex = max(0, graph.nodes.count - 1)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
                     .background(Color.green)
                     .cornerRadius(8)
-                    
-                    Spacer()
-                    
+                    .frame(width: 250, height: 100)
+                    .font(.system(size:30))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                }
+                #endif
+                
+                HStack {
                     TextField("From node label", text: $fromNode)
                         .textFieldStyle(.automatic)
-                        .frame(width: 150)
                         .foregroundColor(.gray)
                     TextField("To node label", text: $toNode)
                         .textFieldStyle(.automatic)
-                        .frame(width: 150)
                         .foregroundColor(.gray)
                     TextField("Weight (opt)", text: $edgeWeight)
                         .textFieldStyle(.automatic)
-                        .frame(width: 100)
                         .foregroundColor(.gray)
-                    
                     Button("Add Edge") {
                         if let fromId = graph.nodes.first(where: { $0.label == fromNode })?.id,
                            let toId = graph.nodes.first(where: { $0.label == toNode })?.id {
@@ -455,6 +454,7 @@ struct GraphEditorView_tvOS: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
+    #if os(tvOS)
     private func moveSelectedNodeBy(_ offset: CGSize) {
         guard !graph.nodes.isEmpty,
               graph.nodes.indices.contains(selectedNodeIndex) else {
@@ -463,25 +463,18 @@ struct GraphEditorView_tvOS: View {
         graph.nodes[selectedNodeIndex].position.x += offset.width
         graph.nodes[selectedNodeIndex].position.y += offset.height
     }
+    #endif
 }
-#endif
 
-struct ContentView: View {
-    var body: some View {
-        #if os(iOS)
-        GraphEditorView()
-        #elseif os(tvOS)
-        GraphEditorView_tvOS()
-        #endif
-    }
-}
+
+
 
 struct GraphView: View {
     var body: some View {
         ScrollView {
             GraphExplanationView()
             Spacer()
-            ContentView()
+            GraphEditorView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundGradient)
@@ -490,5 +483,5 @@ struct GraphView: View {
 }
 
 #Preview {
-    GraphView()
+    GraphEditorView()
 }

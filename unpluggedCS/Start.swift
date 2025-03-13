@@ -31,7 +31,7 @@ extension View {
 }
 
 struct StartView: View {
-    @State private var name: String = String()
+    @State public var name: String = String()
     @State private var showingAlert = false
 
     var body: some View {
@@ -95,29 +95,33 @@ struct ViewItem {
 }
 
 struct HomeView: View {
-    let views: [ViewItem] = [
-        ViewItem(name: "Bit Manipulation", view: AnyView(BitView()), image: "01.square.fill"),
-        ViewItem(name: "Searching", view: AnyView(SearchView()), image: "exclamationmark.magnifyingglass"),
-        ViewItem(name: "Sorting", view: AnyView(SortingView()), image: "chart.bar.xaxis.ascending"),
-        ViewItem(name: "Data Structures", view: AnyView(DataView()), image: "square.stack.3d.up"),
-        ViewItem(name: "Computer Architecture", view: AnyView(CAView()), image: "cpu.fill"),
-        ViewItem(name: "State Machines", view: AnyView(StateView()), image: "statemachine"),
-        ViewItem(name: "Graphs", view: AnyView(GraphView()), image: "point.3.connected.trianglepath.dotted"),
-        ViewItem(name: "Security", view: AnyView(SecurityView()), image: "lock.icloud"),
-        ViewItem(name: "Programming Languages", view: AnyView(ProgLangView()), image: "books.vertical.fill"),
-        ViewItem(name: "Image Representation", view: AnyView(ImgView()), image: "photo.artframe"),
-        ViewItem(name: "Network Protocols", view: AnyView(NetworkView()), image: "network"),
-        ViewItem(name: "Human-Computer Interaction", view: AnyView(HCIView()), image: "desktopcomputer.trianglebadge.exclamationmark")
-    ]
     
-    let home = "bold"
     var name : String?
     
     init(name: String?) {
         self.name = name ?? UIDevice.current.name
     }
     
+   
+    
+    let home = "bold"
+    
+    
     var body: some View {
+        let views: [ViewItem] = [
+            ViewItem(name: "Bit Manipulation", view: AnyView(BitView()), image: "01.square.fill"),
+            ViewItem(name: "Searching", view: AnyView(SearchView()), image: "exclamationmark.magnifyingglass"),
+            ViewItem(name: "Sorting", view: AnyView(SortingView()), image: "chart.bar.xaxis.ascending"),
+            ViewItem(name: "Data Structures", view: AnyView(DataView()), image: "square.stack.3d.up"),
+            ViewItem(name: "Computer Architecture", view: AnyView(CAView(name: name!)), image: "cpu.fill"),
+            ViewItem(name: "State Machines", view: AnyView(StateView()), image: "statemachine"),
+            ViewItem(name: "Graphs", view: AnyView(GraphView()), image: "point.3.connected.trianglepath.dotted"),
+            ViewItem(name: "Security", view: AnyView(SecurityView()), image: "lock.icloud"),
+            ViewItem(name: "Programming Languages", view: AnyView(ProgLangView()), image: "books.vertical.fill"),
+            ViewItem(name: "Image Representation", view: AnyView(ImgView(name: name!)), image: "photo.artframe"),
+            ViewItem(name: "Network Protocols", view: AnyView(NetworkView()), image: "network"),
+            ViewItem(name: "Human-Computer Interaction", view: AnyView(HCIView()), image: "desktopcomputer.trianglebadge.exclamationmark")
+        ]
         VStack{
 #if os(tvOS)
             NavigationView {
@@ -233,6 +237,6 @@ struct GridView: View {
 }
 
 #Preview {
-//    StartView()
-    HomeView(name: "")
+    StartView()
+//    HomeView(name: "")
 }

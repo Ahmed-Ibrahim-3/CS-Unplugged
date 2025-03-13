@@ -5,9 +5,14 @@
 //  Created by Ahmed Ibrahim on 17/10/2024.
 import SwiftUI
 
+infix operator ** : MultiplicationPrecedence
+func ** (radix: Int, power: Int) -> Int {
+    return Int(pow(Double(radix), Double(power)))
+}
+
 struct SectionView: View {
     let circleCount: Int
-    func createCircle(size: CGFloat) -> some View{
+    func createCircle(size: CGFloat) -> some View {
         Circle()
             .fill(Color.orange.opacity(0.7))
             .frame(width: size, height: size)
@@ -64,17 +69,17 @@ struct SectionView: View {
 }
 
 struct BitView : View {
-
+    
     private let bitActivity = """
                     Discuss the following:
-                       \u{2022} What is the smallest nymber you can make?
+                       \u{2022} What is the smallest number you can make?
                        \u{2022} What is the largest? 
                     
                     Starting from 0, count up each number one by one (1,2,3,4...)
                        \u{2022} What patterns do you see?
-                       \u{2022} Once you have reached 31, whats next? how might we get 32
+                       \u{2022} Once you have reached 31, what's next? How might we get 32?
                     
-                    Lets look deeper...
+                    Let's look deeper...
                        \u{2022} What is the maximum number you can make with 5 bits?
                        \u{2022} What value would the next bit have?
                        \u{2022} What is the maximum value of these 6 bits?
@@ -85,17 +90,22 @@ struct BitView : View {
                        \u{2022} How many different numbers can you make with 2 bits?
                        \u{2022} How many could you make with one more?
                        \u{2022} Do you see a pattern? If not, keep adding a bit and looking 
-                                numbers you can make until one becomes clear
+                                numbers you can make until one becomes clear.
                     """
     
     @State private var imgIndex = 0
-    @State private var isOne: [Bool] = Array(repeating: true, count: 5)
-    @State private var decimalVal = 31
+    @State private var isOne: [Bool]
     @State private var isFocused = false
     @State private var totalShapes = 1
     private let bitCounts = [1,2,4,8,16]
     @State private var currentSectionIndex = 0
-    private let maxBits = 5
+    private let maxBits = 8
+    @State var decimalVal = 0
+    
+    init() {
+        isOne = Array(repeating: false, count: maxBits)
+        decimalVal = (2 ** maxBits) - 1
+    }
     
     func calculateBinaryValue(from binaryArray: [Bool]) -> Int {
         var value = 0
@@ -107,97 +117,95 @@ struct BitView : View {
         return value
     }
     
-    var body : some View{
-        ScrollViewReader{ proxy in
-            ScrollView{
-                VStack{
+    var body : some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack {
                     Text("Bit Manipulation")
                         .font(.largeTitle)
                         .multilineTextAlignment(.center)
                         .padding()
         #if os(tvOS)
-                            VStack(spacing: 40){
-                                HStack{
-                                    Button(action: {
-                                        if currentSectionIndex < bitCounts.count - 1 {
-                                            currentSectionIndex += 1
-                                        }
-                                    }) {
-                                        HStack(spacing: 30) {
-                                            ForEach(0...currentSectionIndex, id: \.self) { index in
-                                                SectionView(circleCount: bitCounts[index])
-                                                Divider()
-                                            }
-                                        }
-                                        .padding()
+                    VStack(spacing: 40) {
+                        HStack {
+                            Button(action: {
+                                if currentSectionIndex < bitCounts.count - 1 {
+                                    currentSectionIndex += 1
+                                }
+                            }) {
+                                HStack(spacing: 30) {
+                                    ForEach(0...currentSectionIndex, id: \.self) { index in
+                                        SectionView(circleCount: bitCounts[index])
+                                        Divider()
                                     }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .frame(width: 100, height: 100)
                                 }
                                 .padding()
-                                .frame(width:1100, height:400)
-                                .background(Color.black.opacity(0.6))
-                                .cornerRadius(15)
-                                .shadow(radius: 10)
-                                .padding([.leading, .trailing], 10)
-                                
-                                Text("""
-                                    What do you notice about this pattern? How many dots should the next card have?
-                                
-                                    Now, Lets see what we can do with these 
-                                """)
-                                VStack{
-                                    HStack(spacing:25){
-                                        ForEach(0..<5, id: \.self) { index in
-                                            Button(action: {
-                                                isOne[index].toggle()
-                                            }) {
-                                                Image(systemName: isOne[index] ? "circle.fill" : "circle.dotted")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 75)
-                                                    .clipped()
-                                                    .foregroundColor(Color.orange.opacity(0.7))
-                                            }
-                                            .buttonStyle(PlainButtonStyle())
-                                        }
-                                    }
-                                    
-                                    Button (action: {
-                                        decimalVal = calculateBinaryValue(from: isOne)
-                                    }){
-                                        Image(systemName: "equal")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 50,height: 50)
-                                            .clipped()
-
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .padding()
-                                    
-                                    Text(String(decimalVal))
-                                        .focusable(true)
-                                }
-                                .padding()
-                                .frame(width:1100, height:400)
-                                .background(Color.black.opacity(0.6))
-                                .cornerRadius(15)
-                                .shadow(radius: 10)
-                                .padding([.leading, .trailing], 10)
                             }
-                            Spacer().frame(height: 200)
-                            Text(bitActivity)
-                                .id(999)
-                                .scaleEffect(isFocused ? 1.2: 1)
+                            .buttonStyle(PlainButtonStyle())
+                            .frame(width: 100, height: 100)
+                        }
+                        .padding()
+                        .frame(width: 1100, height: 400)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .padding([.leading, .trailing], 10)
+                        
+                        Text("""
+                            What do you notice about this pattern? How many dots should the next card have?
+                            
+                            Now, let's see what we can do with these:
+                            """)
+                        VStack {
+                            HStack(spacing: 25) {
+                                ForEach(0..<maxBits, id: \.self) { index in
+                                    Button(action: {
+                                        isOne[index].toggle()
+                                    }) {
+                                        Image(systemName: isOne[index] ? "circle.fill" : "circle.dotted")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 75)
+                                            .clipped()
+                                            .foregroundColor(Color.orange.opacity(0.7))
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                            }
+                            
+                            Button(action: {
+                                decimalVal = calculateBinaryValue(from: isOne)
+                            }) {
+                                Image(systemName: "equal")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 50, height: 50)
+                                    .clipped()
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding()
+                            
+                            Text(String(decimalVal))
                                 .focusable(true)
-                                .animation(.easeInOut, value: isFocused)
+                        }
+                        .padding()
+                        .frame(width: 1100, height: 400)
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .padding([.leading, .trailing], 10)
+                    }
+                    Spacer().frame(height: 200)
+                    Text(bitActivity)
+                        .id(999)
+                        .scaleEffect(isFocused ? 1.2 : 1)
+                        .focusable(true)
+                        .animation(.easeInOut, value: isFocused)
         #elseif os(iOS)
                     VStack(spacing: 20) {
                         Text(bitActivity)
-                        
                         HStack(spacing: 10) {
-                            ForEach(0..<5, id: \.self) { index in
+                            ForEach(0..<maxBits, id: \.self) { index in
                                 Image(systemName: isOne[index] ? "circle.fill" : "circle.dotted")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -218,15 +226,14 @@ struct BitView : View {
                     }
         #endif
                 }
-                
             }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(backgroundGradient)
-            .foregroundColor(.white)
         }
-
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(backgroundGradient)
+        .foregroundColor(.white)
+    }
 }
-#Preview{
+
+#Preview {
     BitView()
 }

@@ -35,6 +35,11 @@ class DFAViewModel: ObservableObject {
         #if os(tvOS)
         let maxWidth:  CGFloat = 600
         let maxHeight: CGFloat = 600
+        #elseif os(iOS)
+        let maxWidth:  CGFloat = 300
+        let maxHeight: CGFloat = 300
+        #endif
+
         let collisionRadius: CGFloat = 60
         let maxAttempts = 50
         
@@ -64,16 +69,6 @@ class DFAViewModel: ObservableObject {
         )
         nextStateNumber += 1
         states.append(newState)
-        
-        #else
-        let x = 100 + CGFloat(nextStateNumber - 1) * 120
-        let newState = DFAState(
-            name: "\(nextStateNumber)",
-            position: CGPoint(x: x, y: 200)
-        )
-        nextStateNumber += 1
-        states.append(newState)
-        #endif
     }
 
     
@@ -159,7 +154,6 @@ struct SelfLoopView: View {
             SelfLoopShape(center: center)
                 .stroke(Color.white, lineWidth: 2)
             Text(label)
-                
                 .position(x: center.x, y: center.y - 60)
         }
     }
@@ -292,6 +286,7 @@ struct UnifiedDFABuilderView: View {
     var body: some View {
         Text("Interactive DFA Builder")
             .font(.title)
+            .focusable(true)
             
         HStack(spacing: 10) {
             #if os(iOS)
@@ -496,16 +491,21 @@ struct StateView: View {
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .padding()
+                    .focusable(true)
                     
                 
                 Text("""
-                Finite-State Automata (FSA) — The simplest form of state machine — are a good way to model computation, perform pattern matching, and process text.
+                Finite-State Automata — or simply state machines — are a good way to model computation, perform pattern matching, and process text.
                 
                 They can be thought of as a map consisting of:
                     \u{2022} a set of states, usually represented by circles
                     \u{2022} transitions (or paths) between each state
                     \u{2022} an initial input state represented by an arrow
                     \u{2022} an exit (accepting) state represented by a double circle
+                
+                You are starting at the input state, your destination is the exit state, and you take the transitions to get there.
+                
+                A finite state automata where every state has exactly one transition for each input is called a **Deterministic Finite Automaton(DFA)**
                 """).padding()
                 
                 
