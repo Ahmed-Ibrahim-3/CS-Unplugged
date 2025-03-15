@@ -1,22 +1,37 @@
+//
+//  DataStructures.swift
+//  unpluggedCS
+//
+//  Created by Ahmed Ibrahim on 17/10/2024.
+//
+
 import SwiftUI
 
+// MARK: - Models
+
+/// Represents the different types of data structures that can be displayed
 enum DataStructureType {
     case array
     case queue
     case stack
 }
 
+// MARK: - Main View
+
+/// Main view displaying information about different data structures
 struct DataView: View {
     var body: some View {
-        ScrollViewReader{ proxy in
+        ScrollViewReader { proxy in
             ScrollView {
                 VStack {
                     Text("Data Structures")
                         .font(.system(size: 60))
                         .multilineTextAlignment(.center)
                         .padding()
+                        .accessibilityAddTraits(.isHeader)
                     
                     VStack(spacing: 50) {
+                        // Array data structure section
                         DataStructureView(
                             type: .array,
                             title: "Array",
@@ -29,7 +44,7 @@ struct DataView: View {
                             will be allocated sequentially in
                             memory, allowing for efficient
                             access and manipulation of elements
-                        """,
+                            """,
                             description2: """
                             Let's say we were trying to create a
                             variable to represent the marks for
@@ -39,11 +54,13 @@ struct DataView: View {
                             have many values to track. The idea of
                             an array is to store many instances
                             in one variable.
-                        """,
+                            """,
                             scrollProxy: proxy
                         )
                         .id(DataStructureType.array)
+                        .accessibilityLabel("Array data structure section")
                         
+                        // Queue data structure section
                         DataStructureView(
                             type: .queue,
                             title: "Queue",
@@ -52,11 +69,11 @@ struct DataView: View {
                             that follows the First In First Out
                             principle, so the element inserted
                             first is the first to leave.
-                        
+                            
                             We define a queue to be a list in which
                             all additions are made at one end and all
                             deletions are made at the other.
-                        """,
+                            """,
                             description2: """
                             A queue, as the name suggests, is like a line
                             of people waiting to buy an item. The first
@@ -69,11 +86,13 @@ struct DataView: View {
                             • Double ended Queue
                             • Circular Queue
                             • Priority Queue
-                        """,
+                            """,
                             scrollProxy: proxy
                         )
                         .id(DataStructureType.queue)
+                        .accessibilityLabel("Queue data structure section")
                         
+                        // Stack data structure section
                         DataStructureView(
                             type: .stack,
                             title: "Stack",
@@ -83,7 +102,7 @@ struct DataView: View {
                             the Last In First Out principle,
                             meaning the last element inserted
                             is the first element to be removed.
-                        """,
+                            """,
                             description2: """
                             Imagine a pile of plates kept on top of
                             each other. The plate which was put on
@@ -96,57 +115,77 @@ struct DataView: View {
                             gets full, no more can be added to it. A
                             dynamic stack on the other hand changes
                             size when elements are added.
-                        """,
-                        scrollProxy: proxy
+                            """,
+                            scrollProxy: proxy
                         )
-                        .id(DataStructureType.array)
+                        .id(DataStructureType.stack)
+                        .accessibilityLabel("Stack data structure section")
                     }
                     .padding()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(backgroundGradient)
+            .background(appBackgroundGradient)
             .foregroundColor(.white)
         }
     }
 }
 
+// MARK: - Supporting Views
+
+/// A reusable view that displays information about a specific data structure type with an interactive demonstration
 struct DataStructureView: View {
+    // MARK: Properties
+    
     let type: DataStructureType
     let title: String
+    
     let description1: String
     let description2: String
+    
+    /// Reference to the scroll view proxy for programmatic scrolling
     let scrollProxy: ScrollViewProxy
     
     @State private var arrayElements: [String] = []
     @State private var queueElements: [String] = []
     @State private var stackElements: [String] = []
     
-    @State private var elementCount: Int = 0
+    /// Counter used to generate unique element identifiers
+    @State private var elementCounter: Int = 0
     
+    /// Tracks focus state for buttons (particularly important for tvOS)
     @FocusState private var isButtonFocused: Bool
     
+    /// The spacing between elements in the visualizations
     private var elementSpacing: CGFloat {
-        #if os(tvOS)
+#if os(tvOS)
         return 5
-        #else
+#else
         return 10
-        #endif
+#endif
     }
+    
+    // MARK: Body
     
     var body: some View {
         content
-        #if os(tvOS)
+#if os(tvOS)
             .focusSection()
-        #endif
+#endif
     }
     
+    // MARK: View Components
+    
+    /// The main content layout for the data structure view
     private var content: some View {
         VStack(spacing: 10) {
             Text(title)
                 .font(.title3)
+                .accessibilityAddTraits(.isHeader)
             
+            // Three-column layout: description, interactive demo, examples
             HStack(spacing: 10) {
+                // Left column: Technical description
                 VStack(alignment: .leading, spacing: 10) {
                     Text(description1)
                         .font(.body)
@@ -154,9 +193,11 @@ struct DataStructureView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
-                InteractiveView()
+                // Middle column: Interactive demonstration
+                interactiveDemo()
                     .frame(maxWidth: .infinity)
                 
+                // Right column: Real-world examples
                 VStack(alignment: .leading, spacing: 10) {
                     Text(description2)
                         .font(.body)
@@ -168,106 +209,143 @@ struct DataStructureView: View {
         .interactiveArea()
         .onChange(of: currentElements()) { newValue in
             if newValue.isEmpty {
-                elementCount = 0
+                elementCounter = 0
             }
         }
     }
     
+    /// Builds the interactive demonstration for the current data structure type
     @ViewBuilder
-    private func InteractiveView() -> some View {
+    private func interactiveDemo() -> some View {
         VStack(spacing: 20) {
             Spacer()
+            
+            // Different visualization based on data structure type
             switch type {
             case .array:
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: elementSpacing) {
-                        ForEach(arrayElements.indices, id: \.self) { index in
-                            Text(arrayElements[index])
-                                .padding()
-                                .background(Color.blue.opacity(0.7))
-                                .cornerRadius(8)
-                                .transition(.scale)
-                        }
-                    }
-                    .animation(.default, value: arrayElements)
-                }
-                .frame(height: 50)
+                arrayVisualization()
                 
             case .queue:
-                ScrollView(.horizontal, showsIndicators: false){
-                    HStack(spacing: elementSpacing){
-                        ForEach(queueElements, id: \.self) { element in
-                            Text(element)
-                                .padding()
-                                .background(Color.green.opacity(0.7))
-                                .cornerRadius(8)
-                                .transition(.scale)
-                        }
-                    }
-                    .animation(.default, value: queueElements)
-                }
-                .frame(height: 50)
+                queueVisualization()
                 
             case .stack:
-                ScrollView(.vertical, showsIndicators: false){
-                    VStack(spacing: elementSpacing) {
-                        ForEach(stackElements.reversed(), id: \.self) { element in
-                            Text(element)
-                                .padding()
-                                .background(Color.orange.opacity(0.7))
-                                .cornerRadius(8)
-                                .transition(.scale)
-                        }
-                    }
-//                    .frame(width: 100)
-                    .animation(.default, value: stackElements)
-                }
-                .frame(height: 200)
-
+                stackVisualization()
             }
+            
             Spacer()
-
-            HStack(spacing: 20) {
-                Button(action: addElement) {
-                    Text("Add")
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(8)
-                }
-                .hoverEffect(.highlight)
-                .buttonStyle(.plain)
-                .focused($isButtonFocused)
-                .onChange(of: isButtonFocused) { focused in
-                    if focused {
-                        withAnimation {
-                            scrollProxy.scrollTo(type, anchor: .center)
-                        }
-                    }
-                }
-                Button(action: removeElement) {
-                    Text("Remove")
-                        .padding()
-                        .background(Color.red)
-                        .cornerRadius(8)
-                }
-                .hoverEffect(.highlight)
-                .buttonStyle(.plain)
-                .focused($isButtonFocused)
-                .onChange(of: isButtonFocused) { focused in
-                    if focused {
-                        withAnimation {
-                            scrollProxy.scrollTo(type, anchor: .center)
-                        }
-                    }
-                }
-                
-            }
+            
+            // Add/Remove control buttons
+            controlButtons()
         }
     }
-        
+    
+    /// Creates a visualization for an array data structure
+    private func arrayVisualization() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: elementSpacing) {
+                ForEach(arrayElements.indices, id: \.self) { index in
+                    Text(arrayElements[index])
+                        .padding()
+                        .background(Color.blue.opacity(0.7))
+                        .cornerRadius(8)
+                        .transition(.scale)
+                        .accessibilityLabel("Array element \(arrayElements[index])")
+                }
+            }
+            .animation(.default, value: arrayElements)
+        }
+        .frame(height: 50)
+        .accessibilityLabel("Array visualization with \(arrayElements.count) elements")
+    }
+    
+    /// Creates a visualization for a queue data structure
+    private func queueVisualization() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: elementSpacing) {
+                ForEach(queueElements, id: \.self) { element in
+                    Text(element)
+                        .padding()
+                        .background(Color.green.opacity(0.7))
+                        .cornerRadius(8)
+                        .transition(.scale)
+                        .accessibilityLabel("Queue element \(element)")
+                }
+            }
+            .animation(.default, value: queueElements)
+        }
+        .frame(height: 50)
+        .accessibilityLabel("Queue visualization with \(queueElements.count) elements")
+    }
+    
+    /// Creates a visualization for a stack data structure
+    private func stackVisualization() -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: elementSpacing) {
+                ForEach(stackElements.reversed(), id: \.self) { element in
+                    Text(element)
+                        .padding()
+                        .background(Color.orange.opacity(0.7))
+                        .cornerRadius(8)
+                        .transition(.scale)
+                        .accessibilityLabel("Stack element \(element)")
+                }
+            }
+            .animation(.default, value: stackElements)
+        }
+        .frame(height: 200)
+        .accessibilityLabel("Stack visualization with \(stackElements.count) elements")
+    }
+    
+    /// Creates the control buttons for manipulating data structures
+    private func controlButtons() -> some View {
+        HStack(spacing: 20) {
+            // Add button
+            Button(action: addElement) {
+                Text("Add")
+                    .padding()
+                    .background(Color.green)
+                    .cornerRadius(8)
+            }
+            .hoverEffect(.highlight)
+            .buttonStyle(.plain)
+            .focused($isButtonFocused)
+            .onChange(of: isButtonFocused) { focused in
+                if focused {
+                    withAnimation {
+                        scrollProxy.scrollTo(type, anchor: .center)
+                    }
+                }
+            }
+            .accessibilityHint("Adds a new element to the \(title.lowercased())")
+            
+            // Remove button
+            Button(action: removeElement) {
+                Text("Remove")
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(8)
+            }
+            .hoverEffect(.highlight)
+            .buttonStyle(.plain)
+            .focused($isButtonFocused)
+            .onChange(of: isButtonFocused) { focused in
+                if focused {
+                    withAnimation {
+                        scrollProxy.scrollTo(type, anchor: .center)
+                    }
+                }
+            }
+            .accessibilityHint(removeHintText())
+        }
+    }
+    
+    // MARK: Helper Methods
+    
+    /// Adds a new element to the current data structure
     private func addElement() {
-        elementCount += 1
-        let newElement = "\(type == .array ? "A" : type == .queue ? "Q" : "S")\(elementCount)"
+        elementCounter += 1
+        let prefix = type == .array ? "A" : type == .queue ? "Q" : "S"
+        let newElement = "\(prefix)\(elementCounter)"
         
         withAnimation {
             switch type {
@@ -281,6 +359,7 @@ struct DataStructureView: View {
         }
     }
     
+    /// Removes an element from the current data structure according to its rules
     private func removeElement() {
         withAnimation {
             switch type {
@@ -300,6 +379,7 @@ struct DataStructureView: View {
         }
     }
     
+    /// Returns the current elements for the active data structure
     private func currentElements() -> [String] {
         switch type {
         case .array:
@@ -310,10 +390,22 @@ struct DataStructureView: View {
             return stackElements
         }
     }
+    
+    /// Provides an appropriate accessibility hint for the remove button
+    private func removeHintText() -> String {
+        switch type {
+        case .array:
+            return "Removes the last element from the array"
+        case .queue:
+            return "Removes the first element from the queue (following FIFO principle)"
+        case .stack:
+            return "Removes the top element from the stack (following LIFO principle)"
+        }
+    }
 }
 
+// MARK: - Preview Provider
 
-#Preview{
+#Preview {
     DataView()
 }
-

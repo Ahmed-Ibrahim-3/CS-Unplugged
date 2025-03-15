@@ -3,17 +3,24 @@
 //  unpluggedCS
 //
 //  Created by Ahmed Ibrahim on 15/10/2024.
-//
+
 
 import SwiftUI
 
+// MARK: - UI Constants and Helpers
 
-let backgroundGradient = LinearGradient(
-    colors: [Color(.teal1),Color(.navyBlue),Color(.darkPurple)],
-    startPoint: .init(x: 1.1, y: 1.1), endPoint: .init(x: 0.1, y: 0.1)
+/// Gradient used as the background for all main views in the app
+let appBackgroundGradient = LinearGradient(
+    colors: [Color(.teal1), Color(.navyBlue), Color(.darkPurple)],
+    startPoint: .init(x: 1.1, y: 1.1),
+    endPoint: .init(x: 0.1, y: 0.1)
 )
 
+/// Modifier that applies a consistent interactive area style to views
 struct InteractiveAreaModifier: ViewModifier {
+    /// Applies standardized styling to content
+    /// - Parameter content: The view to modify
+    /// - Returns: The styled view
     func body(content: Content) -> some View {
         content
             .padding()
@@ -24,63 +31,79 @@ struct InteractiveAreaModifier: ViewModifier {
     }
 }
 
+/// View extension for applying the interactive area modifier
 extension View {
+    /// Applies the interactive area styling to a view
+    /// - Returns: The styled view
     func interactiveArea() -> some View {
         self.modifier(InteractiveAreaModifier())
     }
 }
 
+// MARK: - Model
+
+/// Represents a topic item in the grid view
+struct TopicItem {
+    let name: String      // Display name of the topic
+    let view: AnyView     // Associated view for the topic
+    let iconName: String  // System image name or asset name for the topic icon
+}
+
+// MARK: - Views
+
+/// Initial view for user to enter their name before proceeding to main content
 struct StartView: View {
-    @State public var name: String = String()
+    // MARK: Properties
+    @State private var userName: String = ""
     @State private var showingAlert = false
 
+    // MARK: Body
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient.ignoresSafeArea()
+                appBackgroundGradient.ignoresSafeArea()
                 
 #if os(tvOS)
-        HStack {
-            Text("Start")
-                .font(.title)
-                
-                .padding(50)
-                
+                // tvOS layout - horizontal orientation
+                HStack {
+                    Text("Start")
+                        .font(.title)
+                        .padding(50)
+                    
+                    TextField("Enter name", text: $userName)
+                        .padding()
+                        .cornerRadius(20)
+                        .textFieldStyle(.plain)
 
-            TextField("Enter name", text: $name)
-                .padding()
-                .cornerRadius(20)
-                .textFieldStyle(.plain)
-
-            NavigationLink("Go!") {
-                HomeView(name: name)
-            }
-            
-            .padding(50)
-        }
-#elseif os(iOS)
-        VStack {
-            Text("Start")
-                .font(.title)
-                
-                .padding()
-                .multilineTextAlignment(.center)
-
-            TextField("Enter name", text: $name)
-                .padding()
-                .cornerRadius(20)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 400, height: 50)
-                .foregroundColor(.gray)
-
-            NavigationLink("Go!") {
-                if name.isEmpty{
-                    HomeView(name: UIDevice.current.name)
+                    NavigationLink("Go!") {
+                        HomeView(name: userName)
+                    }
+                    .padding(50)
                 }
-                else {HomeView(name: name)}
-            }
-            
-        }
+#elseif os(iOS)
+                // iOS layout - vertical orientation
+                VStack {
+                    Text("Start")
+                        .font(.title)
+                        .padding()
+                        .multilineTextAlignment(.center)
+                    
+                    TextField("Enter name", text: $userName)
+                        .padding()
+                        .cornerRadius(20)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 400, height: 50)
+                        .foregroundColor(.gray)
+
+                    NavigationLink("Go!") {
+                        // Use device name if no name entered
+                        if userName.isEmpty {
+                            HomeView(name: UIDevice.current.name)
+                        } else {
+                            HomeView(name: userName)
+                        }
+                    }
+                }
 #endif
             }
             .foregroundStyle(.white)
@@ -88,62 +111,59 @@ struct StartView: View {
     }
 }
 
-struct ViewItem {
-    let name: String
-    let view: AnyView
-    let image: String
-}
-
+/// Main view displaying a grid of computer science topics
 struct HomeView: View {
+    // MARK: Properties
     
-    var name : String?
+    /// User's name to display in greeting
+    var userName: String?
     
+    // MARK: Initialization
+    
+    /// Initializes the HomeView with an optional user name
+    /// - Parameter name: The user's name. If nil, uses the device name
     init(name: String?) {
-        self.name = name ?? UIDevice.current.name
+        self.userName = name ?? UIDevice.current.name
     }
     
-   
-    
-    let home = "bold"
-    
-    
+    // MARK: Body
     var body: some View {
-        let views: [ViewItem] = [
-            ViewItem(name: "Bit Manipulation", view: AnyView(BitView()), image: "01.square.fill"),
-            ViewItem(name: "Searching", view: AnyView(SearchView()), image: "exclamationmark.magnifyingglass"),
-            ViewItem(name: "Sorting", view: AnyView(SortingView()), image: "chart.bar.xaxis.ascending"),
-            ViewItem(name: "Data Structures", view: AnyView(DataView()), image: "square.stack.3d.up"),
-            ViewItem(name: "Computer Architecture", view: AnyView(CAView(name: name!)), image: "cpu.fill"),
-            ViewItem(name: "State Machines", view: AnyView(StateView()), image: "statemachine"),
-            ViewItem(name: "Graphs", view: AnyView(GraphView()), image: "point.3.connected.trianglepath.dotted"),
-            ViewItem(name: "Security", view: AnyView(SecurityView()), image: "lock.icloud"),
-            ViewItem(name: "Programming Languages", view: AnyView(ProgLangView()), image: "books.vertical.fill"),
-            ViewItem(name: "Image Representation", view: AnyView(ImgView(name: name!)), image: "photo.artframe"),
-            ViewItem(name: "Network Protocols", view: AnyView(NetworkView()), image: "network"),
-            ViewItem(name: "Human-Computer Interaction", view: AnyView(HCIView()), image: "desktopcomputer.trianglebadge.exclamationmark")
+        // Define all topic items with their associated views
+        let topics: [TopicItem] = [
+            TopicItem(name: "Bit Manipulation", view: AnyView(BitView()), iconName: "01.square.fill"),
+            TopicItem(name: "Searching", view: AnyView(SearchView()), iconName: "exclamationmark.magnifyingglass"),
+            TopicItem(name: "Sorting", view: AnyView(SortingView()), iconName: "chart.bar.xaxis.ascending"),
+            TopicItem(name: "Data Structures", view: AnyView(DataView()), iconName: "square.stack.3d.up"),
+            TopicItem(name: "Computer Architecture", view: AnyView(CAView(name: userName!)), iconName: "cpu.fill"),
+            TopicItem(name: "State Machines", view: AnyView(StateView()), iconName: "statemachine"),
+            TopicItem(name: "Graphs", view: AnyView(GraphView()), iconName: "point.3.connected.trianglepath.dotted"),
+            TopicItem(name: "Security", view: AnyView(SecurityView()), iconName: "lock.icloud"),
+            TopicItem(name: "Programming Languages", view: AnyView(ProgLangView()), iconName: "books.vertical.fill"),
+            TopicItem(name: "Image Representation", view: AnyView(ImgView(name: userName!)), iconName: "photo.artframe"),
+            TopicItem(name: "Network Protocols", view: AnyView(NetworkView()), iconName: "network"),
+            TopicItem(name: "Human-Computer Interaction", view: AnyView(HCIView()), iconName: "desktopcomputer.trianglebadge.exclamationmark")
         ]
-        VStack{
+        
+        VStack {
+            // Platform-specific UI
 #if os(tvOS)
             NavigationView {
-                GridView(viewItems: views)
-                    .navigationTitle("Hello, " + name!)
+                GridView(topicItems: topics)
+                    .navigationTitle("Hello, " + userName!)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(backgroundGradient)
+            .background(appBackgroundGradient)
 #elseif os(iOS)
-            VStack {
-                NavigationStack {
-                    GridView(viewItems: views)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .principal) {
-                                Text("Hello, " + name!)
-                                    .font(.largeTitle.bold())
-                                    .accessibilityAddTraits(.isHeader)
-                                
-                            }
+            NavigationStack {
+                GridView(topicItems: topics)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            Text("Hello, " + userName!)
+                                .font(.largeTitle.bold())
+                                .accessibilityAddTraits(.isHeader)
                         }
-                }
+                    }
             }
 #endif
         }
@@ -151,20 +171,27 @@ struct HomeView: View {
     }
 }
 
+/// Displays a grid of topic items for navigation
 struct GridView: View {
-    let viewItems: [ViewItem]
+    // MARK: Properties
+    
+    /// List of topic items to display in the grid
+    let topicItems: [TopicItem]
 
+    /// Grid layout definition - 3 flexible columns
     let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
 
+    // MARK: Body
     var body: some View {
-        #if os(tvOS)
+#if os(tvOS)
+        // tvOS layout
         VStack {
             LazyVGrid(columns: columns) {
-                ForEach(viewItems, id: \.name) { item in
+                ForEach(topicItems, id: \.name) { item in
                     NavigationLink(destination: item.view) {
                         tvOSItemLabel(for: item)
                     }
@@ -172,11 +199,12 @@ struct GridView: View {
                 }
             }
         }
-        #elseif os(iOS)
+#elseif os(iOS)
+        // iOS layout
         VStack {
             NavigationStack {
                 LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(viewItems, id: \.name) { item in
+                    ForEach(topicItems, id: \.name) { item in
                         NavigationLink(destination: item.view) {
                             iOSItemLabel(for: item)
                         }
@@ -186,44 +214,51 @@ struct GridView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(backgroundGradient)
+        .background(appBackgroundGradient)
         .foregroundColor(.white)
-        #endif
+#endif
     }
 
-    private func tvOSItemLabel(for item: ViewItem) -> some View {
+    /// Creates a label view for a topic item on tvOS
+    /// - Parameter item: The topic item to create a label for
+    /// - Returns: A styled view for the topic item
+    private func tvOSItemLabel(for item: TopicItem) -> some View {
         HStack {
             Text(item.name)
-                
                 .frame(width: 300, height: 100)
                 .shadow(radius: 5)
+            
+            // Special case for State Machines icon which uses an asset instead of SF Symbol
             if item.name == "State Machines" {
-                Image(item.image)
+                Image(item.iconName)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 125, height: 125)
-                    
             } else {
-                Image(systemName: item.image)
+                Image(systemName: item.iconName)
             }
-        }.frame(width: 450, height: 100)
+        }
+        .frame(width: 450, height: 100)
     }
 
-    private func iOSItemLabel(for item: ViewItem) -> some View {
+    /// Creates a label view for a topic item on iOS
+    /// - Parameter item: The topic item to create a label for
+    /// - Returns: A styled view for the topic item
+    private func iOSItemLabel(for item: TopicItem) -> some View {
         VStack(spacing: 10) {
             Text(item.name)
                 .font(.headline)
-                
                 .frame(width: 150, height: 40)
                 .cornerRadius(10)
 
+            // Special case for State Machines icon which uses an asset instead of SF Symbol
             if item.name == "State Machines" {
-                Image(item.image)
+                Image(item.iconName)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
             } else {
-                Image(systemName: item.image)
+                Image(systemName: item.iconName)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
@@ -236,7 +271,8 @@ struct GridView: View {
     }
 }
 
+// MARK: - Preview Provider
 #Preview {
     StartView()
-//    HomeView(name: "")
+    // HomeView(name: "User")
 }
