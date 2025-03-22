@@ -21,14 +21,19 @@ let package = Package(
             dependencies: [
                 .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
             ],
-            path: "unpluggedCS"),
+            path: "unpluggedCS",
+            exclude: ["Info.plist"]),
+            
         .testTarget(
             name: "unpluggedCSTests",
             dependencies: ["unpluggedCS"],
-            path: "unpluggedCSTests"),
+            path: "unpluggedCSTests",
+            exclude: ["Info.plist"]),
+            
         .testTarget(
             name: "unpluggedCSUITests",
             dependencies: ["unpluggedCS"],
-            path: "unpluggedCSUITests")
+            path: "unpluggedCSUITests",
+            exclude: ["Info.plist"])
     ]
 )
