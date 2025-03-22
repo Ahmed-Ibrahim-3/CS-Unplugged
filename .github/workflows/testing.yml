@@ -1,0 +1,40 @@
+name: Swift Tests 
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.0'
+    
+    - name: Build and test with coverage
+      run: |
+        xcodebuild test -scheme unpluggedCS -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' -enableCodeCoverage YES -resultBundlePath TestResults.xcresult
+    
+    - name: Convert coverage to Cobertura format
+      run: |
+        xcrun xccov view --report TestResults.xcresult > coverage.txt
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: TestResults.xcresult
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.txt
+        fail_ci_if_error: false
