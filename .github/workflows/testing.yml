@@ -1,4 +1,4 @@
-name: Swift Tests 
+name: Swift Tests
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     name: Build and Test
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v3
@@ -19,22 +19,26 @@ jobs:
       with:
         xcode-version: '15.0'
     
-    - name: Build and test with coverage
+    - name: List project files
       run: |
-        xcodebuild test -scheme unpluggedCS -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' -enableCodeCoverage YES -resultBundlePath TestResults.xcresult
-    
-    - name: Convert coverage to Cobertura format
-      run: |
-        xcrun xccov view --report TestResults.xcresult > coverage.txt
-      
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        files: TestResults.xcresult
+        find . -name "*.xcodeproj" -o -name "*.xcworkspace"
         
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.txt
-        fail_ci_if_error: false
+    - name: Show Xcode project structure
+      run: |
+        PROJECT_PATH=$(find . -name "*.xcodeproj" | head -n 1)
+        if [ -n "$PROJECT_PATH" ]; then
+          xcodebuild -list -project "$PROJECT_PATH"
+        else
+          echo "No Xcode project found"
+        fi
+      continue-on-error: true
+      
+    - name: Build and Test
+      run: |
+        PROJECT_PATH=$(find . -name "*.xcodeproj" | head -n 1)
+        if [ -n "$PROJECT_PATH" ]; then
+          xcodebuild test -project "$PROJECT_PATH" -scheme unpluggedCS -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' -resultBundlePath TestResults.xcresult
+        else
+          echo "Using Swift Package Manager instead"
+          swift test -v
+        fi
