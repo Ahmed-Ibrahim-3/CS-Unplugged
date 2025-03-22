@@ -19,31 +19,11 @@ jobs:
       with:
         swift-version: '5.9'
     
-    - name: Install dependencies
-      run: |
-        brew update
-        brew install xcbeautify
-    
-    - name: Show project structure
-      run: |
-        ls -la
-        swift package describe
-      continue-on-error: true
-      
-    - name: Verify Package.swift
-      run: swift package dump-package
+    - name: Show Swift version
+      run: swift --version
       
     - name: Build
       run: swift build -v
       
     - name: Run tests
-      run: |
-        swift test -v 2>&1 | xcbeautify --renderer github-actions
-      
-    - name: Archive test logs
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: test-logs
-        path: .build/debug/testlogs
-        retention-days: 7
+      run: swift test -v
