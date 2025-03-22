@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "30BD58D1-D1EF-47AC-AA93-95D2F6513E5E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:unpluggedCS.xcodeproj",
+      "identifier" : "B9C1CE352CBEDC86006BCEC2",
+      "name" : "unpluggedCS"
+    },
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:unpluggedCS.xcodeproj",
+        "identifier" : "B9C1CE452CBEDC8B006BCEC2",
+        "name" : "unpluggedCSTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:unpluggedCS.xcodeproj",
+        "identifier" : "B9C1CE4F2CBEDC8C006BCEC2",
+        "name" : "unpluggedCSUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -28,6 +28,7 @@ struct SecurityTopicView: View {
                 .font(.system(.title2))
                 .foregroundColor(.white)
                 .accessibilityAddTraits(.isHeader)
+                .focusable()
             
             Text(contentText)
                 .multilineTextAlignment(.leading)
@@ -40,6 +41,7 @@ struct SecurityTopicView: View {
             
             Text(additionalText)
                 .multilineTextAlignment(.leading)
+                .focusable()
         }
         .frame(width: width)
     }

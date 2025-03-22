@@ -18,25 +18,25 @@ struct ImgView: View {
     
     // MARK: Content Text
     
-    private let pixelIntroText: LocalizedStringKey = """
+     let pixelIntroText: LocalizedStringKey = """
     Have you ever looked *really* close at a screen and noticed a grid of small squares making up the image you see? We call these **pixels** in computing science, they are what make up anything you can see on a screen, most screens have millions of pixels to make the resulting image as sharp as possible.
     """
     
-    private let blackWhiteExplanationText: LocalizedStringKey = """
+    let blackWhiteExplanationText: LocalizedStringKey = """
     Let's start simple...
     
     To make a black and white image, we can make each pixel either black or white, so the computer would need to store which pixels are black and which are white. We can represent this using bits, with ones representing black pixels and zeroes representing white pixels. Experiment with this for a while, what kind of images can and can't you make with this, what else do we need?
     """
     
-    private let grayscaleExplanationText: LocalizedStringKey = """
+    let grayscaleExplanationText: LocalizedStringKey = """
     If we allow each pixel to use **2** bits this time, we can double the colours we can use, and now have grey. Now, rather than each pixel being 0 or 1, each can be 00, 01, 10, or 11, each representing a  different brightness, and allowing us to make images like this.
     """
     
-    private let colorExplanationText: LocalizedStringKey = """
+    let colorExplanationText: LocalizedStringKey = """
     Let's double the number of bits available to us again, to 4 bits per pixel. This brings us all the way up to **16** different colours, letting us make all sorts of pictures!
     """
     
-    private let colorDepthScalingText: LocalizedStringKey = """
+    let colorDepthScalingText: LocalizedStringKey = """
     As you might have noticed, every time we double the number of pixels, the number of colours we can represent is **squared**. In other words, when we go from one 1 bit to 2 to 4 to 8, we go from 2 colours to 4 to 16 to 256. Most TVs and monitors use 24-bit colour, that's 8 bits just for each colour channel (red, green, and blue) or 16,777,216 in total! Some even have 32-bit color -- Over 4 **billion**!
     """
     
@@ -58,8 +58,10 @@ struct ImgView: View {
                     .padding()
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
+                    .focusable()
                 
                 imageRepresentationContent
+                    .focusable()
                 
                 // Platform-specific interactive components
 #if os(iOS)
@@ -82,6 +84,7 @@ struct ImgView: View {
                     .padding(.vertical, 20)
                 
                 PixelArtShowcaseView(service: TVOSMultipeerServiceArt())
+                    .focusable()
 #endif
             }
         }
@@ -92,7 +95,7 @@ struct ImgView: View {
     // MARK: Subviews
     
     /// The main educational content explaining image representation concepts
-    private var imageRepresentationContent: some View {
+    var imageRepresentationContent: some View {
         VStack(spacing: 20) {
             Text(pixelIntroText)
             
@@ -354,7 +357,7 @@ struct PixelArtShowcaseView: View {
     /// - Parameter pixels: Array of color indices representing the pixel art
     /// - Returns: A grid view showing the pixel art
     @ViewBuilder
-    private func pixelGridView(_ pixels: [Int]) -> some View {
+    func pixelGridView(_ pixels: [Int]) -> some View {
         let columns = Array(repeating: GridItem(.fixed(20), spacing: 0), count: gridSize)
         
         LazyVGrid(columns: columns, spacing: 0) {

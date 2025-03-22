@@ -13,11 +13,11 @@ import SwiftUI
 struct NetworkView: View {
     // MARK: Properties
     
-    private let networkExplanationText: LocalizedStringKey = """
+     let networkExplanationText: LocalizedStringKey = """
     A computer network is a collection of interconnected devices that share resources and information. These devices can include computers, servers, printers, and other hardware. Networks allow for the efficient exchange of data, enabling various applications for example, email, file sharing, and internet browsing. Think back to what you learned about graphs. A network is a good example of these, its building blocks are nodes and links, where nodes can be any communication device like a router, and links can be either wireless connections between them or physical cables.
     """
     
-    private let osiModelExplanationText: LocalizedStringKey = """
+     let osiModelExplanationText: LocalizedStringKey = """
     The way different computer systems communicate over a network is explained by the Open Systems Interconnection (OSI) model
     consisting of 7 layers each with specific functions and responsibilities:
         \u{2022} Physical Layer
@@ -32,40 +32,42 @@ struct NetworkView: View {
     // MARK: Body
     
     var body: some View {
-        VStack {
-            Text("Networks")
-                .font(.title)
-                .padding()
-                .multilineTextAlignment(.center)
-                .accessibilityAddTraits(.isHeader)
-            
-            Text(networkExplanationText)
-                .padding()
-            
-            Spacer().frame(height: 25)
-            
-            Text(osiModelExplanationText)
-                .accessibilityLabel("OSI Model layers")
-            
-            // Navigation buttons to layer details
-            VStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    navigationButton(title: "Physical Layer", destination: PhysicalLayer())
-                    navigationButton(title: "Data Link Layer", destination: DataLinkLayer())
-                    navigationButton(title: "Network Layer", destination: NetworkLayer())
-                    navigationButton(title: "Transport Layer", destination: TransportLayer())
+        ScrollView{
+            VStack {
+                Text("Networks")
+                    .font(.title)
+                    .padding()
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                
+                Text(networkExplanationText)
+                    .padding()
+                
+                Text(osiModelExplanationText)
+                    .accessibilityLabel("OSI Model layers")
+                
+                Spacer().frame(height: 25)
+                
+                // Navigation buttons to layer details
+                VStack(spacing: 10) {
+                    HStack(spacing: 10) {
+                        navigationButton(title: "Physical Layer", destination: PhysicalLayer())
+                        navigationButton(title: "Data Link Layer", destination: DataLinkLayer())
+                        navigationButton(title: "Network Layer", destination: NetworkLayer())
+                        navigationButton(title: "Transport Layer", destination: TransportLayer())
+                    }
+                    HStack(spacing: 10) {
+                        navigationButton(title: "Session Layer", destination: SessionLayer())
+                        navigationButton(title: "Presentation Layer", destination: PresentationLayer())
+                        navigationButton(title: "Application Layer", destination: ApplicationLayer())
+                    }
                 }
-                HStack(spacing: 10) {
-                    navigationButton(title: "Session Layer", destination: SessionLayer())
-                    navigationButton(title: "Presentation Layer", destination: PresentationLayer())
-                    navigationButton(title: "Application Layer", destination: ApplicationLayer())
-                }
+                .padding()
             }
-            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(appBackgroundGradient)
+            .foregroundColor(.white)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(appBackgroundGradient)
-        .foregroundColor(.white)
     }
     
     // MARK: Helper Methods
@@ -94,11 +96,11 @@ struct NetworkView: View {
 struct PhysicalLayer: View {
     // MARK: Properties
     
-    private let explanationText: LocalizedStringKey = """
+     let explanationText: LocalizedStringKey = """
     The lowest layer of the OSI reference model is the **physical layer**. It is responsible for the actual physical connection between the devices. The physical layer contains information in the form of bits. This layer is responsible for transmitting individual bits from one node to the next. When receiving data, this layer will get the signal received and convert it into 1s and 0s and send them to the Data Link Layer, which will put the *frame* back together. Common physical layer devices are Hubs, Repeaters, Modems, and Cables
     """
     
-    private let functionsText: LocalizedStringKey = """
+     let functionsText: LocalizedStringKey = """
     Functions of the Physical Layer: 
         \u{2022} Bit Synchronization - provides synchronization of the bits by providing a clock controlling both the sender and receiver thus synchronizing at the bit level.
         \u{2022} Bit Rate Control - The physical layer defines the transmission rate, i.e. the number of bits sent per second.
@@ -139,7 +141,7 @@ struct PhysicalLayer: View {
 struct DataLinkLayer: View {
     // MARK: Properties
     
-    private let layerExplanationText: LocalizedStringKey = """
+     let layerExplanationText: LocalizedStringKey = """
     The data link layer is responsible for the node-to-node delivery of the message. The main function of this layer is to make sure data transfer is error-free from one node to another, over the physical layer. When a packet arrives in a network, it is the responsibility of the DLL to transmit it to the Host using its MAC address. Packet in the Data Link layer is referred to as Frame. Switches and Bridges are common Data Link Layer devices.
     
     Functions of the Data Link Layer
@@ -173,7 +175,7 @@ struct DataLinkLayer: View {
 struct NetworkLayer: View {
     // MARK: Properties
     
-    private let layerExplanationText: LocalizedStringKey = """
+     let layerExplanationText: LocalizedStringKey = """
     The network layer works for the transmission of data from one host to the other in different networks. It also takes care of packet routing, i.e. selecting the shortest path to transmit the packets from the number of available routes. The sender and receiver's IP addresses are placed into the header by the network layer. Segments in the network layer are referred to as **packets**. The network layer is implemented by networking devices such as *routers and switches*
     
     Functions of the Network Layer:
@@ -204,7 +206,7 @@ struct NetworkLayer: View {
 struct TransportLayer: View {
     // MARK: Properties
     
-    private let layerExplanationText: LocalizedStringKey = """
+     let layerExplanationText: LocalizedStringKey = """
     The transport layer provides services to the applications layer and takes services from the network layer. The data in the transport layer is referred to as **segments**. It is responsible for the end-to-end delivery of the complete message. The transport layer also provides the acknowledgements of the successful data transmission and re-transmits the data if an error is found.
     
     At the sender's side, the transport layer receives the formatted data from the upper layers, performs Segmentation, and also implements Flow and error control to ensure proper data transmission. It also adds Source and Destination port number in its header and forwards the segmented data to the Network Layer.
@@ -236,7 +238,7 @@ struct TransportLayer: View {
 struct SessionLayer: View {
     // MARK: Properties
     
-    private let explanationText: LocalizedStringKey = """
+     let explanationText: LocalizedStringKey = """
     Session Layer in the OSI Model is responsible for the establishment of connections, management of connections, terminations of sessions between two devices. It also provides authentication and security.
     
     Functions of the Session Layer:
@@ -275,7 +277,7 @@ struct SessionLayer: View {
 struct PresentationLayer: View {
     // MARK: Properties
     
-    private let layerExplanationText: LocalizedStringKey = """
+     let layerExplanationText: LocalizedStringKey = """
     The presentation layer is also called the Translation layer. The data from the application layer is extracted here and manipulated as per the required format to transmit over the network. Protocols used in the Presentation Layer are JPEG, MPEG, GIF, TLS/SSL, etc.
     
     Functions of the Presentation Layer:
@@ -307,11 +309,11 @@ struct PresentationLayer: View {
 struct ApplicationLayer: View {
     // MARK: Properties
     
-    private let explanationText: LocalizedStringKey = """
+     let explanationText: LocalizedStringKey = """
     At the very top of the OSI Reference Model stack of layers, we find the Application layer which is implemented by the network applications. These applications produce the data to be transferred over the network. This layer also serves as a window for the application services to access the network and for displaying the received information to the user. Protocols used in the Application layer are SMTP, FTP, DNS, etc.
     """
     
-    private let functionsText: LocalizedStringKey = """
+     let functionsText: LocalizedStringKey = """
     Functions of the Application Layer:
         \u{2022} Network Virtual Terminal(NVT): It allows a user to log on to a remote host.
         \u{2022} File Transfer Access and Management(FTAM): This application allows a user to files in a remote host, retrieve files in a remote host, and manage or control files from a remote computer.

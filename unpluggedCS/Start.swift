@@ -56,6 +56,12 @@ struct StartView: View {
     // MARK: Properties
     @State private var userName: String = ""
     @State private var showingAlert = false
+#if os(tvOS)
+    enum Field: Hashable {
+       case textField, navigationLink
+    }
+    @FocusState private var focusedField: Field?
+#endif
 
     // MARK: Body
     var body: some View {
@@ -74,10 +80,17 @@ struct StartView: View {
                         .padding()
                         .cornerRadius(20)
                         .textFieldStyle(.plain)
-
+                        .foregroundColor(focusedField == .textField ? .black : .white)
+                        .focused($focusedField, equals: .textField)
+                    
                     NavigationLink("Go!") {
                         HomeView(name: userName)
                     }
+//                    label: {
+//                        Text("Go!")
+//                            .foregroundColor(focusedField == .navigationLink ? .black : .white)
+//                    }
+                    .focused($focusedField, equals: .navigationLink)
                     .padding(50)
                 }
 #elseif os(iOS)
@@ -130,7 +143,7 @@ struct HomeView: View {
     var body: some View {
         // Define all topic items with their associated views
         let topics: [TopicItem] = [
-            TopicItem(name: "Bit Manipulation", view: AnyView(BitView()), iconName: "01.square.fill"),
+            TopicItem(name: "Bit Manipulation", view: AnyView(BitView(viewModel: BitViewModel(maxBits: 5))), iconName: "01.square.fill"),
             TopicItem(name: "Searching", view: AnyView(SearchView()), iconName: "exclamationmark.magnifyingglass"),
             TopicItem(name: "Sorting", view: AnyView(SortingView()), iconName: "chart.bar.xaxis.ascending"),
             TopicItem(name: "Data Structures", view: AnyView(DataView()), iconName: "square.stack.3d.up"),

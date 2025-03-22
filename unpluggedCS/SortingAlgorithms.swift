@@ -18,6 +18,47 @@ struct CircleItem: Identifiable, Equatable {
     let number: Int
 }
 
+class SortingViewModel: ObservableObject {
+    @Published var circles: [CircleItem]
+    @Published var selectedCircleID: UUID? = nil
+    
+    init(circles: [CircleItem] = []) {
+        self.circles = circles
+    }
+    
+    func selectCircle(id: UUID) {
+        if let firstSelectedID = selectedCircleID,
+           let firstIndex = circles.firstIndex(where: { $0.id == firstSelectedID }),
+           let secondIndex = circles.firstIndex(where: { $0.id == id }) {
+            circles.swapAt(firstIndex, secondIndex)
+            selectedCircleID = nil
+        } else {
+            selectedCircleID = id
+        }
+    }
+    
+    func shuffle() {
+        circles.shuffle()
+        selectedCircleID = nil
+    }
+    
+    func reset(to originalCircles: [CircleItem]) {
+        circles = originalCircles
+        selectedCircleID = nil
+    }
+    
+    func isSorted() -> Bool {
+        guard !circles.isEmpty else { return true }
+        
+        for i in 0..<circles.count-1 {
+            if circles[i].number > circles[i+1].number {
+                return false
+            }
+        }
+        return true
+    }
+}
+
 // MARK: - Main View
 
 /// Main view displaying available sorting algorithms
@@ -81,81 +122,64 @@ struct SortingView: View {
 
 /// Interactive view for sorting circles by swapping them
 struct SortableCirclesView: View {
-    /// The array of circles to be sorted
-    @Binding var circles: [CircleItem]
-    
-    /// ID of the currently selected circle, if any
-    @State private var selectedCircleID: UUID? = nil
-    
-    /// ID of the focused circle (for tvOS navigation)
-    @FocusState private var focusedCircleID: UUID?
+    @ObservedObject var viewModel: SortingViewModel
+        
+        /// ID of the focused circle (for tvOS navigation)
+        @FocusState private var focusedCircleID: UUID?
 
-    var body: some View {
-        VStack {
-            VStack(spacing: 50) {
-                HStack(spacing: 25) {
-                    ForEach(circles) { circle in
-                        Button(action: {
-                            handleCircleTap(id: circle.id)
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(circle.color)
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(selectedCircleID == circle.id ? Color.gray : Color.clear, lineWidth: 4)
-                                    )
-                                
-                                Text("\(circle.number)")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
+        var body: some View {
+            VStack {
+                VStack(spacing: 50) {
+                    HStack(spacing: 25) {
+                        ForEach(viewModel.circles) { circle in
+                            Button(action: {
+                                viewModel.selectCircle(id: circle.id)
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(circle.color)
+                                        .frame(width: 80, height: 80)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(viewModel.selectedCircleID == circle.id ? Color.gray : Color.clear, lineWidth: 4)
+                                        )
+                                    
+                                    Text("\(circle.number)")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                }
                             }
+                            .buttonStyle(.plain)
+                            .focused($focusedCircleID, equals: circle.id)
+                            .accessibilityLabel("Circle \(circle.number)")
+                            .accessibilityHint(viewModel.selectedCircleID == circle.id ?
+                                             "Selected. Tap another circle to swap." :
+                                             "Tap to select for swapping.")
                         }
-                        .buttonStyle(.plain)
-                        .focused($focusedCircleID, equals: circle.id)
-                        .accessibilityLabel("Circle \(circle.number)")
-                        .accessibilityHint(selectedCircleID == circle.id ?
-                                         "Selected. Tap another circle to swap." :
-                                         "Tap to select for swapping.")
                     }
+                    
+                    // Shuffle button
+                    Button(action: {
+                        viewModel.shuffle()
+                    }) {
+                        Text("Shuffle!")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Randomly rearranges all circles")
                 }
-                
-                // Shuffle button
-                Button(action: {
-                    circles.shuffle()
-                    selectedCircleID = nil
-                }) {
-                    Text("Shuffle!")
-                        .font(.title2)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
+                .onAppear {
+                    focusedCircleID = viewModel.circles.first?.id
                 }
-                .buttonStyle(.plain)
-                .accessibilityHint("Randomly rearranges all circles")
             }
-            .onAppear {
-                focusedCircleID = circles.first?.id
-            }
-        }
-        .interactiveArea()
-    }
-    
-    /// Handles tapping on a circle to select or swap
-    /// - Parameter id: The UUID of the tapped circle
-    private func handleCircleTap(id: UUID) {
-        if let firstSelectedID = selectedCircleID,
-           let firstIndex = circles.firstIndex(where: { $0.id == firstSelectedID }),
-           let secondIndex = circles.firstIndex(where: { $0.id == id }) {
-            circles.swapAt(firstIndex, secondIndex)
-            selectedCircleID = nil
-        } else {
-            selectedCircleID = id
+            .interactiveArea()
         }
     }
-}
+
 
 // MARK: - Sorting Algorithm Views
 
@@ -200,7 +224,7 @@ struct SelectionSortView: View {
                 .padding()
                 .accessibilityAddTraits(.isHeader)
             
-            SortableCirclesView(circles: $circles)
+            SortableCirclesView(viewModel: SortingViewModel(circles: circles))
             
             Text("What to do:")
                 .font(.title3)
@@ -263,7 +287,7 @@ struct QuickSortView: View {
                 .padding()
                 .accessibilityAddTraits(.isHeader)
             
-            SortableCirclesView(circles: $circles)
+            SortableCirclesView(viewModel: SortingViewModel(circles: circles))
             
             Text("What to do:")
                 .font(.title3)
@@ -394,7 +418,7 @@ struct BubbleSortView: View {
                 .padding()
                 .accessibilityAddTraits(.isHeader)
             
-            SortableCirclesView(circles: $circles)
+            SortableCirclesView(viewModel: SortingViewModel(circles: circles))
             
             Text("What to do:")
                 .font(.title3)
@@ -420,7 +444,7 @@ struct BubbleSortView: View {
 
 extension InsertionSortView {
     /// Subviews for the InsertionSortView
-    fileprivate enum Subviews {
+    enum Subviews {
         struct TitleSection: View {
             var body: some View {
                 Text("Insertion Sort")

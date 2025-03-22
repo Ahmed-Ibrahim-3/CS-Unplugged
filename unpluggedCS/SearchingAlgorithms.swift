@@ -17,7 +17,7 @@ class QRCodeViewModel: ObservableObject {
     @Published var qrCodeImage: UIImage?
     
     /// Core Image context for rendering
-    private let context = CIContext()
+    let context = CIContext()
     
     /// Generates a QR code from a randomly selected URL in the provided array
     /// - Parameter urls: Array of URL strings to choose from
@@ -47,9 +47,9 @@ struct SearchView: View {
     // MARK: Properties
     
     /// ViewModel for QR code generation
-    @StateObject private var qrCodeViewModel = QRCodeViewModel()
+    @StateObject var qrCodeViewModel = QRCodeViewModel()
     
-    private let instructionsText = """
+    let instructionsText: LocalizedStringKey = """
     For this you will need : 
       \u{2022} Any mobile device, preferably with the companion app
       \u{2022} Someone to play against
@@ -123,7 +123,7 @@ struct Linear: View {
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
     
     /// URLs for QR codes on tvOS
-    private let tvOSUrls = [
+    let tvOSUrls = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch2.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Linear/Lsearch3.png",
@@ -131,20 +131,20 @@ struct Linear: View {
     ]
     
     /// Image names for iOS devices
-    private let iOSImages = ["L_A", "L_B", "L_C", "L_D"]
+    let iOSImages = ["L_A", "L_B", "L_C", "L_D"]
     
     /// Currently selected image name
-    @State private var selectedImage: String?
+    @State var selectedImage: String?
     
     // MARK: Content Text
     
-    private let tvOSSetupText: LocalizedStringKey = """
+    let tvOSSetupText: LocalizedStringKey = """
     In your pairs, scan the QR code below and keep your card to yourself.
     Next, pick a ship under "My Ships" and circle or memorise it.
     Tell your partner the ***number*** of your ship (not the letter!!)
     """
     
-    private let tvOSGameInstructionsText: LocalizedStringKey = """
+    let tvOSGameInstructionsText: LocalizedStringKey = """
     Now, in turns, guess the letter where your partner's ship is.
     -- with each guess, one player gives a letter, and the other gives its number.
     \u{2022} Keep count of how many guesses you have taken. At the end, write down the number of guesses you took.
@@ -152,7 +152,7 @@ struct Linear: View {
       and maximum scores would have been, and how you could have optimized this.
     """
     
-    private let iOSInstructionsText: LocalizedStringKey = """
+    let iOSInstructionsText: LocalizedStringKey = """
     In your pairs, scan the QR code below and keep your card to yourself. Next, pick a ship under "My Ships" and circle or memorise it. Tell your partner the ***number*** of your ship (not the letter!!)
     
     In turns, guess the letter where your partners ship is.
@@ -160,7 +160,7 @@ struct Linear: View {
     At the end, write down the number of guesses you took.
     """
     
-    private let iOSDiscussionText: LocalizedStringKey = """
+    let iOSDiscussionText: LocalizedStringKey = """
     Once you're finished, discuss amongst your pairs what the minimum and maximum scores would have been, and how could you have optimized this?
     """
     
@@ -275,7 +275,7 @@ struct Binary: View {
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
     
     /// URLs for QR codes on tvOS
-    private let tvOSUrls = [
+    let tvOSUrls = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch2.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/Images/Search/Binary/Bsearch3.png",
@@ -283,14 +283,14 @@ struct Binary: View {
     ]
     
     /// Image names for iOS devices
-    private let iOSImages = ["B_A", "B_B", "B_C", "B_D"]
+    let iOSImages = ["B_A", "B_B", "B_C", "B_D"]
     
     /// Currently selected image name
-    @State private var selectedImage: String?
+    @State var selectedImage: String?
     
     // MARK: Content Text
     
-    private let tvOSSetupText: LocalizedStringKey = """
+    let tvOSSetupText: LocalizedStringKey = """
     Again, in your pairs, scan the QR code below and keep your card to yourself.
     Next, pick a ship under "My Ships" and circle or memorise it. 
     Tell your partner the ***number*** of your ship (not the letter!!).
@@ -298,14 +298,14 @@ struct Binary: View {
     **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**
     """
     
-    private let tvOSGameInstructionsText: LocalizedStringKey = """
+    let tvOSGameInstructionsText: LocalizedStringKey = """
     In turns, guess the letter where your partner's ship is.
     -- with each guess, one player gives a letter, and the other gives its number.
     \u{2022} Keep count of how many guesses you have taken. At the end, write down the number.
     \u{2022} Once you're finished, discuss the min and max scores, and how to optimize.
     """
     
-    private let iOSSetupText: LocalizedStringKey = """
+    let iOSSetupText: LocalizedStringKey = """
     Tell your partner the ***number*** of your ship (not the letter!!). **THIS TIME, ALL SHIPS WILL BE IN ASCENDING ORDER**.
     
     In turns, guess the letter where your partner's ship is.
@@ -313,7 +313,7 @@ struct Binary: View {
     Keep count of your guesses. 
     """
     
-    private let iOSDiscussionText: LocalizedStringKey = """
+    let iOSDiscussionText: LocalizedStringKey = """
     Once you're finished, discuss the min and max scores, and how to optimize. How does it compare to the other methods?
     """
     
@@ -424,32 +424,32 @@ struct Hashing: View {
     @ObservedObject var qrCodeViewModel: QRCodeViewModel
     
     /// URLs for Player 1 QR codes on tvOS
-    private let tvOS_A = [
+    let tvOS_A = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/blob/main/unpluggedCS/Images/Search/Hashing/A/hashing1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/images/Search/Hashing/A/hashing2.png"
     ]
     
     /// URLs for Player 2 QR codes on tvOS
-    private let tvOS_B = [
+    let tvOS_B = [
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/blob/main/unpluggedCS/Images/Search/Hashing/B/hashing1.png",
         "https://github.com/Ahmed-Ibrahim-3/CS-Unplugged/tree/main/unpluggedCS/images/Search/Hashing/B/hashing2.png"
     ]
     
     /// Image names for Player 1 on iOS
-    private let iOS_A = ["A_1", "A_2"]
+    let iOS_A = ["A_1", "A_2"]
     
     /// Image names for Player 2 on iOS
-    private let iOS_B = ["B_1", "B_2"]
+    let iOS_B = ["B_1", "B_2"]
     
     /// Currently selected player (1 or 2)
-    @State private var selectedPlayer: Int? = nil
+    @State var selectedPlayer: Int? = nil
     
     /// Currently selected image name
-    @State private var selectedImage: String?
+    @State var selectedImage: String?
     
     // MARK: Content Text
     
-    private let tvOSSetupText: LocalizedStringKey = """
+    let tvOSSetupText: LocalizedStringKey = """
     Each player scans one of the two codes below. Keep the card to yourself.
     Pick a ship under "My Ships" and circle or memorise it. 
     Tell your partner the ***number*** of your ship (not the letter!!).
@@ -458,18 +458,18 @@ struct Hashing: View {
     by adding the digits of the ship's number, and using the last digit of the sum.
     """
     
-    private let tvOSGameInstructionsText: LocalizedStringKey = """
+    let tvOSGameInstructionsText: LocalizedStringKey = """
     Play as before, but use the new hashing strategy. 
     \u{2022} Discuss which ships are easiest/hardest to find. 
     \u{2022} Which searching strategy is fastest, and why?
     \u{2022} What are advantages and disadvantages of each one?
     """
     
-    private let iOSSetupText: LocalizedStringKey = """
+    let iOSSetupText: LocalizedStringKey = """
     Decide who will be Player 1 or Player 2. In this game, you can find out which column (0-9) the ship belongs to by adding together the digits of the ship's number, then using the last digit of the sum.
     """
     
-    private let iOSDiscussionText: LocalizedStringKey = """
+    let iOSDiscussionText: LocalizedStringKey = """
     \u{2022} Play the game as before, but using the hashing strategy. 
     \u{2022} Which ships are easiest/hardest to find? 
     \u{2022} Which strategy is fastest, and why?

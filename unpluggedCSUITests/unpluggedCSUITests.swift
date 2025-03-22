@@ -10,31 +10,64 @@ import XCTest
 final class unpluggedCSUITests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        // Stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        // Set any initial state required for tests here.
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        // Cleanup code here.
     }
 
     @MainActor
     func testExample() throws {
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let startLabel = app.staticTexts["Start"]
+        XCTAssertTrue(startLabel.waitForExistence(timeout: 5), "Start view did not appear.")
+
+        #if os(iOS)
+        let nameTextField = app.textFields["Enter name"]
+        XCTAssertTrue(nameTextField.waitForExistence(timeout: 5), "Name text field not found on Start view.")
+        nameTextField.tap()
+        nameTextField.typeText("TestUser")
+
+        let goButton = app.buttons["Go!"]
+        XCTAssertTrue(goButton.waitForExistence(timeout: 5), "Go button not found on Start view.")
+        goButton.tap()
+
+        let homeGreeting = app.staticTexts["Hello, TestUser"]
+        XCTAssertTrue(homeGreeting.waitForExistence(timeout: 5), "Home view did not appear with the correct greeting.")
+
+        let topicLabel = app.staticTexts["Bit Manipulation"]
+        XCTAssertTrue(topicLabel.waitForExistence(timeout: 5), "Expected topic 'Bit Manipulation' not found on Home view.")
+
+        #elseif os(tvOS)
+        
+        let goButton = app.buttons["Go!"]
+        XCTAssertTrue(goButton.waitForExistence(timeout: 5), "Go button not found on Start view (tvOS).")
+        XCUIRemote.shared.press(.right)
+        XCUIRemote.shared.press(.select)
+        
+        let greetingPredicate = NSPredicate(format: "label BEGINSWITH 'Hello,'")
+        let greetingElement = app.staticTexts.element(matching: greetingPredicate)
+        XCTAssertTrue(greetingElement.waitForExistence(timeout: 5), "Home view did not appear with a greeting on tvOS.")
+        
+        let topicLabel = app.staticTexts["Bit Manipulation"]
+        XCTAssertTrue(topicLabel.waitForExistence(timeout: 5), "Expected topic 'Bit Manipulation' not found on Home view (tvOS).")
+        #endif
+    }
+    
+    func testAccessibility() throws {
+        let app = XCUIApplication()
+        app.launch()
+        try app.performAccessibilityAudit()
     }
 
     @MainActor
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
             measure(metrics: [XCTApplicationLaunchMetric()]) {
                 XCUIApplication().launch()
             }

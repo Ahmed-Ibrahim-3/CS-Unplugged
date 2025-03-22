@@ -560,7 +560,6 @@ struct StateView: View {
     var body: some View {
         ScrollView {
             VStack {
-                // Title
                 Text("State Machines")
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
@@ -568,12 +567,10 @@ struct StateView: View {
                     .focusable(true)
                     .accessibilityAddTraits(.isHeader)
                 
-                // Explanation text
                 Text(explanationText)
                     .padding()
                     .accessibilityLabel("Explanation of state machines")
                 
-                // First diagram with explanation
                 HStack {
                     Image("FSA")
                         .resizable()
@@ -586,7 +583,6 @@ struct StateView: View {
                         .padding()
                 }
                 
-                // Second diagram with question
                 HStack {
                     Image("sentenceFSA")
                         .resizable()
@@ -601,7 +597,6 @@ struct StateView: View {
                 
                 Divider().padding(.vertical, 10)
                 
-                // Interactive DFA builder
                 UnifiedDFABuilderView()
             }
             .padding()
