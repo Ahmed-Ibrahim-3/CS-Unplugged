@@ -8,6 +8,25 @@
 import SwiftUI
 import MultipeerConnectivity
 
+// MARK: Pixels
+struct PixelView: View {
+    let index: Int
+    let colorIndex: Int
+    let palette: [Color]
+    let gridSize: Int
+    let colorName: String
+    let onTap: () -> Void
+    
+    var body: some View {
+        Rectangle()
+            .fill(palette[colorIndex])
+            .frame(width: 20, height: 20)
+            .onTapGesture(perform: onTap)
+            .accessibilityLabel("Pixel at position \(index / gridSize + 1), \(index % gridSize + 1)")
+            .accessibilityHint("Tap to change this pixel to \(colorName)")
+    }
+}
+
 // MARK: - Main View
 
 /// View that explains digital image representation and provides interactive pixel art creation
@@ -160,13 +179,13 @@ struct ColorPixelBuilderView: View {
     let gridSize = 16
     
     /// Array representing the color index of each pixel in the grid
-    @State private var pixels: [Int] = Array(repeating: 0, count: 256)
+    @State var pixels: [Int] = Array(repeating: 0, count: 256)
     
     /// Currently selected color from the palette
-    @State private var selectedColor: Int = 0
+    @State var selectedColor: Int = 0
     
     /// Service for sharing pixel art between devices
-    @StateObject private var multipeerService: iOSMultipeerServiceArt
+    @StateObject var multipeerService: iOSMultipeerServiceArt
     
     // MARK: Initialization
     
@@ -197,7 +216,7 @@ struct ColorPixelBuilderView: View {
     // MARK: Subviews
     
     /// Button for initiating connection to other devices
-    private var connectionButton: some View {
+    var connectionButton: some View {
         Button("Connect / Browse") {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first,
@@ -212,7 +231,7 @@ struct ColorPixelBuilderView: View {
     }
     
     /// Horizontal scrolling color palette for selection
-    private var colorPaletteSelector: some View {
+    var colorPaletteSelector: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(0..<palette.count, id: \.self) { index in
@@ -237,29 +256,32 @@ struct ColorPixelBuilderView: View {
     }
     
     /// Grid of pixels that can be tapped to change colors
-    private var pixelGrid: some View {
+    var pixelGrid: some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: -(UIScreen.main.bounds.width/1.45)), count: gridSize)
         
         return LazyVGrid(columns: columns, spacing: 0) {
             ForEach(0..<pixels.count, id: \.self) { index in
-                Rectangle()
-                    .fill(palette[pixels[index]])
-                    .frame(width: 20, height: 20)
-                    .onTapGesture {
-                        pixels[index] = selectedColor
-                        multipeerService.sendPixelArtUpdate(pixels: pixels)
-                    }
-                    .accessibilityLabel("Pixel at position \(index / gridSize + 1), \(index % gridSize + 1)")
-                    .accessibilityHint("Tap to change this pixel to \(colorName(at: selectedColor))")
+                pixelCell(at: index)
             }
         }
         .padding()
         .accessibilityElement(children: .contain)
         .accessibilityLabel("16 by 16 pixel grid")
     }
-    
+
+    func pixelCell(at index: Int) -> some View {
+        Rectangle()
+            .fill(palette[pixels[index]])
+            .frame(width: 20, height: 20)
+            .onTapGesture {
+                pixels[index] = selectedColor
+                multipeerService.sendPixelArtUpdate(pixels: pixels)
+            }
+            .accessibilityLabel("Pixel at position \(index / gridSize + 1), \(index % gridSize + 1)")
+            .accessibilityHint("Tap to change this pixel to \(colorName(at: selectedColor))")
+    }
     /// Control buttons for the pixel art editor
-    private var controlButtons: some View {
+    var controlButtons: some View {
         HStack {
             Button("Reset") {
                 pixels = Array(repeating: 0, count: 256)
@@ -280,7 +302,7 @@ struct ColorPixelBuilderView: View {
     /// Provides a human-readable name for a color at the given index
     /// - Parameter index: Index in the palette array
     /// - Returns: A descriptive name of the color
-    private func colorName(at index: Int) -> String {
+    func colorName(at index: Int) -> String {
         let names = ["Black", "White", "Red", "Green",
                      "Blue", "Yellow", "Orange", "Purple",
                      "Pink", "Gray", "Brown", "Cyan",

@@ -534,7 +534,7 @@ struct StateView: View {
     // MARK: Content Text
     
     /// Text explaining state machines and their components
-    private let explanationText: LocalizedStringKey = """
+    let explanationText: LocalizedStringKey = """
     Finite-State Automata — or simply state machines — are a good way to model computation, perform pattern matching, and process text.
     
     They can be thought of as a map consisting of:
@@ -549,7 +549,7 @@ struct StateView: View {
     """
     
     /// Text explaining the examples shown in the diagram
-    private let examplesText: LocalizedStringKey = """
+    let examplesText: LocalizedStringKey = """
     In these examples, we have numbered states 1, 2 and 3, with transitions A and B between each one. From the initial state, the aim is to finish at (one of) the exit states.
     
     How will each of these finite state automata reach an exit state?

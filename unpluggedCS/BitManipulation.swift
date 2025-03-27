@@ -117,7 +117,9 @@ class BitViewModel: ObservableObject {
     func toggleBit(at index: Int) {
         guard index >= 0 && index < bitValues.count else { return }
         bitValues[index].toggle()
+        #if os(iOS)
         decimalValue = calculateBinaryValue(from: bitValues)
+        #endif
     }
     
     func setAllBits(to value: Bool) {
@@ -146,7 +148,7 @@ struct BitView: View {
     @ObservedObject var viewModel: BitViewModel
         
         // Text content for the bit manipulation activity
-        private let bitActivity = """
+        let bitActivity = """
                         Discuss the following:
                            \u{2022} What is the smallest number you can make?
                            \u{2022} What is the largest? 
@@ -255,7 +257,7 @@ struct BitView: View {
                     }
                     
                     Button(action: {
-                        // The ViewModel handles this automatically when bits change
+                        viewModel.decimalValue = viewModel.calculateBinaryValue(from: viewModel.bitValues)
                     }) {
                         Image(systemName: "equal")
                             .resizable()
@@ -295,7 +297,7 @@ struct BitView: View {
     #if os(iOS)
         /// Content specific to iOS interface
         /// - Returns: iOS-specific view hierarchy
-        private func iOSContent() -> some View {
+        func iOSContent() -> some View {
             VStack(spacing: 20) {
                 Text(bitActivity)
                     .accessibilityLabel("Discussion questions about binary numbers")

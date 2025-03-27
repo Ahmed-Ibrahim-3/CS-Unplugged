@@ -266,7 +266,7 @@ struct GraphExplanationView: View {
     // MARK: - Content
     
     /// Explanation text describing graphs and their properties
-    private let explanationText: LocalizedStringKey = """
+    let explanationText: LocalizedStringKey = """
     Unlike arrays, queues, and stacks, a Graph is a **non-linear data structure** consisting of vertices (also known as nodes) and edges. A vertex is a point or an object in the graph and an edge is used to connect two vertices to each other. Graphs are non-linear because they allow us to have different paths to get from one path to another, unlike linear data structures.
         
     Graphs are used to represent and solve problems where the data consists of objects and relationships between them, for example:
@@ -342,23 +342,23 @@ struct GraphEditorView: View {
     
 #if os(tvOS)
     /// Index of the currently selected node (tvOS only)
-    @State private var selectedNodeIndex: Int = 0
+    @State var selectedNodeIndex: Int = 0
 #endif
     
     /// Label of the source node for new edges
-    @State private var fromNode: String = ""
+    @State var fromNode: String = ""
     
     /// Label of the destination node for new edges
-    @State private var toNode: String = ""
+    @State var toNode: String = ""
     
     /// Weight value for new edges
-    @State private var edgeWeight: String = ""
+    @State var edgeWeight: String = ""
     
     /// Counter for generating sequential node labels
-    @State private var nodeCounter = 1
+    @State var nodeCounter = 1
     
     /// Default position for new nodes
-    @State private var defaultPosition = CGPoint(x: 350, y: 350)
+    @State var defaultPosition = CGPoint(x: 350, y: 350)
     
     // MARK: - Body
     

@@ -4,11 +4,15 @@
       "id" : "30BD58D1-D1EF-47AC-AA93-95D2F6513E5E",
       "name" : "Test Scheme Action",
       "options" : {
-
+        "maximumTestExecutionTimeAllowance" : 60,
+        "repeatInNewRunnerProcess" : true,
+        "threadSanitizerEnabled" : true,
+        "undefinedBehaviorSanitizerEnabled" : true
       }
     }
   ],
   "defaultOptions" : {
+    "maximumTestExecutionTimeAllowance" : 60,
     "targetForVariableExpansion" : {
       "containerPath" : "container:unpluggedCS.xcodeproj",
       "identifier" : "B9C1CE352CBEDC86006BCEC2",
