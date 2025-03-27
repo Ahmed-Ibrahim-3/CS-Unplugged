@@ -6,7 +6,8 @@ This project takes this idea and digitises these activities, making them availab
 
 ## Installation Instructions
 
-$${\color{red}\text{THIS APP IS NOT CURRENTLY ON THE APP STORE, YOU WILL HAVE TO MANUALLY INSTALL AND BUILD THE APP USING XCODE}}$$
+$${\color{red}\text{THIS APP IS NOT CURRENTLY ON THE APP STORE}}$$
+$${\color{red}\text{YOU WILL HAVE TO MANUALLY INSTALL AND BUILD THE APP USING XCODE}}$$
 
 1. Download Xcode [at this link](https://apps.apple.com/us/app/xcode/id497799835?mt=12)
 2. In Xcode, click `Clone Git Repository...` and enter this link : `https://github.com/Ahmed-Ibrahim-3/CS-Unplugged.git` in the search bar
